@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fafaf8" />
-    <meta name="description" content="Small, thoughtful apps by Dully Labs." />
-    <title>Dully Labs — Thoughtful apps</title>
+    <meta name="description" content="Independent apps made in Hong Kong." />
+    <title>Dully Labs | Independent apps</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet" />
@@ -16,7 +16,8 @@
       .header { height:76px; padding:0 clamp(1.25rem,6vw,6rem); border-bottom:1px solid var(--rule); display:flex; align-items:center; justify-content:space-between; }
       .wordmark { font:700 1.08rem "Playfair Display",Georgia,serif; text-decoration:none; }
       .wordmark span { color:var(--accent); }
-      .header a:last-child { font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+      .byline { display:flex; align-items:center; gap:.6rem; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+      .byline img { width:28px; height:28px; border:1px solid var(--rule); border-radius:50%; object-fit:cover; }
       main { max-width:1280px; margin:auto; padding:clamp(5rem,12vw,11rem) clamp(1.25rem,6vw,5rem); }
       .eyebrow { font:500 .68rem "JetBrains Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
       h1 { max-width:900px; margin:1.5rem 0 2rem; font:600 clamp(4rem,10vw,9rem)/.95 "Playfair Display",Georgia,serif; letter-spacing:-.055em; }
@@ -51,19 +52,22 @@
   <body>
     <header class="header">
       <a class="wordmark" href="/">Dully Labs<span>.</span></a>
-      <a href="https://dulangaj.github.io">By Dulanga Jayawardena</a>
+      <a class="byline" href="https://dulangaj.com">
+        <img src="/assets/img/profile.jpeg" alt="" />
+        <span>By Dulanga Jayawardena</span>
+      </a>
     </header>
     <main>
-      <p class="eyebrow">Independent software studio · Hong Kong</p>
-      <h1>Small apps,<br /><em>thoughtfully made.</em></h1>
-      <p class="intro">Dully Labs makes focused tools for living and working with a little more clarity. No engagement tricks. No unnecessary complexity.</p>
+      <p class="eyebrow">INDEPENDENT APP STUDIO / HONG KONG</p>
+      <h1>Small apps,<br /><em>made with care.</em></h1>
+      <p class="intro">Dully Labs is an independent studio in Hong Kong. I build focused apps and keep them simple.</p>
       <section class="apps" aria-label="Apps">
         <a class="app" href="/weeklypulse/">
           <small>APP / 01</small>
           <img src="/weeklypulse/assets/app-icon.png" alt="" />
           <div>
             <h2>Weekly Pulse</h2>
-            <p>A private weekly ritual for seeing your life more clearly.</p>
+            <p>A private app for weekly check-ins across Work, Play, Love, and Health.</p>
           </div>
           <span class="arrow" aria-hidden="true">→</span>
         </a>
@@ -71,7 +75,7 @@
     </main>
     <footer>
       <span>© 2026 Dully Labs</span>
-      <p>Built thoughtfully in Hong Kong · <a href="mailto:hello@dulangaj.com">Contact</a></p>
+      <p>Made in Hong Kong · <a href="mailto:hello@dulangaj.com">Contact</a></p>
     </footer>
   </body>
 </html>
