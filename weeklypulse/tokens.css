@@ -1,0 +1,138 @@
+/* ──────────────────────────────────────────────────────────────
+   Weekly Pulse design tokens
+   The single source of truth for colour, easing and shape across
+   /weeklypulse/ (landing, privacy, support). Nothing but custom
+   properties belongs in this file.
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+  /* surfaces */
+  --paper: #fff8ec;
+  --card:  #fffdf9;
+  --ink:   #1d1a26;
+  --sub:   #6f6a80;
+  --edge:   #1d1a26;  /* outline */
+  --shadow: #1d1a26;  /* the hard offset slab */
+
+  /* Emphasis panel. On light it inverts to a dark slab against cream paper. */
+  --panel:      var(--ink);
+  --panel-fg:   var(--paper);
+  --panel-edge: var(--paper);
+
+  /* the four pillars */
+  --work:   #4E8BF5;
+  --play:   #22C692;
+  --love:   #F0736F;
+  --health: #9B59B6;
+
+  /* accents */
+  --teal:  #2AB8C4;
+  --flame: #FF9F1C;
+  --sun:   #FFD166;
+
+  /* Text-safe variants of the accents above. The base tokens are tuned to be
+     fills: as swatches, slider tracks and tiles they only owe 3:1 non-text
+     contrast, and they clear it. As type on cream they run 1.4:1 to 4.4:1, so
+     every one of them fails AA. These are the same hues dropped in lightness
+     until they pass 4.5:1 on --paper (the darker of the two surfaces, so they
+     pass on --card too). Use --*-txt anywhere an accent becomes a word. */
+  --work-txt:   #2A6FD8;
+  --play-txt:   #15805F;
+  --love-txt:   #C6403C;
+  --health-txt: #9956B5;
+  --teal-txt:   #1D7E86;
+  --flame-txt:  #A96100;
+  --sun-txt:    #976A00;
+
+  color-scheme: light;
+}
+
+/* Light and dark are deliberately NOT mirror images.
+   --edge equals --ink in light mode, but flipping it to cream on dark gives a
+   16:1 outline: the same ratio as body text, on an emissive screen, where light
+   shapes bloom against a dark ground. Borders only need to be perceivable, not
+   legible, so on dark --edge drops to its own violet-grey tone at ~4.8:1 (WCAG
+   1.4.11 asks 3:1 for non-text contrast) and stays below --sub in the hierarchy.
+
+   --shadow is split from --edge because area amplifies brightness: a 10px slab
+   carries far more light than a 3px line, so at the same tone it reads as a glow
+   rather than a shadow. It sits a step darker. Going all the way to near-black
+   doesn't work either, since it vanishes into --paper and the offset is lost. */
+:root[data-theme="dark"] {
+  --paper: #17141f;
+  --card:  #221e2d;
+  --ink:   #f6f0e4;
+  --sub:   #a89fbb;
+  --edge:   #8a7dab;
+  --shadow: #574c72;
+
+  /* An emphasis panel must NOT invert to light here. Flipping --panel to --ink
+     turns the biggest block on the page into a 16:1 cream slab, which is the
+     worst possible glare surface in a dark UI. Dark themes express hierarchy
+     through elevation instead: step the surface up in lightness (paper 1.00,
+     card 1.12, panel 1.34) and let accent colour carry the emphasis. */
+  --panel:      #302a47;
+  --panel-fg:   var(--ink);
+  --panel-edge: var(--edge);
+
+  /* lifted a step in lightness so they hold against a dark ground */
+  --work:   #7FADF9;
+  --play:   #45D6AA;
+  --love:   #F8968F;
+  --health: #BE85D6;
+
+  --teal:  #5AD3DD;
+  --flame: #FFB35C;
+  --sun:   #FFD97D;
+
+  /* The dark accents were already lifted for a dark ground and run 5.8:1 to
+     10.3:1 as text, so the text variants alias straight back to them. Darkening
+     here would be backwards: on dark, type has to get lighter, not deeper. */
+  --work-txt:   var(--work);
+  --play-txt:   var(--play);
+  --love-txt:   var(--love);
+  --health-txt: var(--health);
+  --teal-txt:   var(--teal);
+  --flame-txt:  var(--flame);
+  --sun-txt:    var(--sun);
+
+  color-scheme: dark;
+}
+
+:root {
+  /* The accents above stay bright in both themes, so text and marks sitting on
+     top of them keep a fixed dark foreground. Using --ink there would flip to
+     cream on dark and leave yellow chips unreadable. Deliberately not themed. */
+  --on-accent: #1d1a26;
+}
+
+/* Highlighter bars sit behind body text, so they have to darken on dark or the
+   text on top of them loses contrast. */
+:root { --hl: var(--play); --hl-alt: var(--sun); }
+:root[data-theme="dark"] {
+  --hl:     color-mix(in srgb, var(--play) 40%, var(--paper));
+  --hl-alt: color-mix(in srgb, var(--sun) 34%, var(--paper));
+}
+
+:root {
+  /* motion */
+  --sp: cubic-bezier(.34, 1.62, .4, 1);  /* spring, for anything that pops */
+  --e:  cubic-bezier(.2, .9, .24, 1);    /* ease, for anything that settles */
+
+  /* shape */
+  --bw:   3px;
+  --bw-s: 2.5px;
+  --r-xl: 40px;
+  --r-lg: 30px;
+  --r-md: 26px;
+  --r-sm: 16px;
+
+  /* translucent nav backdrop, derived so it follows the theme */
+  --veil: color-mix(in srgb, var(--paper) 85%, transparent);
+
+  /* Focus ring colour, kept separate from --ink so surfaces that invert can
+     re-point it. Aliasing the ring to --ink makes it vanish on any element
+     whose background is also --ink, which is exactly what the emphasis panel
+     is in light mode. Anything that sets --panel must also set --focus. */
+  --focus: var(--ink);
+}

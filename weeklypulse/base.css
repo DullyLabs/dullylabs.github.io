@@ -1,0 +1,222 @@
+/* ──────────────────────────────────────────────────────────────
+   Weekly Pulse shared chrome
+   Reset, typography, and the furniture that appears on every page:
+   skip link, nav, theme toggle, buttons, footer.
+   Page-specific components live with their page.
+   Requires tokens.css.
+   ────────────────────────────────────────────────────────────── */
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; background: var(--paper); }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Nunito, system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+h1, h2, h3, .fr {
+  font-family: Fredoka, Nunito, sans-serif;
+  font-weight: 600;
+  letter-spacing: -.02em;
+}
+
+::selection { background: var(--sun); color: var(--on-accent); }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 8px; }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: 12px 20px;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 0 0 var(--r-sm) 0;
+  font-weight: 800;
+}
+.skip-link:focus { left: 0; }
+
+/* ── nav ── */
+nav.top {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px clamp(14px, 3.4vw, 34px);
+  background: var(--veil);
+  backdrop-filter: blur(20px);
+  border-bottom: var(--bw) solid var(--edge);
+}
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: Fredoka, Nunito, sans-serif;
+  font-weight: 600;
+  font-size: 19px;
+}
+.mark img {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: var(--bw-s) solid var(--edge);
+  animation: wob 5s ease-in-out infinite;
+}
+@keyframes wob { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+
+nav.top .r { display: flex; align-items: center; gap: 8px; }
+nav.top .r a {
+  font-size: 14px;
+  font-weight: 800;
+  padding: 9px 14px;
+  border-radius: 14px;
+  transition: .35s var(--sp);
+}
+nav.top .r a:hover,
+nav.top .r a[aria-current="page"] { background: var(--sun); color: var(--on-accent); }
+nav.top .r a:hover { transform: rotate(-2.5deg) scale(1.06); }
+@media (max-width: 760px) { nav.top .r a { display: none; } }
+
+/* ── buttons ── */
+.pop {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: var(--ink);
+  color: var(--paper);
+  border: var(--bw-s) solid var(--edge);
+  border-radius: var(--r-sm);
+  font-family: Fredoka, Nunito, sans-serif;
+  font-size: 15px;
+  box-shadow: 4px 4px 0 var(--shadow);
+  transition: .3s var(--sp);
+  cursor: pointer;
+}
+.pop:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--shadow); }
+.pop:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
+.ghost { background: var(--card); color: var(--ink); }
+
+/* non-interactive "coming soon" chip */
+.soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 20px;
+  background: var(--sun);
+  color: var(--on-accent);
+  border: var(--bw-s) solid var(--edge);
+  border-radius: var(--r-sm);
+  font-family: Fredoka, Nunito, sans-serif;
+  font-size: 15px;
+  box-shadow: 4px 4px 0 var(--shadow);
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
+.soon .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--on-accent);
+  animation: blip 1.8s ease-in-out infinite;
+}
+@keyframes blip { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.68); } }
+nav.top .r .soon { padding: 9px 15px; font-size: 14px; box-shadow: 3px 3px 0 var(--shadow); }
+
+/* Launch status as a label rather than a button. .soon reads as the primary
+   action (same slab, same yellow, same size) while being pointer-events:none,
+   which teaches people that the biggest control on the page does nothing.
+   Where the status sits next to a real call to action, use this instead. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--sub);
+}
+.status .dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--flame);
+  animation: blip 1.8s ease-in-out infinite;
+}
+
+/* ── theme toggle ── */
+.theme-toggle {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--card);
+  color: var(--ink);
+  border: var(--bw-s) solid var(--edge);
+  border-radius: 13px;
+  box-shadow: 3px 3px 0 var(--shadow);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: .3s var(--sp);
+}
+.theme-toggle:hover { transform: translate(-2px, -2px) rotate(-5deg); box-shadow: 5px 5px 0 var(--shadow); }
+.theme-toggle:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--shadow); }
+.theme-toggle svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.theme-toggle .sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .moon { display: none; }
+
+/* ── footer ── */
+footer {
+  padding: 0 clamp(14px, 3.4vw, 34px) 60px;
+  text-align: center;
+  color: var(--sub);
+  font-size: 14px;
+  font-weight: 700;
+}
+footer .fl {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+footer a:hover { color: var(--ink); }
+footer small { display: block; margin-top: 10px; font-size: 13px; opacity: .75; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}

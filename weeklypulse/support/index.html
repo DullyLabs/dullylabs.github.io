@@ -3,28 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fafaf8" />
+    <meta name="theme-color" content="#fff8ec" />
     <meta name="description" content="Support for Weekly Pulse." />
     <title>Support | Weekly Pulse</title>
     <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
+    <script>
+      /* set the theme before first paint so dark-mode users never see a light flash */
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem("weekly-pulse-theme") ||
+          (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      } catch (e) { document.documentElement.dataset.theme = "light"; }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/weeklypulse/tokens.css" />
+    <link rel="stylesheet" href="/weeklypulse/base.css" />
     <link rel="stylesheet" href="/weeklypulse/styles.css" />
     <script src="/weeklypulse/script.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <header class="site-header">
-      <a class="brand" href="/weeklypulse/"><img src="/weeklypulse/assets/app-icon.png" alt="" /><span>Weekly Pulse<span class="accent">.</span></span></a>
-      <nav aria-label="Primary navigation"><a href="/weeklypulse/">App</a><a href="/weeklypulse/privacy/">Privacy</a><a aria-current="page" href="/weeklypulse/support/">Support</a><button class="theme-toggle" type="button" aria-label="Use dark appearance"><span aria-hidden="true">◐</span></button></nav>
-    </header>
+    <nav class="top" aria-label="Primary navigation">
+      <a class="mark" href="/weeklypulse/" aria-label="Weekly Pulse home"><img src="/weeklypulse/assets/app-icon.png" alt="" />Weekly Pulse</a>
+      <div class="r">
+        <a href="/weeklypulse/">App</a>
+        <a href="/weeklypulse/privacy/">Privacy</a>
+        <a aria-current="page" href="/weeklypulse/support/">Support</a>
+        <button class="theme-toggle" type="button" aria-label="Use dark appearance"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4 7 7M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/></svg></button>
+      </div>
+    </nav>
     <main id="main" class="support-page">
       <div class="support-hero">
-        <p class="section-number">WEEKLY PULSE / SUPPORT</p>
+        <p class="section-number">Weekly Pulse / Support</p>
         <h1>Need help with Weekly Pulse?</h1>
         <p>Email me and include your device model, iOS version, and a short description of the problem.</p>
-        <a class="button button-primary" href="mailto:weeklypulse@dulangaj.com?subject=Weekly%20Pulse%20Support">Email support</a>
+        <a class="pop" href="mailto:weeklypulse@dulangaj.com?subject=Weekly%20Pulse%20Support">Email support</a>
       </div>
       <section class="faq" aria-labelledby="faq-title">
         <h2 id="faq-title">Common questions</h2>
@@ -35,6 +50,10 @@
         <details><summary>How do I report a problem?</summary><p>Email <a href="mailto:weeklypulse@dulangaj.com?subject=Weekly%20Pulse%20Support">weeklypulse@dulangaj.com</a>. If you attach screenshots, remove any personal information first.</p></details>
       </section>
     </main>
-    <footer><a class="footer-brand" href="/weeklypulse/">Weekly Pulse<span class="accent">.</span></a><p>Made by Dulanga Jayawardena in Hong Kong.</p><div><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a></div><small>© <span data-year></span> Dulanga Jayawardena</small></footer>
+    <footer>
+      <div class="fl"><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div>
+      Made by Dulanga Jayawardena in Hong Kong.
+      <small>© <span data-year></span> Dulanga Jayawardena</small>
+    </footer>
   </body>
 </html>
