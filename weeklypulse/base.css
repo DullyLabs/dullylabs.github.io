@@ -113,6 +113,13 @@ nav.top .r a:hover { transform: rotate(-2.5deg) scale(1.06); }
 .pop:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
 .ghost { background: var(--card); color: var(--ink); }
 
+/* The solid .pop is the one element on the page filled with --ink, so it's the
+   one that needs the split slab (see --shadow-ink). Re-pointing the token
+   rather than the box-shadow means hover and active, which grow the same slab
+   to 7px and shrink it to 1px, follow without being restated. .ghost is
+   excluded because it's --card and the ordinary slab reads against it. */
+.pop:not(.ghost) { --shadow: var(--shadow-ink); }
+
 /* non-interactive "coming soon" chip */
 .soon {
   display: inline-flex;

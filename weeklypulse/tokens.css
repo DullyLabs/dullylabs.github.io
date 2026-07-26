@@ -14,6 +14,14 @@
   --edge:   #1d1a26;  /* outline */
   --shadow: #1d1a26;  /* the hard offset slab */
 
+  /* The slab for anything whose own fill is --ink. It needs its own token
+     because in light mode --shadow, --edge and --ink are all #1d1a26: on a
+     cream card that's a 16:1 slab, but on a dark button the slab, the border
+     and the fill are one colour and the offset fuses into the shape. A slab
+     has to separate from the thing casting it AND from the page behind it,
+     so this sits between them at 4.0:1 against both. */
+  --shadow-ink: #7d7791;
+
   /* Emphasis panel. On light it inverts to a dark slab against cream paper. */
   --panel:      var(--ink);
   --panel-fg:   var(--paper);
@@ -65,6 +73,11 @@
   --sub:   #a89fbb;
   --edge:   #8a7dab;
   --shadow: #574c72;
+
+  /* No split needed here: on dark the --ink fill is cream, so the ordinary
+     slab already separates from it (6.9:1). Aliasing keeps one shadow colour
+     on this theme instead of inventing a second for no reason. */
+  --shadow-ink: var(--shadow);
 
   /* An emphasis panel must NOT invert to light here. Flipping --panel to --ink
      turns the biggest block on the page into a 16:1 cream slab, which is the

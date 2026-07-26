@@ -108,9 +108,17 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .radar{width:100%;height:auto}
 .radar .grid{fill:none;stroke:var(--ink);opacity:.14;stroke-width:1.5}
 .radar .spoke{stroke:var(--ink);opacity:.14;stroke-width:1.5}
+/* Geometry is deliberately NOT transitioned here. The polygon and the four dots
+   draw the same four points, so giving each its own CSS transition means five
+   clocks racing to describe one number: they only agree while every duration and
+   easing happens to match, and `d` isn't animatable in every engine, so where it
+   isn't the shape snaps while the dots ease. The script eases the scores instead
+   and paints both marks from one coordinate array, so they cannot disagree.
+   Colour stays here: it's a separate channel from position, and it has to be
+   free to resolve theme tokens the script can't interpolate. */
 .radar .poly{fill:var(--play);fill-opacity:.2;stroke:var(--play);stroke-width:3;stroke-linejoin:round;
-  transition:d .5s var(--sp)}
-.radar circle.v{stroke:var(--edge);stroke-width:2.5;transition:cx .5s var(--sp),cy .5s var(--sp)}
+  transition:fill .45s var(--e),stroke .45s var(--e)}
+.radar circle.v{stroke:var(--edge);stroke-width:2.5}
 .toyfoot{display:flex;gap:12px;align-items:center;margin-top:20px;flex-wrap:wrap}
 .note{flex:1;min-width:180px;border:2.5px solid var(--edge);border-radius:16px;padding:12px 15px;
   font-family:Nunito;font-weight:700;font-size:14.5px;background:var(--card);color:var(--ink)}
@@ -389,25 +397,69 @@ document.getElementById('rdots').innerHTML=P.map((p,i)=>
   `<circle class="v" id="d${i}" r="6" style="fill:${p.c}" cx="${CXY}" cy="${CXY}"/>`).join('');
 
 const poly=document.getElementById('poly');
-function paint(){
-  const d=P.map((p,i)=>{const[x,y]=pt(i,p.v/10);return (i?'L':'M')+x.toFixed(1)+' '+y.toFixed(1)}).join(' ')+' Z';
-  poly.setAttribute('d',d);
+const dots=P.map((p,i)=>document.getElementById('d'+i));
+
+/* Each score carries a target (v, what the slider says) and a displayed value
+   (d, where the drawing currently is). Only d reaches the screen, and one frame
+   paints every mark from it, so the shape and the dots are the same number
+   rendered twice rather than two animations that have to be kept in step. */
+P.forEach(p=>{p.d=p.v; p.vel=0});
+
+function render(){
+  /* the whole point: one coordinate array, both marks */
+  const xy=P.map((p,i)=>pt(i,p.d/10));
+  poly.setAttribute('d',xy.map(([x,y],i)=>(i?'L':'M')+x.toFixed(2)+' '+y.toFixed(2)).join(' ')+' Z');
+  xy.forEach(([x,y],i)=>{dots[i].setAttribute('cx',x.toFixed(2));dots[i].setAttribute('cy',y.toFixed(2))});
+}
+
+/* A spring rather than a duration, because the sliders are dragged: a tweened
+   curve has to be cut short and restarted on every input event, which is where
+   the visible stutter comes from, while a spring just gets a new target and
+   keeps its velocity. D is 0.6 of critical damping (2*sqrt(K)), which overshoots
+   by ~9% and settles in ~0.5s: the same bounce and roughly the same duration as
+   the --sp curve this used to transition on. */
+const K=180, D=16, still=matchMedia('(prefers-reduced-motion: reduce)');
+let springRaf=0, springLast=0;
+function springFrame(now){
+  /* clamped at both ends: the ceiling stops a backgrounded tab's long gap from
+     integrating in one jump, and the floor matters because rAF reports the frame
+     start, which can be a hair earlier than the performance.now() that seeded
+     springLast. A negative dt runs the spring backwards and adds energy. */
+  const dt=Math.min(Math.max(now-springLast,0)/1000,1/30); springLast=now;
+  let moving=false;
+  P.forEach(p=>{
+    p.vel+=((p.v-p.d)*K-p.vel*D)*dt;
+    p.d+=p.vel*dt;
+    if(Math.abs(p.v-p.d)>.002||Math.abs(p.vel)>.002) moving=true;
+    else{p.d=p.v;p.vel=0}
+  });
+  render();
+  springRaf=moving?requestAnimationFrame(springFrame):0;
+}
+function settle(){
+  /* base.css flattens CSS transitions under reduced motion, but this loop is
+     script, so it has to opt out on its own or it would be the one bit of the
+     page that still moves. */
+  if(still.matches){P.forEach(p=>{p.d=p.v;p.vel=0});render();return}
+  if(!springRaf){springLast=performance.now();springRaf=requestAnimationFrame(springFrame)}
+}
+
+function readout(){
   const avg=P.reduce((s,p)=>s+p.v,0)/4;
   const lead=P.reduce((a,b)=>a.v>b.v?a:b);
   poly.style.stroke=lead.c; poly.style.fill=lead.c;
-  P.forEach((p,i)=>{const[x,y]=pt(i,p.v/10);
-    const c=document.getElementById('d'+i); c.setAttribute('cx',x.toFixed(1)); c.setAttribute('cy',y.toFixed(1))});
   document.getElementById('today').textContent='Average '+avg.toFixed(1);
 }
+
 P.forEach((p,i)=>{
   const r=document.getElementById('r'+i), v=document.getElementById('v'+i);
   r.addEventListener('input',()=>{
     p.v=+r.value; v.textContent=p.v; r.style.setProperty('--f',(p.v-1)/9*100+'%');
     v.classList.add('kick'); setTimeout(()=>v.classList.remove('kick'),200);
-    paint();
+    readout(); settle();
   });
 });
-paint();
+render(); readout();
 
 /* save → confetti + toast */
 const toast=document.getElementById('toast'), tmsg=document.getElementById('tmsg');
