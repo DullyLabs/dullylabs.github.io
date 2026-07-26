@@ -6,14 +6,46 @@
 <meta name="theme-color" content="#fff8ec" />
 <title>Weekly Pulse | A private weekly check-in</title>
 <meta name="description" content="Weekly Pulse is a private check-in app. Rate Work, Play, Love, and Health each week and see how they change." />
+<!-- Unfurl card.
+
+     The image URLs are absolute while the rest of this file is root-relative,
+     which looks inconsistent and is deliberate. Stylesheets and scripts are
+     fetched by a browser that knows this document's base URL, so /weeklypulse/…
+     resolves. Unfurlers frequently aren't browsers: many scrape the attribute
+     as a literal string without ever resolving it against the page, so a
+     relative value reaches them as a path with no host attached. X documents
+     absolute as a requirement, and the OG spec types og:image as a URL "that
+     utilises the http:// or https:// protocols". The failure is silent and
+     differs per crawler — no image, no error — so there is nothing to gain by
+     finding out which ones happen to cope.
+
+     That puts the domain in this block twice, on og:url and on the two image
+     tags. Moving host means changing all three together.
+
+     The image is a flat 1200x630 PNG because crawlers download it directly:
+     they never run this page's CSS or scripts, so the card cannot be the live
+     hero. Its source is /weeklypulse/og.html, which carries the rebuild
+     command. Bump ?v= whenever og.png is regenerated — scrapers cache by URL
+     and will otherwise keep serving the copy they already hold.
+
+     Both image tags point at og.png. app-icon.png is square, and these cards
+     are declared summary_large_image (1.91:1), which pillarboxes or crops it. -->
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://dullylabs.github.io/weeklypulse/" />
+<meta property="og:site_name" content="Dully Labs" />
 <meta property="og:title" content="Weekly Pulse | A private weekly check-in" />
 <meta property="og:description" content="Rate four parts of your life each week, add a note, and see what changes over time." />
-<meta property="og:image" content="/weeklypulse/assets/app-icon.png" />
-<meta property="og:type" content="website" />
+<meta property="og:image" content="https://dullylabs.github.io/weeklypulse/assets/og.png?v=1" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="How's your week really going? Beside the words, a Weekly Pulse check-in card with sliders for Work 8, Play 5, Love 7 and Health 6." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Weekly Pulse | A private weekly check-in" />
 <meta name="twitter:description" content="Rate four parts of your life each week, add a note, and see what changes over time." />
-<meta name="twitter:image" content="/weeklypulse/assets/app-icon.png" />
+<meta name="twitter:image" content="https://dullylabs.github.io/weeklypulse/assets/og.png?v=1" />
+<meta name="twitter:image:alt" content="How's your week really going? Beside the words, a Weekly Pulse check-in card with sliders for Work 8, Play 5, Love 7 and Health 6." />
 <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
 <link rel="apple-touch-icon" href="/weeklypulse/assets/app-icon.png" />
 <script>

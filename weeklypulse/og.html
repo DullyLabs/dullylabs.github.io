@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex" />
+<title>Weekly Pulse — share card source</title>
+
+<!-- ──────────────────────────────────────────────────────────────
+     Source for /weeklypulse/assets/og.png, the 1200x630 image that
+     link unfurlers (Slack, iMessage, X, LinkedIn, WhatsApp) show
+     when the page is shared. Crawlers never see this file: they read
+     og:image from index.html and download the flat PNG. This exists
+     so the PNG can be regenerated instead of re-screenshotted.
+
+     To rebuild after editing:
+
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+         --headless --disable-gpu --hide-scrollbars \
+         --force-color-profile=srgb --virtual-time-budget=8000 \
+         --window-size=1200,630 \
+         --screenshot="weeklypulse/assets/og.png" \
+         weeklypulse/og.html
+
+     Then bump the ?v= on og:image in index.html so scrapers that have
+     cached the old image fetch the new one.
+
+     Colour and type come from tokens.css and base.css, so the card
+     can't drift from the brand. The check-in card's own CSS is copied
+     from index.html rather than shared on purpose: a share card should
+     be frozen artwork, not something that silently changes the next
+     time a slider style is tweaked.
+     ────────────────────────────────────────────────────────────── -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/weeklypulse/tokens.css" />
+<link rel="stylesheet" href="/weeklypulse/base.css" />
+<style>
+/* The canvas is a fixed 1200x630 (1.91:1, the size every unfurler wants).
+   Nothing here may use viewport or fluid units: the capture runs at exactly
+   this size, so clamp() and vw would bake one arbitrary value into the PNG
+   and hide the real measurement from anyone reading this file. */
+html, body { width: 1200px; height: 630px; overflow: hidden; }
+
+.canvas {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  display: grid;
+  grid-template-columns: 1fr 536px;
+  gap: 40px;
+  align-items: center;
+  padding: 48px 56px;
+  background: var(--paper);
+}
+
+/* Confetti, placed by hand rather than by the page's randomising script so the
+   same PNG comes out of every rebuild. Kept clear of the type and the card. */
+.dots { position: absolute; inset: 0; overflow: hidden; }
+.dots i { position: absolute; border-radius: 50%; }
+
+/* ── left: the promise ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--sun); color: var(--on-accent);
+  border: var(--bw) solid var(--edge); border-radius: 99px;
+  padding: 9px 18px; font-size: 14px; font-weight: 800;
+  box-shadow: 3px 3px 0 var(--shadow); transform: rotate(-2deg);
+}
+/* Lines are broken by hand rather than left to wrap. The hero can reflow at any
+   width; this is a fixed-size canvas, and the three-line stack puts "really" at
+   the end of a line where the highlighter reads as a marked word. Left to wrap,
+   it lands first on line two and the bar reads as an underline. */
+h1 {
+  margin: 22px 0 0;
+  font-size: 78px;
+  line-height: .98;
+  font-weight: 600;
+}
+/* Same construction as the hero: the bar is an ::after under raised text, not a
+   negative z-index. Unlike the hero it is drawn at full width immediately —
+   there is no animation to play out before the frame is captured. */
+/* inline-block is load-bearing, not decoration. The bar is positioned against
+   .hl's box, and an inline box is as tall as the font's ascent plus descent
+   (~1.3em in Fredoka), which hangs well below the baseline and drags the bar
+   down with it. As an inline-block the box is the 0.98em line box instead, and
+   the bar lands across the letters. The hero gets this for free from
+   `h1 > span{display:inline-block}`, which it sets for its entrance animation. */
+h1 .hl { position: relative; display: inline-block; white-space: nowrap; }
+h1 .hl > span { position: relative; z-index: 1; }
+h1 .hl::after {
+  content: ""; position: absolute; left: -4px; right: -4px;
+  bottom: .06em; height: .34em;
+  background: var(--hl); border-radius: 6px;
+}
+.foot {
+  margin: 30px 0 0; display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 800; color: var(--sub);
+}
+.foot .dot {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--play); border: 2px solid var(--edge);
+}
+
+/* ── right: the check-in card ──
+   Copied from index.html and frozen. Values are static: no range inputs, since
+   a native thumb renders differently across engines and would make the artwork
+   depend on which browser captured it. */
+.toy {
+  background: var(--card); border: var(--bw) solid var(--edge);
+  border-radius: 32px; padding: 26px;
+  box-shadow: 10px 10px 0 var(--shadow);
+}
+.toyhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.toyhead h2 { margin: 0; font-size: 25px; }
+.toyhead s {
+  text-decoration: none; font-size: 12px; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--sub);
+}
+.toygrid { display: grid; grid-template-columns: 1fr 176px; gap: 20px; align-items: center; }
+
+.sl { margin-top: 13px; }
+.sl .top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+/* --ct is the text-safe twin of --c: the label and the value are type, so they
+   can't use the fill colour the track and thumb use. */
+.sl .nm { font-family: Fredoka, Nunito, sans-serif; font-size: 16px; color: var(--ct); }
+.sl .vv {
+  font-family: Fredoka, Nunito, sans-serif; font-size: 25px; color: var(--ct);
+  font-variant-numeric: tabular-nums;
+}
+/* The track is a div, and the thumb an absolutely-positioned child, so the two
+   are placed by one percentage that this file states outright. The real slider
+   leaves that to the browser's range implementation, which is exactly the part
+   that isn't reproducible. */
+.track {
+  position: relative; height: 16px; border-radius: 99px;
+  background: color-mix(in srgb, var(--c) 20%, transparent);
+  border: var(--bw-s) solid var(--edge);
+  background-image: linear-gradient(var(--c), var(--c));
+  background-repeat: no-repeat;
+  background-size: var(--f) 100%;
+}
+.track::after {
+  content: ""; position: absolute; top: 50%; left: var(--f);
+  width: 25px; height: 25px; margin: -12.5px 0 0 -12.5px;
+  border-radius: 50%; background: var(--card);
+  border: var(--bw) solid var(--edge); box-shadow: 0 3px 0 var(--shadow);
+}
+
+.radar { width: 100%; height: auto; }
+.radar .grid { fill: none; stroke: var(--ink); opacity: .14; stroke-width: 1.5; }
+.radar .spoke { stroke: var(--ink); opacity: .14; stroke-width: 1.5; }
+/* The live radar tints itself with the leading pillar's colour. Work is the
+   highest score in this frozen frame, so the polygon is --work. */
+.radar .poly {
+  fill: var(--work); fill-opacity: .2; stroke: var(--work);
+  stroke-width: 3; stroke-linejoin: round;
+}
+.radar circle.v { stroke: var(--edge); stroke-width: 2.5; }
+
+.toyfoot { display: flex; gap: 11px; align-items: center; margin-top: 18px; }
+.note {
+  flex: 1; border: var(--bw-s) solid var(--edge); border-radius: var(--r-sm);
+  padding: 12px 15px; font-family: Nunito, sans-serif; font-weight: 700;
+  font-size: 14px; background: var(--card); color: var(--sub);
+}
+/* .pop comes from base.css; only the slab needs restating, because the hover
+   and active states that own it there never fire in a still image. */
+.save { font-size: 15px; padding: 12px 20px; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+  <div class="dots" aria-hidden="true">
+    <i style="width:120px;height:120px;background:var(--play);opacity:.13;top:-46px;left:596px"></i>
+    <i style="width:74px;height:74px;background:var(--health);opacity:.16;top:238px;left:-30px"></i>
+    <i style="width:52px;height:52px;background:var(--flame);opacity:.14;top:560px;left:404px"></i>
+    <i style="width:90px;height:90px;background:var(--love);opacity:.12;top:568px;left:1088px"></i>
+  </div>
+
+  <div>
+    <!-- The hero's badge carries a 🫶 that is deliberately dropped here. This
+         renders in headless Chrome, which has no colour emoji font, so the
+         glyph comes out as tofu and bakes into the PNG. -->
+    <span class="badge">No account &middot; No ads &middot; No server</span>
+    <h1>How&rsquo;s your<br />week <span class="hl"><span>really</span></span><br />going?</h1>
+    <p class="foot"><span class="dot"></span>Weekly Pulse &middot; coming soon for iPhone and iPad</p>
+  </div>
+
+  <div class="toy">
+    <div class="toyhead"><h2>This week</h2><s>Average 6.5</s></div>
+    <div class="toygrid">
+      <div>
+        <div class="sl" style="--c:var(--work);--ct:var(--work-txt)">
+          <div class="top"><span class="nm">Work</span><span class="vv">8</span></div>
+          <div class="track" style="--f:78%"></div>
+        </div>
+        <div class="sl" style="--c:var(--play);--ct:var(--play-txt)">
+          <div class="top"><span class="nm">Play</span><span class="vv">5</span></div>
+          <div class="track" style="--f:45%"></div>
+        </div>
+        <div class="sl" style="--c:var(--love);--ct:var(--love-txt)">
+          <div class="top"><span class="nm">Love</span><span class="vv">7</span></div>
+          <div class="track" style="--f:67%"></div>
+        </div>
+        <div class="sl" style="--c:var(--health);--ct:var(--health-txt)">
+          <div class="top"><span class="nm">Health</span><span class="vv">6</span></div>
+          <div class="track" style="--f:56%"></div>
+        </div>
+      </div>
+      <!-- Geometry matches the page's radar: R=95 about (100,100), spokes at
+           -90/0/90/180 degrees, each vertex at score/10 of the radius. -->
+      <svg class="radar" viewBox="0 0 200 200" aria-hidden="true">
+        <path class="grid" d="M100.0 76.3 L123.8 100.0 L100.0 123.8 L76.3 100.0 Z" />
+        <path class="grid" d="M100.0 52.5 L147.5 100.0 L100.0 147.5 L52.5 100.0 Z" />
+        <path class="grid" d="M100.0 28.8 L171.3 100.0 L100.0 171.3 L28.8 100.0 Z" />
+        <path class="grid" d="M100.0 5.0 L195.0 100.0 L100.0 195.0 L5.0 100.0 Z" />
+        <line class="spoke" x1="100" y1="100" x2="100.0" y2="5.0" />
+        <line class="spoke" x1="100" y1="100" x2="195.0" y2="100.0" />
+        <line class="spoke" x1="100" y1="100" x2="100.0" y2="195.0" />
+        <line class="spoke" x1="100" y1="100" x2="5.0" y2="100.0" />
+        <path class="poly" d="M100.00 24.00 L147.50 100.00 L100.00 166.50 L43.00 100.00 Z" />
+        <circle class="v" r="6" style="fill:var(--work)"   cx="100.00" cy="24.00" />
+        <circle class="v" r="6" style="fill:var(--play)"   cx="147.50" cy="100.00" />
+        <circle class="v" r="6" style="fill:var(--love)"   cx="100.00" cy="166.50" />
+        <circle class="v" r="6" style="fill:var(--health)" cx="43.00"  cy="100.00" />
+      </svg>
+    </div>
+    <div class="toyfoot">
+      <div class="note">What do you want to remember?</div>
+      <span class="pop save">Save check-in</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
