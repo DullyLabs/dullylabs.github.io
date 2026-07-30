@@ -1,90 +1,544 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fafaf8" />
-    <meta name="description" content="Independent apps made in Hong Kong." />
-    <title>Dully Labs | Independent apps</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Playfair+Display:wght@600;700&family=Source+Serif+4:opsz,wght@8..60,400&display=swap" rel="stylesheet" />
-    <style>
-      :root { --paper:#fafaf8; --ink:#191919; --muted:#696966; --rule:#deded8; --accent:#dc2626; }
-      * { box-sizing:border-box; }
-      body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
-      .header { height:76px; padding:0 clamp(1.25rem,6vw,6rem); border-bottom:1px solid var(--rule); display:flex; align-items:center; justify-content:space-between; }
-      .wordmark { font:700 1.08rem "Playfair Display",Georgia,serif; text-decoration:none; }
-      .wordmark span { color:var(--accent); }
-      .byline { display:flex; align-items:center; gap:.6rem; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
-      .byline img { width:28px; height:28px; border:1px solid var(--rule); border-radius:50%; object-fit:cover; }
-      main { max-width:1280px; margin:auto; padding:clamp(5rem,12vw,11rem) clamp(1.25rem,6vw,5rem); }
-      .eyebrow { font:500 .68rem "JetBrains Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
-      h1 { max-width:900px; margin:1.5rem 0 2rem; font:600 clamp(4rem,10vw,9rem)/.95 "Playfair Display",Georgia,serif; letter-spacing:-.055em; }
-      h1 em { color:var(--accent); }
-      .intro { max-width:680px; margin:0; font:400 clamp(1.15rem,2vw,1.4rem)/1.65 "Source Serif 4",Georgia,serif; color:var(--muted); }
-      .apps { margin-top:clamp(5rem,10vw,9rem); border-top:3px double var(--ink); }
-      .app { padding:clamp(2rem,5vw,4rem) 0; border-bottom:1px solid var(--rule); display:grid; grid-template-columns:120px 110px 1fr auto; gap:clamp(1.25rem,4vw,4rem); align-items:center; text-decoration:none; }
-      .app small { font:500 .65rem "JetBrains Mono"; color:var(--muted); }
-      .app img { width:110px; border-radius:24px; box-shadow:0 12px 35px rgba(0,0,0,.12); }
-      .app h2 { margin:0 0 .4rem; font:600 clamp(2rem,4vw,4rem)/1 "Playfair Display"; letter-spacing:-.045em; }
-      .app p { margin:0; color:var(--muted); font-family:"Source Serif 4"; }
-      .arrow { font-size:2rem; transition:transform .2s; }
-      .app:hover .arrow { transform:translateX(.5rem); }
-      footer { padding:2rem clamp(1.25rem,6vw,6rem); border-top:1px solid var(--rule); display:flex; justify-content:space-between; color:var(--muted); font-size:.72rem; }
-      footer a { color:inherit; }
-      a:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
-      @media (prefers-color-scheme:dark) {
-        :root { --paper:#1a1918; --ink:#ede9e3; --muted:#aaa198; --rule:#37322e; --accent:#e05252; color-scheme:dark; }
-        .app img { box-shadow:0 12px 35px rgba(0,0,0,.35); }
-      }
-      @media (max-width:700px) {
-        .app { grid-template-columns:70px 1fr; }
-        .app small { display:none; }
-        .app img { width:70px; border-radius:16px; }
-        .arrow { grid-column:2; }
-        .header { height:66px; }
-        footer { display:block; }
-        footer p { margin-top:1rem; }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="header">
-      <a class="wordmark" href="/">Dully Labs<span>.</span></a>
-      <a class="byline" href="https://dulangaj.com">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dully Labs — an independent studio in Hong Kong</title>
+<meta name="description" content="An independent studio in Hong Kong. Everything here is designed, built and supported by one person, and nothing is sent anywhere it doesn't need to go." />
+<meta name="theme-color" content="#f6f4f0" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0d0d11" media="(prefers-color-scheme: dark)" />
+<link rel="icon" href="/assets/img/profile.jpeg" />
+<script>
+  /* Set the theme before first paint so the canvas and the page agree. */
+  try {
+    document.documentElement.dataset.theme =
+      localStorage.getItem("dully-theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  } catch (e) { document.documentElement.dataset.theme = "light"; }
+  document.documentElement.classList.add("js");
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..900&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#f6f4f0; --card:#fffefc; --ink:#131316; --sub:#63605a; --line:#e3ded5;
+  /* the four Weekly Pulse pillars, doing double duty as the studio's palette:
+     --c* are the canvas / fill tones, --c*t the same hues dropped until they
+     clear 4.5:1 as text on --paper */
+  --c1:#4E8BF5; --c2:#22C692; --c3:#F0736F; --c4:#9B59B6;
+  --c1t:#2364CC; --c2t:#15805F; --c3t:#C6403C; --c4t:#8E4BAB;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --paper:#0d0d11; --card:#16161c; --ink:#f1ede6; --sub:#9a958c; --line:#26262f;
+  --c1:#7FADF9; --c2:#45D6AA; --c3:#F8968F; --c4:#BE85D6;
+  --c1t:var(--c1); --c2t:var(--c2); --c3t:var(--c3); --c4t:var(--c4);
+  color-scheme:dark;
+}
+:root{ --e:cubic-bezier(.2,.9,.24,1); --sp:cubic-bezier(.34,1.5,.42,1); }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;overflow-x:clip;background:var(--paper);color:var(--ink);
+  font:400 16px/1.6 "Space Grotesk",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+h1,h2{margin:0;font-family:Archivo,system-ui,sans-serif;font-weight:800;letter-spacing:-.045em;line-height:.9}
+p{margin:0}
+:focus-visible{outline:3px solid var(--c1t);outline-offset:4px}
+::selection{background:var(--c2);color:#0d0d11}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:11.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--sub)}
+.skip{position:absolute;top:0;left:-9999px;z-index:99;padding:12px 20px;
+  background:var(--ink);color:var(--paper);font-weight:700;border-radius:0 0 12px 0}
+.skip:focus{left:0}
+
+/* ── hero: the generative canvas owns the first screen ───────────────── */
+.hero{position:relative;isolation:isolate;min-height:100vh;min-height:100svh;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;gap:clamp(40px,8vh,90px);
+  padding:clamp(18px,3vh,30px) clamp(18px,4vw,54px) clamp(24px,4vh,40px);
+  /* Static composition for JS-off: the canvas stays empty and transparent,
+     so these washes are what a scriptless visitor gets. */
+  background:
+    radial-gradient(58% 46% at 82% 12%, color-mix(in srgb,var(--c1) 34%,transparent), transparent 70%),
+    radial-gradient(52% 44% at 12% 82%, color-mix(in srgb,var(--c3) 30%,transparent), transparent 70%),
+    radial-gradient(46% 40% at 92% 88%, color-mix(in srgb,var(--c2) 26%,transparent), transparent 70%),
+    radial-gradient(40% 40% at 4% 6%,  color-mix(in srgb,var(--c4) 26%,transparent), transparent 70%),
+    var(--paper);
+}
+#field{position:absolute;inset:0;width:100%;height:100%;z-index:-2;display:block}
+/* Soft paper haze wherever type lands. It is the reason the huge wordmark
+   and the small print keep their contrast while the field stays vivid in
+   the mid-right band. */
+.veil{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(to bottom, color-mix(in srgb,var(--paper) 92%,transparent), transparent 26%),
+    linear-gradient(to top, color-mix(in srgb,var(--paper) 92%,transparent), transparent 34%),
+    radial-gradient(125% 78% at 26% 52%,
+      color-mix(in srgb,var(--paper) 62%,transparent) 0%,
+      color-mix(in srgb,var(--paper) 55%,transparent) 34%,
+      transparent 76%)}
+
+/* Everything laid over the field is either ink-strength or sits on its own
+   pill, so the moving colour behind it can never eat the contrast. */
+.hero .mono,.lede{color:var(--ink)}
+.pill,.chip,.links a{border-radius:99px;border:1px solid var(--line)}
+.pill{display:inline-flex;align-items:center;gap:9px;padding:7px 14px;
+  background:color-mix(in srgb,var(--card) 82%,transparent);
+  backdrop-filter:blur(10px)}
+.topbar{display:flex;align-items:center;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.maker{padding:5px 14px 5px 5px;font-size:13px;font-weight:500;transition:.3s var(--e)}
+.maker img{width:26px;height:26px;border-radius:50%;object-fit:cover}
+.maker:hover{border-color:var(--c1t);color:var(--c1t)}
+.tools{display:flex;align-items:center;gap:10px}
+.tt{width:36px;height:36px;flex:none;display:grid;place-items:center;padding:0;cursor:pointer;
+  border-radius:11px;color:inherit;transition:.3s var(--sp)}
+.tt:hover{transform:translateY(-2px)}
+.tt svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.tt .sun{display:none}
+:root[data-theme="dark"] .tt .sun{display:block}
+:root[data-theme="dark"] .tt .moon{display:none}
+html:not(.js) .tt{display:none}
+
+.stage{margin-top:auto}
+.eyebrow{margin-bottom:clamp(10px,1.6vh,18px)}
+h1{font-size:clamp(4.2rem,20.5vw,17rem);font-variation-settings:"wdth" 108}
+h1 .line{display:block;text-transform:uppercase}
+h1 .line:last-child{margin-left:.06em}
+h1 .ch{display:inline-block;will-change:transform}
+
+.footrow{display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(18px,4vw,60px);flex-wrap:wrap}
+.lede{max-width:34ch;font-size:clamp(15px,1.5vw,18px)}
+.lede b{font-weight:700}
+.cue{padding:11px 18px;font-size:13px;font-weight:500;white-space:nowrap;transition:.3s var(--e)}
+.cue:hover{border-color:var(--ink)}
+.cue svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;
+  animation:nudge 2.4s var(--e) infinite}
+@keyframes nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
+
+/* ── content, revealed with restraint ────────────────────────────────── */
+main,footer{position:relative;background:var(--paper)}
+section{padding:clamp(72px,11vh,140px) clamp(18px,4vw,54px);max-width:1180px;margin:0 auto}
+section:focus{outline:none}
+.kick{display:flex;align-items:center;gap:12px;margin-bottom:clamp(26px,4vh,44px)}
+.kick::after{content:"";flex:1;height:1px;background:var(--line)}
+.rv{transition:opacity .7s var(--e),transform .8s var(--e)}
+.js .rv{opacity:0;transform:translateY(26px)}
+.js .rv.on{opacity:1;transform:none}
+
+.card{position:relative;display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+  gap:clamp(18px,3vw,38px);padding:clamp(22px,3.4vw,40px);overflow:hidden;
+  border:1px solid var(--line);border-radius:30px;background:var(--card);transition:.4s var(--e)}
+.card+.card{margin-top:18px}
+.card:hover{transform:translateY(-4px);border-color:var(--tint);
+  box-shadow:0 22px 60px color-mix(in srgb,var(--tint) 20%,transparent)}
+.card:active{transform:scale(.99)}
+.card .icon{width:clamp(64px,9vw,104px);border-radius:23%;
+  box-shadow:0 14px 34px color-mix(in srgb,var(--ink) 16%,transparent);transition:.5s var(--sp)}
+.card:hover .icon{transform:translateY(-3px) rotate(-3deg) scale(1.04)}
+.card h2{font-size:clamp(1.9rem,4.4vw,3.4rem)}
+.card p{margin:.5em 0 0;max-width:46ch;color:var(--sub);font-size:clamp(14.5px,1.4vw,17px)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:4px 11px;
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--sub)}
+.chip i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.w{color:var(--c1t)} .chip.p{color:var(--c2t)} .chip.l{color:var(--c3t)} .chip.h{color:var(--c4t)}
+.go{display:grid;place-items:center;width:52px;height:52px;flex:none;border-radius:50%;
+  border:1px solid var(--line);transition:.4s var(--e)}
+.card:hover .go{background:var(--tint);border-color:var(--tint);color:#0d0d11;transform:rotate(-45deg)}
+.go svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+.about{display:grid;grid-template-columns:auto 1fr;gap:clamp(22px,4vw,50px);align-items:start}
+.portrait{width:clamp(92px,12vw,150px);aspect-ratio:1;border-radius:50%;object-fit:cover;
+  border:1px solid var(--line);margin-top:.15em}
+.about h2{font-size:clamp(1.9rem,4.4vw,3.2rem)}
+.about p{margin-top:1em;max-width:62ch;color:var(--sub);font-size:clamp(15px,1.5vw,17.5px)}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.links a{padding:10px 18px;font-size:14px;
+  font-weight:500;color:var(--ink);transition:.3s var(--e)}
+.links a:hover{border-color:var(--c1t);color:var(--c1t)}
+
+footer{border-top:1px solid var(--line);padding:26px clamp(18px,4vw,54px);
+  display:flex;flex-wrap:wrap;gap:10px 26px;justify-content:space-between}
+footer .mail{text-transform:none;letter-spacing:normal;font-size:13px}
+footer a:hover{color:var(--c1t)}
+
+@media(max-width:760px){
+  .card{grid-template-columns:1fr;gap:16px}
+  .card .go{display:none}
+  .about{grid-template-columns:1fr}
+  .footrow{flex-direction:column;align-items:flex-start}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
+  .js .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#work">Skip to the work</a>
+
+<header class="hero">
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+
+  <div class="topbar">
+    <div class="tools">
+      <a class="pill maker" href="https://dulangaj.com">
         <img src="/assets/img/profile.jpeg" alt="" />
-        <span>By Dulanga Jayawardena</span>
+        <span>Dulanga Jayawardena</span>
       </a>
-    </header>
-    <main>
-      <p class="eyebrow">INDEPENDENT APP STUDIO / HONG KONG</p>
-      <h1>Small apps,<br /><em>made with care.</em></h1>
-      <p class="intro">Dully Labs is an independent studio in Hong Kong. I build focused apps and keep them simple.</p>
-      <section class="apps" aria-label="Apps">
-        <a class="app" href="/weeklypulse/">
-          <small>APP / 01</small>
-          <img src="/weeklypulse/assets/app-icon.png" alt="" />
-          <div>
-            <h2>Weekly Pulse</h2>
-            <p>A private app for weekly check-ins across Work, Play, Love, and Health.</p>
-          </div>
-          <span class="arrow" aria-hidden="true">→</span>
-        </a>
-        <a class="app" href="/pluckit/">
-          <small>APP / 02</small>
-          <img src="/pluckit/assets/app-icon.png" alt="" />
-          <div>
-            <h2>PluckIt</h2>
-            <p>A Mac app that pulls the text out of any image, on-device.</p>
-          </div>
-          <span class="arrow" aria-hidden="true">→</span>
-        </a>
-      </section>
-    </main>
-    <footer>
-      <span>© 2026 Dully Labs</span>
-      <p>Made in Hong Kong · <a href="mailto:hello@dulangaj.com">Contact</a></p>
-    </footer>
-  </body>
+      <button class="pill tt" type="button" id="tt" aria-label="Light or dark theme" aria-pressed="false">
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <p class="mono eyebrow">Independent studio · Hong Kong</p>
+    <h1><span class="line">Dully</span><span class="line">Labs</span></h1>
+  </div>
+
+  <div class="footrow">
+    <p class="lede">I make <b>one thing at a time</b>, properly, and look after it myself.</p>
+    <a class="pill cue" href="#work">
+      <span>See the work</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M5.5 12.5 12 19l6.5-6.5"/></svg>
+    </a>
+  </div>
+</header>
+
+<main>
+  <section id="work" tabindex="-1" aria-labelledby="work-h">
+    <p class="mono kick" id="work-h">01 — The work</p>
+
+    <a class="card rv" href="/weeklypulse/" style="--tint:var(--c2)">
+      <img class="icon" src="/weeklypulse/assets/app-icon.png" alt="" />
+      <div class="txt">
+        <h2>Weekly Pulse</h2>
+        <p>A weekly check-in across the four parts of your life. Your check-ins stay on your device.</p>
+        <div class="chips">
+          <span class="chip w"><i></i>Work</span>
+          <span class="chip p"><i></i>Play</span>
+          <span class="chip l"><i></i>Love</span>
+          <span class="chip h"><i></i>Health</span>
+        </div>
+      </div>
+      <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M12.5 5.5 19 12l-6.5 6.5"/></svg></span>
+    </a>
+
+    <a class="card rv" href="/pluckit/" style="--tint:var(--c1)">
+      <img class="icon" src="/pluckit/assets/app-icon.png" alt="" />
+      <div class="txt">
+        <h2>PluckIt</h2>
+        <p>Pulls the text out of any screenshot or photo, right on your Mac.</p>
+        <div class="chips">
+          <span class="chip">Works offline</span>
+          <span class="chip">Never leaves your Mac</span>
+        </div>
+      </div>
+      <span class="go" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M12.5 5.5 19 12l-6.5 6.5"/></svg></span>
+    </a>
+  </section>
+
+  <section id="studio" aria-labelledby="studio-h">
+    <p class="mono kick" id="studio-h">02 — The maker</p>
+    <div class="about rv">
+      <img class="portrait" src="/assets/img/profile.jpeg" alt="Dulanga Jayawardena" />
+      <div>
+        <h2>One person, in Hong Kong.</h2>
+        <p>I'm Dulanga. I design, build and support everything here, and I only start something when I can do it properly. No accounts, and nothing sent anywhere it doesn't need to go — that holds for everything with my name on it.</p>
+        <p class="links">
+          <a href="https://dulangaj.com">dulangaj.com <span aria-hidden="true">↗</span></a>
+          <a href="mailto:hello@dulangaj.com">hello@dulangaj.com</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p class="mono">© 2026 Dully Labs</p>
+  <p class="mono mail"><a href="mailto:hello@dulangaj.com">hello@dulangaj.com</a></p>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+  const TAU = Math.PI * 2;
+
+  /* Seeded PRNG, so one page load is one composition. */
+  const mulberry32 = (a) => () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  /* Value noise on a wrapping 32×32 lattice: two smoothstep-interpolated
+     octaves. Cheaper than simplex and plenty smooth for a flow field. */
+  class ValueNoise {
+    constructor(rand, n = 32) {
+      this.n = n;
+      this.g = Float32Array.from({ length: n * n }, rand);
+    }
+    lattice(ix, iy) {
+      const n = this.n;
+      return this.g[(iy & (n - 1)) * n + (ix & (n - 1))];
+    }
+    octave(x, y) {
+      const ix = Math.floor(x), iy = Math.floor(y);
+      const fx = x - ix, fy = y - iy;
+      const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+      const a = this.lattice(ix, iy), b = this.lattice(ix + 1, iy);
+      const c = this.lattice(ix, iy + 1), d = this.lattice(ix + 1, iy + 1);
+      return (a + (b - a) * sx) * (1 - sy) + (c + (d - c) * sx) * sy;
+    }
+    at(x, y) {
+      return (this.octave(x, y) + 0.4 * this.octave(x * 2.7 + 11, y * 2.7 + 7)) / 1.4;
+    }
+  }
+
+  const hexToRgb = (hex) => {
+    const v = parseInt(hex.trim().slice(1), 16);
+    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+  };
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name);
+
+  /* The pointer only bends the field while it is moving; its influence
+     decays to nothing a couple of seconds after the last move. */
+  class Pointer {
+    constructor(el) {
+      this.x = this.y = -1e4; this.power = 0;
+      el.addEventListener("pointermove", (e) => {
+        const r = el.getBoundingClientRect();
+        this.x = e.clientX - r.left; this.y = e.clientY - r.top; this.power = 1;
+      }, { passive: true });
+      el.addEventListener("pointerleave", () => { this.power = 0; }, { passive: true });
+    }
+    decay(k) { this.power = Math.max(0, this.power - 0.012 * k); }
+  }
+
+  const SPEED = 1.5, FREQ = 0.0028, RADIUS = 190;
+
+  class InkField {
+    constructor(canvas, pointer) {
+      this.canvas = canvas;
+      this.ctx = canvas.getContext("2d", { alpha: false });
+      this.pointer = pointer;
+      this.noise = new ValueNoise(mulberry32(Date.now() >>> 0));
+      this.rand = mulberry32((Date.now() * 2654435761) >>> 0);
+      this.particles = [];
+      this.tx = this.ty = this.drift = 0;
+      this.w = this.h = 0;
+      this.readTheme();
+    }
+
+    readTheme() {
+      this.paper = hexToRgb(cssVar("--paper"));
+      this.palette = ["--c1", "--c2", "--c3", "--c4"].map((n) => hexToRgb(cssVar(n)));
+    }
+
+    resize() {
+      const { clientWidth: w, clientHeight: h } = this.canvas;
+      if (!w || !h) return;
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      this.canvas.width = Math.round(w * dpr);
+      this.canvas.height = Math.round(h * dpr);
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this.ctx.lineWidth = 1.1;
+      this.ctx.lineCap = "round";
+      this.w = w; this.h = h;
+
+      const want = Math.min(1200, Math.round((w * h) / 1300));
+      while (this.particles.length > want) this.particles.pop();
+      while (this.particles.length < want) this.particles.push(this.spawn({}));
+      this.clear();
+    }
+
+    spawn(p) {
+      p.x = p.px = this.rand() * this.w;
+      p.y = p.py = this.rand() * this.h;
+      p.life = 90 + this.rand() * 240;
+      p.c = (this.rand() * 4) | 0;
+      p.fresh = true;
+      return p;
+    }
+
+    clear() {
+      const [r, g, b] = this.paper;
+      this.ctx.fillStyle = `rgb(${r},${g},${b})`;
+      this.ctx.fillRect(0, 0, this.w, this.h);
+    }
+
+    angleAt(x, y) {
+      return (this.noise.at(x * FREQ + this.tx, y * FREQ + this.ty) * 2 + this.drift) * TAU;
+    }
+
+    step(k) {
+      this.tx += 0.0012 * k; this.ty += 0.0007 * k; this.drift += 0.00035 * k;
+      const { pointer } = this;
+      pointer.decay(k);
+      for (const p of this.particles) {
+        const a = this.angleAt(p.x, p.y);
+        let vx = Math.cos(a), vy = Math.sin(a);
+        if (pointer.power > 0) {
+          const dx = p.x - pointer.x, dy = p.y - pointer.y;
+          const d = Math.hypot(dx, dy);
+          if (d < RADIUS && d > 0.5) {
+            /* falloff × (swirl tangent + gentle push out) */
+            const f = (1 - d / RADIUS) * pointer.power * 2.2;
+            vx += (-dy / d) * f + (dx / d) * f * 0.45;
+            vy += (dx / d) * f + (dy / d) * f * 0.45;
+          }
+        }
+        p.px = p.x; p.py = p.y;
+        p.x += vx * SPEED * k; p.y += vy * SPEED * k;
+        p.life -= k;
+        if (p.life <= 0 || p.x < -40 || p.x > this.w + 40 || p.y < -40 || p.y > this.h + 40) this.spawn(p);
+      }
+    }
+
+    /* One stroke() per colour instead of one per particle. */
+    paint(wash, alpha) {
+      const ctx = this.ctx;
+      if (wash) {
+        const [r, g, b] = this.paper;
+        ctx.fillStyle = `rgba(${r},${g},${b},0.015)`;
+        ctx.fillRect(0, 0, this.w, this.h);
+      }
+      for (let c = 0; c < 4; c++) {
+        ctx.beginPath();
+        for (const p of this.particles) {
+          if (p.c !== c) continue;
+          if (p.fresh) { p.fresh = false; continue; }
+          ctx.moveTo(p.px, p.py); ctx.lineTo(p.x, p.y);
+        }
+        const [r, g, b] = this.palette[c];
+        ctx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+        ctx.stroke();
+      }
+    }
+
+    /* prefers-reduced-motion: still a composition, just a finished one. */
+    renderStill(steps = 220) {
+      this.clear();
+      for (let i = 0; i < steps; i++) { this.step(1); this.paint(false, 0.16); }
+    }
+  }
+
+  /* The wordmark rides the same field: each letter's vertical offset is the
+     sine of the flow angle under it, phase-shifted by letter index, so a
+     wave visibly travels through the word instead of sitting still. */
+  class Wordmark {
+    constructor(h1, field) {
+      this.field = field;
+      this.chars = [];
+      const lines = [...h1.querySelectorAll(".line")];
+      h1.setAttribute("aria-label", lines.map((l) => l.textContent.trim()).join(" "));
+      for (const line of lines) {
+        const text = line.textContent;
+        line.textContent = "";
+        line.setAttribute("aria-hidden", "true");
+        for (const letter of text) {
+          const span = document.createElement("span");
+          span.className = "ch";
+          span.textContent = letter;
+          line.append(span);
+          this.chars.push({ el: span, x: 0, y: 0, phase: this.chars.length * 0.5 });
+        }
+      }
+    }
+    measure(host) {
+      const base = host.getBoundingClientRect();
+      for (const c of this.chars) {
+        const r = c.el.getBoundingClientRect();
+        c.x = r.left - base.left + r.width / 2;
+        c.y = r.top - base.top + r.height / 2;
+      }
+    }
+    update(pointer) {
+      for (const c of this.chars) {
+        const wave = Math.sin(this.field.angleAt(c.x, c.y) + c.phase) * 0.02;
+        let push = 0, scale = 1;
+        if (pointer.power > 0) {
+          const dy = c.y - pointer.y;
+          const d = Math.hypot(c.x - pointer.x, dy);
+          if (d < RADIUS) {
+            const f = (1 - d / RADIUS) * pointer.power;
+            push = Math.sign(dy || 1) * f * 16;
+            scale = 1 + f * 0.05;
+          }
+        }
+        c.el.style.transform = `translateY(${wave}em) translateY(${push.toFixed(2)}px) scale(${scale.toFixed(3)})`;
+      }
+    }
+  }
+
+  /* ── wiring ─────────────────────────────────────────────────────────── */
+  const canvas = document.getElementById("field");
+  const hero = document.querySelector(".hero");
+  const h1 = document.querySelector("h1");
+  const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const pointer = new Pointer(hero);
+  const field = new InkField(canvas, pointer);
+  const wordmark = still ? null : new Wordmark(h1, field);
+
+  let visible = true, running = false, last = 0;
+
+  const draw = (now) => {
+    if (!running) return;
+    const k = Math.min(2, Math.max(0.5, (now - last) / 16.667)) || 1;
+    last = now;
+    field.step(k);
+    field.paint(true, 0.35);
+    wordmark.update(pointer);
+    requestAnimationFrame(draw);
+  };
+  const start = () => {
+    if (still || running || !visible || document.hidden) return;
+    running = true; last = performance.now();
+    requestAnimationFrame(draw);
+  };
+  const stop = () => { running = false; };
+
+  const relayout = () => {
+    field.resize();
+    if (still) field.renderStill();
+    else { wordmark.measure(hero); start(); }
+  };
+  new ResizeObserver(relayout).observe(canvas);
+
+  /* Nothing renders while the hero is off-screen or the tab is in the background. */
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? start() : stop(); })
+    .observe(canvas);
+  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+
+  document.fonts?.ready.then(() => wordmark && wordmark.measure(hero));
+
+  const tt = document.getElementById("tt");
+  tt.setAttribute("aria-pressed", document.documentElement.dataset.theme === "dark");
+  tt.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    tt.setAttribute("aria-pressed", next === "dark");
+    try { localStorage.setItem("dully-theme", next); } catch (e) { /* private mode */ }
+    field.readTheme();
+    still ? field.renderStill() : field.clear();
+  });
+
+  const reveal = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add("on"); reveal.unobserve(e.target); }
+  }, { rootMargin: "0px 0px -12%" });
+  document.querySelectorAll(".rv").forEach((el, i) => {
+    el.style.transitionDelay = `${Math.min(i, 3) * 90}ms`;
+    reveal.observe(el);
+  });
+})();
+</script>
+</body>
 </html>
