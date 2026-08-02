@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#f2f4fb" />
+<title>PluckIt | Pull the text out of any picture</title>
+<meta name="description" content="PluckIt is a macOS app that pulls text out of images. Paste or drop a picture, get editable text, clean it up, copy it. Nothing leaves your Mac." />
+<link rel="icon" href="/pluckit/assets/app-icon.png" />
+<link rel="apple-touch-icon" href="/pluckit/assets/app-icon.png" />
+<script>
+  try {
+    document.documentElement.dataset.theme =
+      localStorage.getItem("pluckit-theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  } catch (e) { document.documentElement.dataset.theme = "light"; }
+  document.documentElement.classList.add("js");
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --paper:#f2f4fb; --card:#fff; --ink:#101223; --sub:#5c6180; --line:#e2e6f2;
+  --blue:#1b47e0; --violet:#7b3ad9; --red:#f2404f; --yellow:#ffd84d;
+  --shade:rgba(16,18,35,.10); --glass:rgba(255,255,255,.72);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --paper:#0b0d18; --card:#161a2b; --ink:#f0f2fa; --sub:#9aa1c4; --line:#262c45;
+  --blue:#5b7bff; --violet:#a66bff; --red:#ff6b78;
+  --shade:rgba(0,0,0,.45); --glass:rgba(22,26,43,.72);
+  color-scheme:dark;
+}
+:root{
+  /* yellow never flips, so anything sitting on it keeps a fixed dark ink */
+  --on-yellow:#101223;
+  --grad:linear-gradient(115deg,var(--blue),var(--violet) 52%,var(--red));
+  --sp:cubic-bezier(.34,1.56,.42,1);
+  --e:cubic-bezier(.2,.9,.24,1);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Outfit,system-ui,sans-serif;
+  font-weight:450;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+h1,h2,h3{font-weight:700;letter-spacing:-.035em;line-height:1.02;margin:0}
+::selection{background:var(--yellow);color:var(--on-yellow)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:10px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+
+.skip{position:absolute;left:-9999px;top:0;z-index:200;padding:12px 20px;background:var(--ink);color:var(--paper);border-radius:0 0 14px 0;font-weight:700}
+.skip:focus{left:0}
+
+/* ── gradient wash ── */
+.blobs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;filter:blur(90px);opacity:.5}
+.blobs i{position:absolute;border-radius:50%;animation:drift 22s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(4vw,-5vh) scale(1.18)}}
+.wrap{position:relative;z-index:1}
+
+/* ── nav ── */
+nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px clamp(14px,3.5vw,36px);background:var(--glass);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.mark{display:flex;align-items:center;gap:11px;font-weight:700;font-size:19px;letter-spacing:-.03em}
+.mark img{width:34px;height:34px;border-radius:9px;box-shadow:0 4px 14px var(--shade)}
+nav .r{display:flex;align-items:center;gap:4px}
+nav .r a{font-size:14.5px;font-weight:500;padding:9px 13px;border-radius:11px;transition:.25s var(--e)}
+nav .r a:hover{background:color-mix(in srgb,var(--blue) 12%,transparent);color:var(--blue)}
+@media(max-width:820px){nav .r a{display:none}}
+.tt{width:38px;height:38px;flex:none;display:grid;place-items:center;padding:0;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;cursor:pointer;transition:.25s var(--sp)}
+.tt:hover{transform:translateY(-2px);box-shadow:0 6px 16px var(--shade)}
+.tt svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.tt .sun{display:none}
+:root[data-theme="dark"] .tt .sun{display:block}
+:root[data-theme="dark"] .tt .moon{display:none}
+
+/* ── shared bits ── */
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border:0;border-radius:15px;
+  background:var(--grad);color:#fff;font-weight:600;font-size:15.5px;cursor:pointer;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--blue) 34%,transparent);transition:.28s var(--sp)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 14px 32px color-mix(in srgb,var(--blue) 42%,transparent)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:0 4px 14px var(--shade)}
+.btn.ghost:hover{box-shadow:0 10px 24px var(--shade)}
+.kick{display:inline-flex;align-items:center;gap:9px;font-family:"IBM Plex Mono",monospace;font-size:12px;
+  font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:20px}
+.kick::before{content:"";width:26px;height:2px;border-radius:2px;background:var(--grad)}
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+section{padding:clamp(72px,10vw,144px) clamp(14px,3.5vw,36px);position:relative}
+.in{max-width:1240px;margin:0 auto}
+.big{margin:20px 0 0;font-size:clamp(16px,1.8vw,19px);color:var(--sub);max-width:58ch}
+.rv{transition:opacity .8s var(--e),transform .9s var(--sp)}
+.js .rv{opacity:0;transform:translateY(38px)}
+.js .rv.on{opacity:1;transform:none}
+
+/* ── hero ── */
+.hero{display:grid;grid-template-columns:1.02fr 1fr;gap:clamp(30px,5vw,68px);align-items:center;
+  max-width:1240px;margin:0 auto;padding:clamp(44px,7vw,90px) clamp(14px,3.5vw,36px) clamp(56px,8vw,110px)}
+@media(max-width:980px){.hero{grid-template-columns:1fr}}
+.badge{display:inline-flex;align-items:center;gap:10px;padding:8px 15px 8px 9px;background:var(--card);
+  border:1px solid var(--line);border-radius:99px;font-size:13px;font-weight:500;color:var(--sub);
+  box-shadow:0 5px 16px var(--shade);animation:up .8s var(--sp) both}
+.badge b{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;background:var(--grad);color:#fff;font-size:11.5px;font-weight:600;letter-spacing:.06em}
+h1{margin:22px 0 0;font-size:clamp(46px,6.6vw,88px);letter-spacing:-.05em}
+h1 span{display:block;animation:up .9s var(--sp) both}
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.lede{margin:24px 0 0;font-size:clamp(16.5px,1.9vw,20px);color:var(--sub);max-width:47ch;animation:up .9s var(--sp) .45s both}
+.acts{margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;animation:up .9s var(--sp) .6s both}
+.plat{margin-top:26px;display:flex;gap:9px;flex-wrap:wrap;animation:up .9s var(--sp) .72s both}
+.plat span{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--sub);border:1px solid var(--line);
+  border-radius:8px;padding:5px 10px;background:var(--card)}
+
+/* ── the pluckable document ── */
+.stage{position:relative;animation:up 1s var(--sp) .3s both}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden;
+  box-shadow:0 30px 70px var(--shade);transform:rotate(-1.2deg);transition:transform .6s var(--sp)}
+.stage:hover .doc{transform:rotate(0)}
+.docbar{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--ink) 3%,var(--card))}
+.docbar i{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.docbar .nm{margin-left:8px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--sub)}
+.page{padding:24px 22px;display:flex;flex-direction:column;gap:13px}
+.bar{height:11px;border-radius:6px;background:color-mix(in srgb,var(--ink) 11%,transparent)}
+/* the pluckables: a glossy pill on a highlighter stripe, lifted by a click */
+.pluck{position:relative;border:0;padding:9px 15px;border-radius:99px;text-align:left;cursor:pointer;
+  font-family:Outfit;font-weight:600;font-size:15px;color:var(--on-yellow);
+  background:linear-gradient(180deg,#fff6cf,var(--yellow));
+  box-shadow:inset 0 1px 0 #fffdf2,0 3px 0 #d9ab1d,0 8px 20px rgba(217,171,29,.34);
+  transition:transform .5s var(--sp),box-shadow .3s var(--e),opacity .45s var(--e)}
+.pluck:hover{transform:translateY(-4px) rotate(-1.6deg) scale(1.02)}
+.pluck.gone{transform:translate(38px,-64px) rotate(9deg) scale(.86);opacity:0;pointer-events:none}
+.slot{position:relative}
+.slot.empty::after{content:"";position:absolute;inset:0;border:2px dashed var(--line);border-radius:99px}
+.tray{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px 20px;
+  box-shadow:0 18px 44px var(--shade);position:relative;z-index:2}
+.trayhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.trayhead h2{font-size:15px;letter-spacing:-.02em}
+.trayhead s{text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--sub)}
+.out{min-height:78px;margin:0;font-family:"IBM Plex Mono",monospace;font-size:13.5px;line-height:1.75;
+  white-space:pre-wrap;color:var(--ink)}
+.out .ph{color:var(--sub)}
+.out span{display:block;animation:pop .5s var(--sp) both}
+@keyframes pop{from{opacity:0;transform:translateY(-14px) scale(.94)}to{opacity:1;transform:none}}
+.trayfoot{display:flex;gap:9px;align-items:center;margin-top:14px;flex-wrap:wrap}
+.mini{padding:8px 14px;border-radius:11px;border:1px solid var(--line);background:transparent;
+  font-size:13.5px;font-weight:500;cursor:pointer;transition:.25s var(--e)}
+.mini:hover{border-color:var(--blue);color:var(--blue)}
+.mini:disabled{opacity:.4;cursor:default}
+.mini.solid{background:var(--grad);color:#fff;border-color:transparent}
+.mini.solid:hover{color:#fff;filter:brightness(1.06)}
+.tip{margin-top:18px;font-size:14px;font-weight:500;color:var(--sub);display:flex;align-items:center;gap:8px}
+.tip b{color:var(--red)}
+.tip i{font-style:normal;display:inline-block;animation:nudge 1.5s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* ── quote ── */
+.quote{text-align:center;padding-block:clamp(48px,7vw,88px)}
+.quote blockquote{margin:0 auto;max-width:19ch;font-size:clamp(30px,4.6vw,58px);font-weight:700;letter-spacing:-.045em;line-height:1.08}
+
+/* ── steps ── */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.8vw,20px);margin-top:52px}
+@media(max-width:1000px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px 24px;
+  box-shadow:0 10px 30px var(--shade);transition:transform .45s var(--sp),box-shadow .4s var(--e)}
+.step:hover{transform:translateY(-8px);box-shadow:0 22px 48px var(--shade)}
+.step .n{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--grad);
+  color:#fff;font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;margin-bottom:18px}
+.step h3{font-size:21px;margin-bottom:8px}
+.step p{margin:0;font-size:15px;color:var(--sub)}
+.step kbd{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:color-mix(in srgb,var(--ink) 7%,transparent);
+  border:1px solid var(--line);border-radius:6px;padding:2px 6px}
+
+/* ── clean up demo ── */
+.lab{display:grid;grid-template-columns:1fr 300px;gap:clamp(18px,2.4vw,28px);margin-top:52px;align-items:start}
+@media(max-width:900px){.lab{grid-template-columns:1fr}}
+.pane{background:var(--card);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 18px 44px var(--shade)}
+.panehead{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.panehead span{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--sub)}
+.panehead .dot{display:inline-flex;align-items:center;gap:7px}
+.panehead .dot::before{content:"";width:7px;height:7px;border-radius:50%;background:#22c55e}
+textarea{display:block;width:100%;min-height:290px;resize:vertical;border:0;padding:20px;background:transparent;
+  color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.8}
+textarea:focus{outline:0;box-shadow:inset 0 0 0 2px var(--blue)}
+.panefoot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:13px 18px;border-top:1px solid var(--line);font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--sub)}
+.menu{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:12px;box-shadow:0 18px 44px var(--shade)}
+.menu>p{margin:6px 10px 12px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--sub)}
+.menu button{display:block;width:100%;text-align:left;padding:10px 12px;border:0;border-radius:12px;background:transparent;
+  font-size:14.5px;font-weight:500;cursor:pointer;transition:.16s var(--e)}
+.menu button:hover{background:var(--grad);color:#fff}
+.menu hr{border:0;border-top:1px solid var(--line);margin:10px 6px}
+.menu .rest:hover{background:var(--yellow);color:var(--on-yellow)}
+.menu button:disabled{opacity:.38;cursor:default}
+.menu button:disabled:hover{background:transparent;color:inherit}
+
+/* ── privacy ── */
+.priv{position:relative;overflow:hidden;border-radius:36px;padding:clamp(34px,6vw,74px);background:var(--grad);color:#fff}
+.priv h2{color:#fff;font-size:clamp(32px,5vw,60px)}
+.priv .big{color:rgba(255,255,255,.82);max-width:54ch}
+.priv .kick{color:rgba(255,255,255,.75)}
+.priv .kick::before{background:var(--yellow)}
+.nos{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.nos span{border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:9px 17px;font-size:14px;font-weight:500;transition:.3s var(--sp)}
+.nos span:hover{background:var(--yellow);border-color:var(--yellow);color:var(--on-yellow);transform:translateY(-3px)}
+
+/* ── build ── */
+.term{margin-top:44px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#0d1020;
+  box-shadow:0 22px 52px var(--shade)}
+.termbar{display:flex;gap:8px;align-items:center;padding:13px 18px;border-bottom:1px solid #1e2440}
+.termbar i{width:11px;height:11px;border-radius:50%}
+.termbar .nm{margin-left:8px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:#7d86ad}
+.term pre{margin:0;padding:22px;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.85;color:#dfe4ff}
+.term .c{color:#7d86ad}
+.term .p{color:#5b7bff}
+.term .s{color:var(--yellow)}
+.reqs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+@media(max-width:760px){.reqs{grid-template-columns:1fr}}
+.reqs div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.reqs strong{display:block;font-size:15.5px;margin-bottom:4px}
+.reqs small{color:var(--sub);font-size:14px}
+
+/* ── end ── */
+.end{text-align:center}
+.end img{width:112px;margin:0 auto 26px;border-radius:26px;box-shadow:0 22px 50px var(--shade);
+  animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+.end h2{font-size:clamp(38px,7vw,86px);letter-spacing:-.05em}
+footer{padding:0 clamp(14px,3.5vw,36px) 64px;text-align:center;color:var(--sub);font-size:14px}
+footer .fl{display:flex;gap:20px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+footer a:hover{color:var(--ink)}
+footer small{display:block;margin-top:10px;opacity:.75;font-size:13px}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="blobs" aria-hidden="true">
+  <i style="width:44vw;height:44vw;background:var(--blue);left:-12vw;top:-8vh"></i>
+  <i style="width:38vw;height:38vw;background:var(--red);right:-10vw;top:6vh;animation-delay:-7s"></i>
+  <i style="width:34vw;height:34vw;background:var(--violet);left:34vw;top:52vh;animation-delay:-13s"></i>
+</div>
+
+<div class="wrap">
+<nav aria-label="Primary">
+  <a class="mark" href="/pluckit/" aria-label="PluckIt home"><img src="/pluckit/assets/app-icon.png" alt="" />PluckIt</a>
+  <div class="r">
+    <a href="#how">How it works</a>
+    <a href="#cleanup">Clean Up</a>
+    <a href="#privacy">Privacy</a>
+    <a href="#build">Build it</a>
+    <button class="tt" type="button" aria-label="Use dark appearance">
+      <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4 7 7M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/></svg>
+    </button>
+  </div>
+</nav>
+
+<main id="main">
+<header class="hero">
+  <div>
+    <span class="badge"><b>macOS</b> On-device OCR · no network, no account</span>
+    <h1><span style="animation-delay:.1s">Pluck the text</span><span class="gt" style="animation-delay:.24s">out of any picture.</span></h1>
+    <p class="lede">Paste a screenshot or drop an image on the window. PluckIt reads it with Vision, hands you editable text beside a zoomable preview, and cleans up the mess OCR leaves behind.</p>
+    <div class="acts">
+      <a class="btn" href="#build">Build it yourself →</a>
+      <a class="btn ghost" href="#how">See how it works</a>
+    </div>
+    <p class="plat"><span>macOS 15+</span><span>Apple silicon &amp; Intel</span><span>App Sandbox</span><span>No network entitlement</span></p>
+  </div>
+
+  <div class="stage">
+    <div class="doc">
+      <div class="docbar"><i></i><i></i><i></i><span class="nm">screenshot.png</span></div>
+      <div class="page" id="page">
+        <div class="bar" style="width:78%"></div>
+        <div class="slot"><button class="pluck" type="button" data-text="Invoice #4471 · due 30 September">Invoice #4471 · due 30 September</button></div>
+        <div class="bar" style="width:92%"></div>
+        <div class="slot"><button class="pluck" type="button" data-text="Wi-Fi password: hunter-plum-42">Wi-Fi password: hunter-plum-42</button></div>
+        <div class="bar" style="width:66%"></div>
+        <div class="bar" style="width:88%"></div>
+        <div class="slot"><button class="pluck" type="button" data-text="Gate B14 · boards 18:40">Gate B14 · boards 18:40</button></div>
+        <div class="bar" style="width:54%"></div>
+      </div>
+    </div>
+
+    <div class="tray">
+      <div class="trayhead"><h2>Extracted text</h2><s id="count">0 characters · 0 words · 0 lines</s></div>
+      <p class="out" id="out"><span class="ph">Pluck a line out of the page →</span></p>
+      <div class="trayfoot">
+        <button class="mini solid" id="copy" type="button" disabled>⇧⌘C — Copy</button>
+        <button class="mini" id="again" type="button" disabled>Put it back</button>
+      </div>
+    </div>
+    <p class="tip"><b>Go on —</b> the yellow lines come off the page <i>👆</i></p>
+  </div>
+</header>
+
+<section class="quote">
+  <blockquote class="rv">Text on a screen is still text. It just needs <span class="gt">plucking.</span></blockquote>
+</section>
+
+<section id="how">
+  <div class="in">
+    <div class="rv"><span class="kick">01 — How it works</span>
+      <h2 style="font-size:clamp(34px,5.4vw,64px)">Picture in.<br />Clean text out.</h2>
+      <p class="big">Four steps, and three of them are one keystroke. Recognition runs on-device through the Vision framework, so there is no upload, no queue and no waiting on somebody's server.</p></div>
+    <div class="steps">
+      <article class="step rv"><div class="n">1</div><h3>Paste or drop</h3><p>Copy a screenshot and hit the button, or drag any image file straight onto the window.</p></article>
+      <article class="step rv"><div class="n">2</div><h3>Vision reads it</h3><p>The image sits on the left, zoomable and pannable. The text lands on the right, fully editable, with a confidence score.</p></article>
+      <article class="step rv"><div class="n">3</div><h3>Clean it up</h3><p>Seven one-shot fixes for wrapped lines, split words and stray whitespace. Every one undoable.</p></article>
+      <article class="step rv"><div class="n">4</div><h3>Copy</h3><p><kbd>⇧⌘C</kbd> puts the result on the clipboard. The button says <em>Copied</em> so you know it landed.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="cleanup">
+  <div class="in">
+    <div class="rv"><span class="kick">02 — Clean Up</span>
+      <h2 style="font-size:clamp(34px,5.4vw,64px)">OCR breaks paragraphs.<br />This puts them back.</h2>
+      <p class="big">Vision returns each recognised fragment on its own line, so a paragraph arrives as confetti. Pick a fix from the menu — it runs on the text below, exactly as it does in the app. The original is always one click away.</p></div>
+    <div class="lab rv">
+      <div class="pane">
+        <div class="panehead"><span class="dot">Extracted text — editable</span><span id="conf">96% confidence</span></div>
+        <textarea id="ta" spellcheck="false" aria-label="Extracted text, editable"></textarea>
+        <div class="panefoot"><span id="stat"></span><span id="undoname"></span></div>
+      </div>
+      <div class="menu">
+        <p>Clean Up</p>
+        <div id="items"></div>
+        <hr />
+        <button class="rest" id="undo" type="button">Undo</button>
+        <button class="rest" id="restore" type="button">Restore Original Text</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="privacy">
+  <div class="in">
+    <div class="priv rv">
+      <span class="kick">03 — Private by construction</span>
+      <h2>It can't phone home.<br />It has no phone.</h2>
+      <p class="big">PluckIt ships without the network entitlement. Not "we promise not to" — the sandbox will not let it open a socket. Recognition happens on your Mac, in the App Sandbox, with hardened runtime on and read-only access to the files you pick.</p>
+      <div class="nos"><span>No network entitlement</span><span>No account</span><span>No analytics</span><span>No telemetry</span><span>No SDKs</span><span>No uploads</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="build">
+  <div class="in">
+    <div class="rv"><span class="kick">04 — Build it yourself</span>
+      <h2 style="font-size:clamp(34px,5.4vw,64px)">One script.<br />Straight to Applications.</h2>
+      <p class="big">There is no Developer ID here and none is needed. macOS only gatekeeps apps that arrive quarantined from the internet — an app you compiled on your own machine launches normally and keeps working, with no seven-day expiry.</p></div>
+    <div class="term rv">
+      <div class="termbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="nm">zsh — PluckIt</span></div>
+<pre><span class="c"># compile, ad-hoc sign, copy to /Applications</span>
+<span class="p">$</span> scripts/build.sh <span class="s">--install</span>
+
+<span class="c"># leave the app in ./build instead</span>
+<span class="p">$</span> scripts/build.sh
+
+<span class="c"># regenerate every icon size from one 1024px image</span>
+<span class="p">$</span> scripts/update-app-icon.sh <span class="s">icon.png</span></pre>
+    </div>
+    <div class="reqs rv">
+      <div><strong>macOS 15 or later</strong><small>Vision's current recognition API.</small></div>
+      <div><strong>Xcode, the full app</strong><small>xcodebuild needs it to compile the asset catalog.</small></div>
+      <div><strong>Ad-hoc signature</strong><small><code class="mono">codesign -s -</code>. Rebuild and macOS may re-ask for permissions.</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="end">
+  <div class="in rv">
+    <img src="/pluckit/assets/app-icon.png" alt="" />
+    <h2>Stop retyping<br />what's already <span class="gt">written.</span></h2>
+    <p class="big" style="margin-inline:auto">A small Mac app that does one thing. Clone it, build it, keep it.</p>
+    <div class="acts" style="justify-content:center;margin-top:32px"><a class="btn" href="#build">Build it yourself →</a></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="fl"><a href="/">Dully Labs</a><a href="https://dulangaj.com">Developer</a></div>
+  Made by Dulanga Jayawardena in Hong Kong.
+  <small>© <span data-year></span> Dulanga Jayawardena</small>
+</footer>
+</div>
+
+<script type="module">
+import { TRANSFORMS, CleanUpSession, summary } from "/pluckit/cleanup.js";
+
+/* theme */
+const root = document.documentElement;
+const tt = document.querySelector(".tt");
+const syncTheme = () => {
+  const dark = root.dataset.theme === "dark";
+  tt.setAttribute("aria-label", dark ? "Use light appearance" : "Use dark appearance");
+  document.querySelector('meta[name="theme-color"]')
+    .setAttribute("content", getComputedStyle(root).getPropertyValue("--paper").trim());
+};
+syncTheme();
+tt.addEventListener("click", () => {
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("pluckit-theme", root.dataset.theme);
+  syncTheme();
+});
+document.querySelectorAll("[data-year]").forEach(el => { el.textContent = new Date().getFullYear(); });
+
+/* ── the hero toy: lines come off the page ── */
+const out = document.getElementById("out");
+const count = document.getElementById("count");
+const copyBtn = document.getElementById("copy");
+const againBtn = document.getElementById("again");
+const pills = [...document.querySelectorAll(".pluck")];
+let picked = [];
+
+function renderTray() {
+  if (!picked.length) {
+    out.innerHTML = '<span class="ph">Pluck a line out of the page →</span>';
+  } else {
+    out.replaceChildren(...picked.map((line, i) => {
+      const el = document.createElement("span");
+      el.textContent = line;
+      el.style.animationDelay = i === picked.length - 1 ? "0s" : "0s";
+      return el;
+    }));
+  }
+  count.textContent = summary(picked.join("\n"));
+  copyBtn.disabled = againBtn.disabled = !picked.length;
+  copyBtn.textContent = "⇧⌘C — Copy";
+}
+renderTray();
+
+pills.forEach(pill => {
+  pill.addEventListener("click", () => {
+    if (pill.classList.contains("gone")) return;
+    pill.classList.add("gone");
+    pill.closest(".slot").classList.add("empty");
+    picked.push(pill.dataset.text);
+    renderTray();
+  });
+});
+
+againBtn.addEventListener("click", () => {
+  pills.forEach(p => { p.classList.remove("gone"); p.closest(".slot").classList.remove("empty"); });
+  picked = [];
+  renderTray();
+});
+
+copyBtn.addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(picked.join("\n")); } catch { /* denied: the label still confirms the intent */ }
+  copyBtn.textContent = "Copied ✓";
+  setTimeout(() => { if (picked.length) copyBtn.textContent = "⇧⌘C — Copy"; }, 1500);
+});
+
+/* ── Clean Up, driven by the real transformation set ── */
+const session = new CleanUpSession();
+const ta = document.getElementById("ta");
+const items = document.getElementById("items");
+const stat = document.getElementById("stat");
+const undoName = document.getElementById("undoname");
+const undoBtn = document.getElementById("undo");
+const restoreBtn = document.getElementById("restore");
+
+items.replaceChildren(...TRANSFORMS.map(t => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = t.label;
+  b.title = t.help;
+  b.addEventListener("click", () => session.apply(t.id));
+  return b;
+}));
+
+session.onChange(s => {
+  if (ta.value !== s.text) ta.value = s.text;
+  stat.textContent = summary(s.text);
+  undoName.textContent = s.undoActionName ? `Undo ${s.undoActionName}` : "";
+  undoBtn.disabled = !s.canUndo;
+  restoreBtn.disabled = !s.isDirty;
+});
+
+ta.addEventListener("input", () => session.edit(ta.value));
+undoBtn.addEventListener("click", () => session.undo());
+restoreBtn.addEventListener("click", () => session.restore());
+
+/* reveals */
+let armed = false;
+setTimeout(() => { if (!armed) document.querySelectorAll(".rv").forEach(el => el.classList.add("on")); }, 2500);
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); io.unobserve(e.target); }
+}), { threshold: .12 });
+document.querySelectorAll(".rv").forEach((el, i) => { el.style.transitionDelay = (i % 4) * .07 + "s"; io.observe(el); });
+armed = true;
+</script>
+</body>
+</html>
