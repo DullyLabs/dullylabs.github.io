@@ -121,10 +121,9 @@
 
 /* Highlighter bars sit behind body text, so they have to darken on dark or the
    text on top of them loses contrast. */
-:root { --hl: var(--play); --hl-alt: var(--sun); }
+:root { --hl: var(--play); }
 :root[data-theme="dark"] {
-  --hl:     color-mix(in srgb, var(--play) 40%, var(--paper));
-  --hl-alt: color-mix(in srgb, var(--sun) 34%, var(--paper));
+  --hl: color-mix(in srgb, var(--play) 40%, var(--paper));
 }
 
 :root {

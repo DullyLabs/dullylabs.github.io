@@ -183,16 +183,6 @@ html:not(.js) .hint,
 html:not(.js) .cal{display:none}
 html:not(.js) .hero{grid-template-columns:1fr}
 
-/* manifesto pull-quote */
-.quote{padding-block:clamp(50px,7vw,90px);text-align:center}
-.quote blockquote{margin:0 auto;max-width:20ch;font-family:Fredoka;font-weight:500;
-  font-size:clamp(28px,4.4vw,54px);line-height:1.12;letter-spacing:-.02em}
-.quote em{font-style:normal;position:relative;z-index:1;white-space:nowrap}
-.quote em::after{content:"";position:absolute;left:-5px;right:-5px;bottom:.05em;height:.32em;
-  background:var(--hl-alt);z-index:-1;border-radius:6px;transform:scaleX(0);transform-origin:left;
-  transition:transform .8s var(--e) .35s}
-.quote blockquote.on em::after{transform:scaleX(1)}
-
 /* steps */
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,26px);margin-top:56px}
 @media(max-width:920px){.cards{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
@@ -253,13 +243,16 @@ html:not(.js) .hero{grid-template-columns:1fr}
 .end{text-align:center}
 .end h2{font-size:clamp(40px,7.6vw,96px)}
 .end .plat{margin-top:20px;font-size:14px;font-weight:800;color:var(--sub)}
+/* The disclaimer sits below the availability line and must read as a footnote,
+   not as a second claim: lighter weight, narrower measure, no dot. */
+.end .disc{margin-top:8px;max-width:52ch;margin-inline:auto;font-size:13px;font-weight:700;opacity:.8}
 </style>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <div class="sprinkle" id="spr" aria-hidden="true"></div>
 <canvas class="conf" aria-hidden="true"></canvas>
-<div class="toast" id="toast" role="status" aria-live="polite"><i>★</i><span id="tmsg">Reflection saved.</span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><i>★</i><span id="tmsg">Check-in saved.</span></div>
 
 <div class="wrap">
 <nav class="top" aria-label="Primary navigation">
@@ -278,7 +271,7 @@ html:not(.js) .hero{grid-template-columns:1fr}
   <div>
     <span class="badge">🫶 No account · No ads · No server</span>
     <h1><span style="animation-delay:.15s">How's your</span> <span style="animation-delay:.25s">week</span> <span class="hl" style="animation-delay:.35s"><span>really</span></span> <span style="animation-delay:.45s">going?</span></h1>
-    <p class="lede">Rate Work, Play, Love, and Health once a week. Add a note if you want, then look back to see what's changed. A check-in takes twenty seconds. Try one right here.</p>
+    <p class="lede">Rate the foundational pillars of your life once a week. Add a note if you want, then look back to see what's changed. A check-in takes twenty seconds. Try one right here.</p>
     <div class="acts">
       <a class="pop" href="https://apps.apple.com/app/id6761065411">Download on the App Store →</a>
       <a class="pop ghost" href="#how-it-works">See how it works</a>
@@ -304,17 +297,14 @@ html:not(.js) .hero{grid-template-columns:1fr}
   </div>
 </header>
 
-<section class="quote">
-  <blockquote class="rv">A good life isn't a score to perfect. It's a <em>pattern to notice.</em></blockquote>
-</section>
-
 <section id="how-it-works">
   <div class="in">
-    <div class="rv"><span class="kick2">01 · How it works</span><h2>Check in. Look back.<br />Notice changes.</h2>
-      <p class="big">Rate each pillar and add a note if there's something you want to remember. Missed a few days? Back-date the entry so the record stays honest.</p></div>
+    <div class="rv"><span class="kick2">01 · How it works</span><h2>You write the week down,<br />and later you read it back.</h2>
+      <p class="big">Rate each pillar and add a note if there's something you want to remember.</p>
+      <p class="big">Come back in three months and you might find Work, which you thought was floundering, has been averaging at a 6 all along, while Play has been sitting at a 3 since April. You can decide if you want to do anything about that.</p></div>
     <div class="cards">
       <article class="c rv" style="--c:var(--work)"><div class="n">1</div><h3>Check in</h3><p>Four sliders, one optional note, twenty seconds.</p><img src="/weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen" /></article>
-      <article class="c rv" style="--c:var(--love)"><div class="n">2</div><h3>Keep a record</h3><p>Every check-in lands in your diary, ratings and note together. Scroll back and read what was going on when the line moved.</p><img src="/weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen" /></article>
+      <article class="c rv" style="--c:var(--love)"><div class="n">2</div><h3>Keep a record</h3><p>Every check-in lands in your diary. Scroll back and read what was going on when the line moved.</p><img src="/weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen" /></article>
       <article class="c rv" style="--c:var(--health)"><div class="n">3</div><h3>See your trends</h3><p>Chart your ratings by week, month, quarter or year. Each view shows how it compares with the stretch before.</p><img src="/weeklypulse/assets/screens/trends.png" alt="Weekly Pulse yearly trends screen" /></article>
     </div>
   </div>
@@ -323,7 +313,9 @@ html:not(.js) .hero{grid-template-columns:1fr}
 <section id="pillars">
   <div class="in">
     <div class="rv"><span class="kick2">02 · Your pillars</span><h2>Use the four defaults,<br />or change them.</h2>
-      <p class="big">Weekly Pulse starts with Work, Play, Love, and Health. Rename any of them, recolour them, rewrite what each one means to you and the prompt you see at check-in. Add your own too, and retire the ones that stop mattering.</p></div>
+      <p class="big">Weekly Pulse starts with Work, Play, Love, and Health.
+      </br>Rename, recolour, and rewrite what each one means to you and the prompt you see at check-in.
+      </br>Add your own, and retire the ones that stop mattering; remove School when it stops being part of your life, while keeping the history.</p></div>
     <ol class="pils">
       <li class="pil rv" style="--c:var(--work);--ct:var(--work-txt)"><i></i><strong>Work</strong><small>Purpose and progress</small></li>
       <li class="pil rv" style="--c:var(--play);--ct:var(--play-txt)"><i></i><strong>Play</strong><small>Joy and curiosity</small></li>
@@ -335,18 +327,20 @@ html:not(.js) .hero{grid-template-columns:1fr}
 
 <section>
   <div class="in">
-    <div class="rv"><span class="kick2">03 · Showing up</span><h2>Close the ring.<br />Keep the streak.</h2>
-      <p class="big">Set a weekly goal you can hit. The ring closes when you reach it. A streak is weeks in a row of closing it, so you can't lose one mid-week, only by finishing under target. It counts whether you turned up, never how high you scored.</p></div>
+    <div class="rv"><span class="kick2">03 · Showing up</span><h2>The number you pick<br />is never scored.</h2>
+      <p class="big">Streaks and awards are optional, and they count one thing: whether you showed up. They never look at what you rated. An app that rewards good weeks teaches you to report good weeks, and then the record is worth nothing.</p>
+      <p class="big">Set a weekly goal you can hit. The ring closes when you reach it, and a streak is weeks in a row of closing it, so you can't lose one mid-week, only by finishing under target.</p>
+      <p class="big">Or leave them off. If a streak would just be one more thing to keep up, the check-in works the same without one.</p></div>
     <div class="cal rv" id="cal" style="--c:var(--flame)"></div>
-    <p class="big rv" style="margin-top:22px"><b class="hot">🔥 26 weeks</b>. A broken streak is meant to be recoverable, not demoralising.</p>
+    <p class="big rv" style="margin-top:22px"><b class="hot">🔥 26 weeks</b>. Miss a stretch and nothing punishes you: back-date an entry so the record stays honest, or leave the gap where it is.</p>
   </div>
 </section>
 
 <section>
   <div class="priv rv">
     <span class="kick2 onsun">04 · Private by design</span>
-    <h2>There's no server.<br />So there's nothing to leak.</h2>
-    <p class="big">Your check-ins are stored on your device. Turn on iCloud and they sync through your own private iCloud database. Nobody else can read it, including me. Export everything whenever you like. It's your data.</p>
+    <h2>There's no server,<br />so there's nothing to leak.</h2>
+    <p class="big">Your check-ins are stored on your device. Turn on iCloud and they sync through your own private iCloud database. Nobody else can read it, including me. Export everything to CSV whenever you like — a plain text file you can open in a spreadsheet, not a backup that only this app knows how to read.</p>
     <div class="nos"><span>No account</span><span>No sign-up</span><span>No ads</span><span>No analytics</span><span>No tracking</span><span>No SDKs</span></div>
     <a class="rd" href="/weeklypulse/privacy/">Read the privacy policy →</a>
   </div>
@@ -354,12 +348,13 @@ html:not(.js) .hero{grid-template-columns:1fr}
 
 <section class="end">
   <div class="in rv">
-    <h2>You showed up.<br />That's the whole game.</h2>
-    <p class="big" style="margin-inline:auto">Weekly Pulse is a mirror. What you do with it is up to you.</p>
+    <h2>Start now.<br />Read it in a year.</h2>
+    <p class="big" style="margin-inline:auto">No AI insights, no coach, no feed, no sharing.</p>
     <div class="acts" style="justify-content:center;margin-top:34px">
       <a class="pop" href="https://apps.apple.com/app/id6761065411">Download on the App Store →</a>
     </div>
-    <p class="plat"><span class="status"><span class="dot"></span>Out now</span> · Free for iPhone and iPad · No separate account required</p>
+    <p class="plat"><span class="status"><span class="dot"></span>Out now</span> · Free for iPhone and iPad · No separate account, no subscription, no in-app purchases</p>
+    <p class="plat disc">Not a medical app, and it gives no medical advice. It stores the ratings and notes you type in, and nothing else.</p>
   </div>
 </section>
 </main>
@@ -498,10 +493,10 @@ const toast=document.getElementById('toast'), tmsg=document.getElementById('tmsg
 let saves=0;
 document.getElementById('save').addEventListener('click',e=>{
   saves++;
-  const msgs=['Nice. That took twenty seconds.','Reflection saved. That\'s the whole game.',
-    'Ring closed. Streak: 1 week 🔥','See you next week.'];
+  const msgs=['That took about twenty seconds.','Check-in saved.',
+    'Ring closed. Streak: 1 week 🔥','See you next time.'];
   tmsg.textContent=document.getElementById('note').value.trim()
-    ? 'Reflection saved: "'+document.getElementById('note').value.trim().slice(0,34)+'"'
+    ? 'Check-in saved: "'+document.getElementById('note').value.trim().slice(0,34)+'"'
     : msgs[Math.min(saves-1,msgs.length-1)];
   toast.classList.add('on'); clearTimeout(toast._t);
   toast._t=setTimeout(()=>toast.classList.remove('on'),3200);
