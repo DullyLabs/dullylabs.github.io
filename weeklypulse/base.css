@@ -120,8 +120,9 @@ nav.top .r a:hover { transform: rotate(-2.5deg) scale(1.06); }
    excluded because it's --card and the ordinary slab reads against it. */
 .pop:not(.ghost) { --shadow: var(--shadow-ink); }
 
-/* non-interactive "coming soon" chip */
-.soon {
+/* The App Store link: the same slab as .pop, filled with --sun so the one
+   control that leaves the site carries the accent rather than the ink. */
+.get {
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -133,24 +134,23 @@ nav.top .r a:hover { transform: rotate(-2.5deg) scale(1.06); }
   font-family: Fredoka, Nunito, sans-serif;
   font-size: 15px;
   box-shadow: 4px 4px 0 var(--shadow);
-  cursor: default;
-  pointer-events: none;
-  user-select: none;
-}
-.soon .dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--on-accent);
-  animation: blip 1.8s ease-in-out infinite;
+  transition: .3s var(--sp);
+  cursor: pointer;
 }
 @keyframes blip { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.68); } }
-nav.top .r .soon { padding: 9px 15px; font-size: 14px; box-shadow: 3px 3px 0 var(--shadow); }
 
-/* Launch status as a label rather than a button. .soon reads as the primary
-   action (same slab, same yellow, same size) while being pointer-events:none,
-   which teaches people that the biggest control on the page does nothing.
-   Where the status sits next to a real call to action, use this instead. */
+/* In the bar it drops to nav scale but keeps the slab press instead of the
+   rotate-and-scale the sibling links take, because it reads as a button. The
+   press has to be restated at nav specificity to beat `nav.top .r a:hover`,
+   and the last rule re-shows it on phones, where the nav links are dropped
+   but a link to the App Store is the whole point of the page. */
+nav.top .r a.get { padding: 9px 15px; font-size: 14px; border-radius: var(--r-sm); box-shadow: 3px 3px 0 var(--shadow); }
+.get:hover, nav.top .r a.get:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--shadow); }
+.get:active, nav.top .r a.get:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
+@media (max-width: 760px) { nav.top .r a.get { display: inline-flex; } }
+
+/* Availability as a quiet label rather than a control, for the places where
+   the status sits next to a real call to action and must not compete with it. */
 .status {
   display: inline-flex;
   align-items: center;
