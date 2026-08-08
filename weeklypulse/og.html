@@ -12,14 +12,19 @@
      og:image from index.html and download the flat PNG. This exists
      so the PNG can be regenerated instead of re-screenshotted.
 
-     To rebuild after editing:
+     To rebuild after editing, from the repo root. It has to go through a
+     server: the stylesheets below are root-absolute, and over file:// they
+     resolve against the filesystem root and silently 404, which bakes an
+     unstyled card into the PNG.
+
+       python3 -m http.server 8899 &
 
        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
          --headless --disable-gpu --hide-scrollbars \
          --force-color-profile=srgb --virtual-time-budget=8000 \
          --window-size=1200,630 \
          --screenshot="weeklypulse/assets/og.png" \
-         weeklypulse/og.html
+         http://localhost:8899/weeklypulse/og.html
 
      Then bump the ?v= on og:image in index.html so scrapers that have
      cached the old image fetch the new one.
@@ -186,7 +191,7 @@ h1 .hl::after {
          glyph comes out as tofu and bakes into the PNG. -->
     <span class="badge">No account &middot; No ads &middot; No server</span>
     <h1>How&rsquo;s your<br />week <span class="hl"><span>really</span></span><br />going?</h1>
-    <p class="foot"><span class="dot"></span>Weekly Pulse &middot; coming soon for iPhone and iPad</p>
+    <p class="foot"><span class="dot"></span>Weekly Pulse &middot; out now for iPhone and iPad</p>
   </div>
 
   <div class="toy">
