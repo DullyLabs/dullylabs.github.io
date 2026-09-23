@@ -89,7 +89,7 @@
 .route-page header nav{display:flex;align-items:center;gap:18px}
 .day-page #day-light{display:inline-flex;align-items:center;padding:11px;border:1px solid color-mix(in srgb,currentColor 35%,transparent);border-radius:5px;font-size:12px;font-weight:600;color:var(--street-ink);transition:background .2s}.day-page #day-light:hover{background:color-mix(in srgb,currentColor 8%,transparent)}.day-page #day-light svg{width:16px;height:16px;flex:none}.day-page #day-light .sun,[data-theme=dark] .day-page #day-light .moon{display:none}[data-theme=dark] .day-page #day-light .sun{display:block}
 .route-scroll{position:relative}
-.route-viewport{position:sticky;top:0;height:100vh;height:100dvh;overflow:clip;background:var(--street)}
+.route-viewport{position:sticky;top:0;height:100vh;height:100dvh;overflow:clip;touch-action:pan-y;background:var(--street)}
 .route-page .sky-type{top:auto;bottom:34%;right:auto;left:6%;font-size:min(260px,30vw)}
 .route-page .platform-note{font-size:11px;color:var(--street-muted)}
 .skyline{position:absolute;left:0;bottom:30%;width:max(600vw,2400px);height:34vh;will-change:transform;pointer-events:none}
@@ -111,14 +111,14 @@
 .pin-stop{border:1px solid var(--street-accent);background:none;color:var(--street-accent);border-radius:40px;padding:11px 20px;font-size:12px;font-weight:600}
 .pin-stop[aria-pressed=true]{background:var(--street-accent);color:var(--street)}
 .road{position:absolute;left:0;right:0;bottom:0;height:30%;background:var(--road);border-top:3px solid var(--street-edge)}
-.road:before{content:"";position:absolute;left:0;right:0;top:52%;height:4px;background:repeating-linear-gradient(90deg,#f4d468 0 60px,transparent 60px 140px);background-position:inherit}
-.route-bus{position:absolute;left:clamp(8px,18vw,26vw);bottom:12%;width:min(560px,60vw);margin:0;transition:transform .3s}
+.road:before{content:"";position:absolute;left:0;right:-140px;top:52%;height:4px;background:repeating-linear-gradient(90deg,#f4d468 0 60px,transparent 60px 140px);transform:translate3d(var(--dash,0),0,0);will-change:transform}
+.route-bus{position:absolute;left:clamp(8px,18vw,26vw);bottom:12%;width:min(560px,60vw);margin:0}
 .route-bus.moving{animation:bob .35s infinite alternate ease-in-out}
 @keyframes bob{to{transform:translateY(-3px)}}
-.wheel{transition:transform .08s linear}
+
 .route-strip{position:fixed;left:6%;right:6%;bottom:10px;z-index:3;display:flex;justify-content:space-between;align-items:flex-end;font-size:10px;letter-spacing:1.5px;font-weight:700}
 .route-strip:before,.route-progress{content:"";position:absolute;left:0;right:0;bottom:38px;height:2px;background:var(--street-edge);z-index:-1}
-.route-progress{right:auto;background:var(--street-accent);transition:width .1s linear}
+.route-progress{background:var(--street-accent);transform-origin:left;transform:scaleX(0)}
 .route-strip button{border:0;background:none;color:var(--street-muted);display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px;transition:color .3s}
 .route-strip button i{width:12px;height:12px;border-radius:50%;background:var(--street);border:2px solid var(--street-edge);transition:.3s}
 .route-strip button[aria-current=step]{color:var(--street-ink)}
