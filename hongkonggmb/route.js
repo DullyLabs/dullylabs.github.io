@@ -115,7 +115,7 @@ function render() {
   depot.style.transform = `translate3d(${stops.length * stopWidth - x}px,0,0)`;
   if (!reducedMotion) {
     backdrops.forEach(layer => layer.style.transform = `translate3d(${-x * .22}px,0,0)`);
-    road.style.backgroundPositionX = `${-x}px`;
+    road.style.setProperty('--dash', `${-(x % 140)}px`);
     // Far and mid landmark layers lag the track so each panel has its own depth; zero offset at its stop centre.
     layers.forEach(([far, mid], i) => {
       if (Math.abs(x - i * stopWidth) > stopWidth) return; // off-screen panel
@@ -133,7 +133,7 @@ function render() {
   }
   if (x !== lastX && bus.classList.contains('door-open')) setDoor(false);
   lastX = x;
-  progress.style.width = `${(x / (last * stopWidth)) * 100}%`;
+  progress.style.transform = `scaleX(${x / (last * stopWidth)})`;
   const index = Math.round(x / stopWidth);
   if (index === current) return;
   current = index;
@@ -146,7 +146,7 @@ function render() {
   history.replaceState(null, '', `#${places[index].id}`);
 }
 addEventListener('scroll', render, {passive: true});
-addEventListener('resize', layout);
+addEventListener('resize', () => { if (viewport.clientWidth !== stopWidth) layout(); });
 addEventListener('keydown', event => {
   if (dialog.open || event.target.closest('input,textarea,select,[contenteditable="true"]') || event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
@@ -197,7 +197,7 @@ motionPreference.addEventListener('change', event => {
   }
   layout();
 });
-// Horizontal input (trackpad swipe, shift-wheel, touch drag) drives the same scroll position.
+// Horizontal trackpad swipe or shift-wheel drives the same scroll position. Touch stays native (pan-y).
 addEventListener('wheel', event => {
   if (dialog.open) return;
   if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
@@ -205,20 +205,4 @@ addEventListener('wheel', event => {
   const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1;
   scrollBy({top: event.deltaX * unit, behavior: 'instant'});
 }, {passive: false});
-let touch;
-addEventListener('touchstart', event => {
-  touch = event.touches.length === 1 && !dialog.open
-    ? {x: event.touches[0].clientX, y: event.touches[0].clientY, horizontal: null} : null;
-}, {passive: true});
-addEventListener('touchmove', event => {
-  if (!touch || event.touches.length !== 1) { touch = null; return; }
-  const dx = touch.x - event.touches[0].clientX, dy = touch.y - event.touches[0].clientY;
-  if (touch.horizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) touch.horizontal = Math.abs(dx) > Math.abs(dy);
-  if (!touch.horizontal) return;
-  event.preventDefault();
-  scrollBy({top: dx, behavior: 'instant'});
-  touch.x = event.touches[0].clientX;
-}, {passive: false});
-addEventListener('touchend', () => { touch = null; });
-addEventListener('touchcancel', () => { touch = null; });
 document.addEventListener('langchange', () => { renderPin(); setDoor(bus.classList.contains('door-open')); current = -1; render(); });
