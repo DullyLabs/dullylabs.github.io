@@ -7,14 +7,7 @@
     <meta name="description" content="Privacy policy for Weekly Pulse." />
     <title>Privacy Policy | Weekly Pulse</title>
     <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
-    <script>
-      /* set the theme before first paint so dark-mode users never see a light flash */
-      try {
-        document.documentElement.dataset.theme =
-          localStorage.getItem("weekly-pulse-theme") ||
-          (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-      } catch (e) { document.documentElement.dataset.theme = "light"; }
-    </script>
+    <script src="/assets/theme.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
