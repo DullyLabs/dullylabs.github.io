@@ -7,18 +7,11 @@
   <meta name="description" content="A growing collection of useful little inventions by Dulanga Jayawardena in Hong Kong. Explore Hong Kong Green Minibus, Weekly Pulse, PluckIt, and whatever comes next." />
   <meta name="theme-color" content="#f6f3ec" />
   <link rel="icon" href="/assets/img/profile.jpeg" />
-  <script>
-    try {
-      const saved = localStorage.getItem('dully-theme');
-      document.documentElement.dataset.theme = saved === 'light' || saved === 'dark'
-        ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    } catch (_) {}
-  </script>
+  <script src="/assets/theme.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,20,1;9..144,600,20,1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/home.css" />
-  <script src="/assets/home.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#projects">Skip to projects</a>

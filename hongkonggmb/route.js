@@ -16,12 +16,6 @@ dialog.addEventListener('click', event => {
     if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
   }
 });
-document.querySelector('#day-light').addEventListener('click', event => {
-  const evening = document.body.classList.toggle('evening');
-  event.currentTarget.setAttribute('aria-pressed', String(evening));
-  event.currentTarget.setAttribute('aria-label', evening ? 'Bring back the morning' : 'Switch on the evening');
-  document.querySelector('meta[name="theme-color"]').content = evening ? '#0d1914' : '#f5eedb';
-});
 let pinned = false;
 document.querySelector('#pin-stop').addEventListener('click', event => {
   pinned = !pinned;
