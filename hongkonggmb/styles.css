@@ -87,7 +87,7 @@
 @keyframes flicker{0%,100%{opacity:1}7%{opacity:.6}8%{opacity:1}52%{opacity:.75}54%{opacity:1}55%{opacity:.6}56%{opacity:1}}
 .route-page header{position:fixed;inset:0 0 auto;z-index:3;max-width:none;border:0;background:linear-gradient(var(--street) 40%,transparent)}
 .route-page header nav{display:flex;align-items:center;gap:18px}
-.route-page #day-light{display:inline-flex;align-items:center;padding:11px;border:1px solid color-mix(in srgb,currentColor 35%,transparent);border-radius:5px;font-size:12px;font-weight:600;color:var(--street-ink);transition:background .2s}.route-page #day-light:hover{background:color-mix(in srgb,currentColor 8%,transparent)}.route-page #day-light svg{width:16px;height:16px;flex:none}.route-page #day-light .sun,[data-theme=dark] .route-page #day-light .moon{display:none}[data-theme=dark] .route-page #day-light .sun{display:block}
+.day-page #day-light{display:inline-flex;align-items:center;padding:11px;border:1px solid color-mix(in srgb,currentColor 35%,transparent);border-radius:5px;font-size:12px;font-weight:600;color:var(--street-ink);transition:background .2s}.day-page #day-light:hover{background:color-mix(in srgb,currentColor 8%,transparent)}.day-page #day-light svg{width:16px;height:16px;flex:none}.day-page #day-light .sun,[data-theme=dark] .day-page #day-light .moon{display:none}[data-theme=dark] .day-page #day-light .sun{display:block}
 .route-scroll{position:relative}
 .route-viewport{position:sticky;top:0;height:100vh;height:100dvh;overflow:clip;background:var(--street)}
 .route-page .sky-type{top:auto;bottom:34%;right:auto;left:6%;font-size:min(260px,30vw)}
@@ -123,14 +123,13 @@
 .route-strip button i{width:12px;height:12px;border-radius:50%;background:var(--street);border:2px solid var(--street-edge);transition:.3s}
 .route-strip button[aria-current=step]{color:var(--street-ink)}
 .route-strip button[aria-current=step] i{background:var(--street-accent);border-color:var(--street-accent);box-shadow:0 0 0 5px #00734f22}
-@media(max-width:900px){.territory{grid-template-columns:1fr;padding-top:11vh;gap:10px}.territory .arrival-plate{margin-top:0;align-self:start;max-width:340px}.route-page .sky-type{display:none}.landmarks{height:24vh}.territory .arrival-plate{transform:scale(.9);transform-origin:left top}.route-bus{left:6vw;width:80vw;bottom:14%}.stop-sign{display:none}.route-strip:before,.route-progress{bottom:17px}.route-strip button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.route-strip button{gap:0}.territory h2{font-size:clamp(26px,7vw,32px)}.territory-copy>p:not(.eyebrow){font-size:14px}.territory .arrival-plate{padding:12px 16px}.territory .arrival-plate b{font-size:40px}.territory .arrival-plate .minutes{font-size:32px}.route-page header nav>button{min-height:40px}.route-page #day-light{padding:0;align-self:stretch;aspect-ratio:1;justify-content:center}.route-page #day-light span{display:none}.route-page header{background:linear-gradient(var(--street) 55%,transparent)}}
+@media(max-width:900px){.territory{grid-template-columns:1fr;padding-top:11vh;gap:10px}.territory .arrival-plate{margin-top:0;align-self:start;max-width:340px}.route-page .sky-type{display:none}.landmarks{height:24vh}.territory .arrival-plate{transform:scale(.9);transform-origin:left top}.route-bus{left:6vw;width:80vw;bottom:14%}.stop-sign{display:none}.route-strip:before,.route-progress{bottom:17px}.route-strip button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.route-strip button{gap:0}.territory h2{font-size:clamp(26px,7vw,32px)}.territory-copy>p:not(.eyebrow){font-size:14px}.territory .arrival-plate{padding:12px 16px}.territory .arrival-plate b{font-size:40px}.territory .arrival-plate .minutes{font-size:32px}.day-page header nav>button{min-height:40px}.day-page #day-light{padding:0;align-self:stretch;aspect-ratio:1;justify-content:center}.day-page #day-light span{display:none}.route-page header{background:linear-gradient(var(--street) 55%,transparent)}}
 @media(min-width:901px) and (max-height:700px){.territory{padding-top:max(11vh,110px)}.territory h1{font-size:clamp(34px,4vw,48px);margin:10px 0}.route-bus{width:min(400px,42vw);bottom:8%}}
 .door-toggle{position:absolute;left:67%;top:28%;width:9%;height:52%;border:0;background:none;cursor:pointer;border-radius:4px}
 /* Small discoveries across the water, kept on a slower plane than the street. */
 .route-page{--harbour-tone:color-mix(in oklch,var(--far) 70%,var(--mid))}
 .harbour-view{position:absolute;right:5%;bottom:50%;width:min(39vw,540px);color:var(--harbour-tone)}
-.harbour-look{display:block;width:100%;padding:0;border:0;background:none;color:inherit;border-radius:8px}
-.harbour-look svg{display:block;width:100%;overflow:visible;opacity:.8}
+.harbour-view svg{display:block;width:100%;overflow:visible;opacity:.8}
 .kowloon-low{fill:var(--harbour-tone);opacity:.2}
 .icc,.mplus{fill:var(--harbour-tone)}
 .icc-face{fill:var(--street);opacity:.2}
@@ -148,7 +147,6 @@
 [data-theme=dark] .mplus-art{stroke:#e7c391;opacity:.45}
 [data-theme=dark] .mplus-mark{fill:#f5eedb;opacity:.5}
 [data-theme=dark] .harbour-reflection{stroke:#d8bc83;opacity:.45}
-#harbour-note{position:absolute;right:0;top:100%;margin:3px 0 0;padding:10px 13px;max-width:310px;border:1px solid var(--street-edge);border-radius:4px;background:var(--street);color:var(--street-muted);font-size:11px;line-height:1.6;box-shadow:0 5px 20px #0000000a;z-index:2}
 .route-track{pointer-events:none}
 .territory.active :is(.territory-copy,.stop-sign){pointer-events:auto}
 .territory .arrival-plate{width:310px;min-width:0;max-width:100%;margin-top:24px}
@@ -165,8 +163,7 @@
   .landmarks{height:19vh}
   .territory .arrival-plate{margin-top:16px;transform:none;width:290px}
   .ride-caption{bottom:7%;font-size:9px;letter-spacing:.3px}
-  #harbour-note{font-size:10px;max-width:230px}
-}
+  }
 @media(max-width:900px) and (max-height:740px){
   .territory{padding-top:94px}
   .territory h1{font-size:30px;margin:10px 0}
@@ -186,3 +183,30 @@
 .bus-speech{position:absolute;left:38%;bottom:calc(85% + 12px);z-index:2;width:max-content;max-width:90%;margin:0;padding:11px 17px;border:1px solid var(--street-edge);border-radius:12px;background:var(--street);color:var(--street-ink);font-size:14px;line-height:1.4;box-shadow:0 4px 14px #0000000c;pointer-events:none;opacity:0;transform:translate(-50%,5px);transition:opacity .2s,transform .2s}
 .bus-speech:after{content:"";position:absolute;left:60%;bottom:-6px;width:10px;height:10px;background:var(--street);border-right:1px solid var(--street-edge);border-bottom:1px solid var(--street-edge);transform:rotate(45deg)}
 .bus-speech.is-visible{opacity:1;transform:translate(-50%,0)}
+/* The depot: a sixth stop past the terminus, holding the site links as shop signs. */
+.depot{position:absolute;inset:0;margin:0;border:0;font-size:inherit;pointer-events:none;will-change:transform}
+.plate-off,.off-duty .plate-on{display:none}.off-duty .plate-off{display:inline}
+.signs{display:flex;flex-wrap:wrap;align-items:stretch;gap:12px;margin-top:20px}
+.shop-sign{display:flex;white-space:nowrap;flex-direction:column;align-items:center;gap:8px;min-width:72px;padding:12px 10px 10px;border:2px solid var(--red);border-radius:4px;background:var(--paper);color:var(--street-ink);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:transform .2s}
+.shop-sign b{writing-mode:vertical-rl;font-family:serif;font-size:22px;letter-spacing:4px;color:var(--red)}
+.shop-sign:hover{transform:translateY(-3px)}.shop-sign[aria-current=page]{background:var(--red);color:var(--paper)}.shop-sign[aria-current=page] b{color:inherit}
+[data-theme=dark] .day-page .shop-sign{background:var(--street);border-color:#ff2e63;color:#fff2b0;box-shadow:0 0 12px #ff2e6355,inset 0 0 10px #ff2e6333}
+[data-theme=dark] .day-page .shop-sign b{color:#fff2b0;text-shadow:0 0 10px #ff4f7a}
+[data-theme=dark] .day-page .shop-sign:nth-child(2) b{animation:flicker 5s steps(1) infinite}
+[data-theme=dark] .day-page .shop-sign[aria-current=page]{background:#ff2e63;color:#fff2b0}
+@media(max-width:900px) and (max-height:740px){.signs{margin-top:12px;gap:8px}.shop-sign{min-width:66px;padding:9px 6px 8px}.shop-sign b{font-size:18px}}
+/* Notices: privacy, support and terms pages reached from the depot. */
+.notice-page main{max-width:680px;margin:auto;padding:36px 6% 64px}
+.notice-page h1{font-size:clamp(40px,6vw,64px);margin:32px 0 14px}.notice-page h1 em{color:var(--street-accent)}
+.notice-page h2{font-family:'DM Sans',Arial,sans-serif;font-size:17px;font-weight:700;letter-spacing:0;margin:32px 0 6px}
+.notice-page main :is(p,li){font-size:15px;color:var(--street-muted)}.notice-page main a:not(.back-on-board){text-decoration:underline}
+.back-on-board{display:inline-flex;flex-direction:column;gap:3px;padding:9px 12px;border:2px solid var(--street-accent);border-radius:4px 4px 0 0;background:var(--paper);color:var(--green);font-size:9px;font-weight:700;letter-spacing:2px}.back-on-board b{font-size:18px;letter-spacing:4px}
+.notice-page footer{max-width:680px;margin:auto;padding:28px 6% 40px}.notice-page footer .signs{margin:0}
+.route-strip button:last-of-type i{border-radius:2px}
+@media(max-width:600px){.signs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.shop-sign{min-width:0;padding:10px 4px 8px;font-size:8px;letter-spacing:.5px}}
+
+/* Language switch drawn as the red stop button by the minibus door. */
+.lang-toggle{width:40px;height:40px;flex:none;border-radius:50%;border:3px solid #7a1020;background:radial-gradient(circle at 35% 30%,#ea3f56,var(--red) 65%);color:#fff9e5;font:700 13px/1 'DM Sans',Arial,sans-serif;letter-spacing:.5px;box-shadow:inset 0 -3px 0 #8a0d22,0 2px 0 #00000033;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.lang-toggle:hover{filter:brightness(1.08)}
+.lang-toggle:active{transform:translateY(2px);box-shadow:inset 0 -1px 0 #8a0d22}
+[data-theme=dark] .lang-toggle{box-shadow:inset 0 -3px 0 #8a0d22,0 0 14px #ff3b5a66}
