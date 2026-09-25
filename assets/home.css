@@ -72,7 +72,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .exhibit-topline { top: 18px; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
 .exhibit-corner { font-size: 19px; line-height: 1; }
 .exhibit-bottomline { bottom: 16px; font-size: 10px; }
-.tiny-spark { font-size: 25px; line-height: 1; }
+.tiny-spark { display: block; width: 22px; height: 22px; flex-shrink: 0; }
 .gmb-art, .pulse-art, .pluck-art { position: absolute; width: 460px; height: 310px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
 .road { position: absolute; left: -200px; right: -200px; top: 232px; height: 26px; background: #55605a; border-top: 3px solid #3f4a44; }
 .road::after { content: ""; position: absolute; left: 0; right: 0; top: 11px; border-top: 3px dashed #d9d2ad; }
