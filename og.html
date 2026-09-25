@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex" />
+<title>Dully Labs — share card source</title>
+
+<!-- ──────────────────────────────────────────────────────────────
+     Source for /assets/img/og.png, the 1200x630 image that link
+     unfurlers (Slack, iMessage, X, LinkedIn, WhatsApp) show when the
+     homepage is shared. Crawlers never see this file: they read
+     og:image from index.html and download the flat PNG. This exists
+     so the PNG can be regenerated instead of re-screenshotted.
+
+     To rebuild after editing, from the repo root. It goes through a
+     server so the capture matches how the site is served, and so the
+     web fonts load the same way they do on the homepage.
+
+       python3 -m http.server 8899 &
+
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+         --headless --disable-gpu --hide-scrollbars \
+         --force-color-profile=srgb --virtual-time-budget=8000 \
+         --window-size=1200,630 \
+         --screenshot="assets/img/og.png" \
+         http://localhost:8899/og.html
+
+     Then bump the ?v= on og:image and twitter:image in index.html so
+     scrapers that have cached the old image fetch the new one.
+
+     Everything here is deliberately self-contained: the light-theme
+     tokens and the three exhibit artworks are copied from index.html
+     and assets/home.css rather than linked. A share card should be
+     frozen artwork, not something that silently changes the next time
+     the homepage is restyled. Keep the only words on the card to the
+     wordmark and the tagline; the exhibits are there as easter eggs.
+     ────────────────────────────────────────────────────────────── -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,20,1;9..144,600,20,1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* Light-theme tokens from assets/home.css, frozen. */
+:root {
+  --paper: #f6f3ec;
+  --ink: #252720;
+  --muted: #6c6c61;
+  --rule: #d9d7cc;
+  --accent: #5b7047;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Space Grotesk", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+h1, p { margin: 0; }
+svg { display: block; }
+
+/* The canvas is a fixed 1200x630 (1.91:1, the size every unfurler wants).
+   Nothing here may use viewport or fluid units: the capture runs at exactly
+   this size, so clamp() and vw would bake one arbitrary value into the PNG.
+   WhatsApp and iMessage crop the edges, so everything that matters sits
+   inside an 80px safe area. */
+html, body { width: 1200px; height: 630px; overflow: hidden; margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+.canvas {
+  position: relative;
+  width: 1200px;
+  height: 630px;
+  padding: 80px;
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 56px;
+  align-items: center;
+}
+
+/* ── left: the studio ── */
+/* Same construction as the header wordmark on the homepage (.wordmark,
+   .studio-mark, .wordmark-dot), scaled up. */
+.wordmark { display: flex; align-items: center; font-size: 76px; font-weight: 700; letter-spacing: -4.5px; line-height: 1; }
+.studio-mark { width: 70px; height: 70px; margin-right: 24px; color: var(--accent); flex-shrink: 0; }
+.wordmark-dot { color: var(--accent); }
+.rule { width: 100%; margin: 44px 0 38px; border-top: 1px solid var(--rule); }
+/* The homepage h1, fixed at one size. */
+h1 { font-family: var(--serif); font-weight: 500; font-size: 46px; line-height: 1.12; letter-spacing: -1.8px; }
+h1 em { font-style: normal; color: var(--accent); }
+
+/* ── right: the curiosity cabinet ── */
+/* Three cells in the homepage exhibit colours. Each holds the full-size
+   artwork from index.html (460x310), scaled down and cropped by the cell. */
+.cabinet { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 214px 214px; gap: 14px; }
+.cell { position: relative; overflow: hidden; border-radius: 3px; color: #34312e; font-family: var(--sans); }
+.cell-gmb { grid-column: 1 / 3; background: #dfe6d0; }
+.cell-pulse { background: #e6e1f0; }
+.cell-pluck { background: #ede7bb; }
+.art { position: absolute; width: 460px; height: 310px; left: 50%; top: 50%; }
+.cell-gmb .art { transform: translate(-50%, -50%) translate(4px, -30px) scale(.86); }
+.cell-pulse .art { transform: translate(-50%, -50%) translate(10px, 0) scale(.56); }
+.cell-pluck .art { transform: translate(-50%, -50%) translate(2px, 4px) scale(.56); }
+
+/* Exhibit artwork, copied from assets/home.css. Hover/transition rules and
+   the handwritten stickers and captions are left out: the card carries no
+   words beyond the wordmark and tagline. */
+.road { position: absolute; left: -200px; right: -200px; top: 232px; height: 26px; background: #55605a; border-top: 3px solid #3f4a44; }
+.road::after { content: ""; position: absolute; left: 0; right: 0; top: 11px; border-top: 3px dashed #d9d2ad; }
+.stop-plate { position: absolute; left: 352px; top: 82px; width: 52px; padding: 5px 4px 6px; background: #00734f; color: #f9f4da; text-align: center; font-size: 7px; letter-spacing: .6px; line-height: 1.3; border-radius: 3px; box-shadow: 0 8px 18px #2b3a2e26; }
+.stop-plate b { display: block; font-size: 13px; letter-spacing: 1px; margin-bottom: 3px; }
+.stop-plate::after { content: ""; position: absolute; left: 50%; top: 100%; width: 4px; height: 118px; margin-left: -2px; background: #7a7f74; }
+.gmb-bus { position: absolute; left: 36px; top: 106px; width: 340px; }
+
+.week-slip { position: absolute; background: #fffdf9; box-shadow: 0 12px 24px #483c5a16; border: 1px solid #ffffff99; border-radius: 3px; }
+.slip-back { width: 184px; height: 203px; top: 51px; left: 65px; transform: rotate(-13deg); padding: 15px; font-size: 8px; letter-spacing: 1px; color: #797082; background: #f4f1f8; }
+.mini-bars { height: 105px; display: flex; gap: 10px; align-items: flex-end; padding-top: 25px; }
+.mini-bars i { width: 19px; height: 80%; background: #9fb8e8; border-radius: 3px; }
+.mini-bars i:nth-child(2) { height: 50%; background: #97d4bf; }
+.mini-bars i:nth-child(3) { height: 68%; background: #e8a6a6; }
+.mini-bars i:nth-child(4) { height: 40%; background: #c7a4d2; }
+.slip-front { width: 235px; top: 23px; left: 119px; padding: 17px 11px 11px; transform: rotate(6deg); }
+.slip-front > span { display: block; text-align: center; letter-spacing: 1.5px; font-size: 8px; color: #6c6576; }
+.pulse-chart { width: 100%; margin: 11px 0 8px; }
+.slip-footer { border-top: 1px solid #e9e6eb; padding-top: 10px; display: flex; align-items: center; justify-content: space-between; color: #757079; font-size: 7px; }
+.four-dots { display: flex; gap: 4px; }
+.four-dots i { width: 5px; height: 5px; border-radius: 50%; background: #4e8bf5; }
+.four-dots i:nth-child(2) { background: #22b889; }
+.four-dots i:nth-child(3) { background: #ef7879; }
+.four-dots i:nth-child(4) { background: #9b59b6; }
+
+.source-note { position: absolute; width: 290px; height: 223px; left: 66px; top: 31px; background: #fffdf2; transform: rotate(-7deg); box-shadow: 0 12px 25px #625a2f18; }
+.note-toolbar { height: 28px; padding: 0 11px; display: flex; align-items: center; gap: 13px; border-bottom: 1px solid #e7e4d8; color: #787669; font-size: 7px; }
+.window-dots { font-size: 6px; color: #c5c1ae; }
+.note-content { padding: 18px 24px; }
+.note-eyebrow { font-size: 7px; letter-spacing: 1.8px; color: #898271; }
+.note-content p { font: 500 19px/1.35 var(--serif); margin: 9px 0; }
+.source-highlight { display: inline-block; background: #f1e59b; color: #6f6643; font-size: 15px; padding: 0 4px; }
+.fake-lines { display: grid; gap: 7px; margin-top: 12px; }
+.fake-lines i { height: 3px; background: #e9e6d8; width: 92%; }
+.fake-lines i:last-child { width: 65%; }
+.crop { position: absolute; width: 10px; height: 10px; border-color: #8b855e; border-style: solid; }
+.crop-tl { top: -5px; left: -5px; border-width: 1px 0 0 1px; }
+.crop-tr { top: -5px; right: -5px; border-width: 1px 1px 0 0; }
+.crop-bl { bottom: -5px; left: -5px; border-width: 0 0 1px 1px; }
+.crop-br { bottom: -5px; right: -5px; border-width: 0 1px 1px 0; }
+.lifted-text { position: absolute; top: 167px; left: 153px; padding: 7px 13px; background: #f4db48; color: #36311c; font-size: 23px; font-weight: 500; letter-spacing: -.7px; white-space: nowrap; transform: rotate(3deg); box-shadow: 0 7px 0 #776b1820, 0 14px 24px #6457181a; }
+.pluck-cursor { position: absolute; bottom: -28px; right: 7px; width: 29px; height: 33px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div>
+    <div class="wordmark">
+      <svg class="studio-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2v28M2 16h28M6.1 6.1l19.8 19.8M6.1 25.9 25.9 6.1" stroke="currentColor" stroke-width="3.5"/></svg>
+      dully labs<span class="wordmark-dot">.</span>
+    </div>
+    <div class="rule"></div>
+    <h1>Small apps.<br /><em>Interesting possibilities.</em></h1>
+  </div>
+
+  <div class="cabinet" aria-hidden="true">
+    <div class="cell cell-gmb">
+      <div class="art">
+        <div class="road"></div>
+        <div class="stop-plate"><b>小巴站</b>MINIBUS STOP</div>
+        <svg class="gmb-bus" viewBox="0 0 1100 440">
+          <ellipse cx="557" cy="387" rx="465" ry="22" fill="#142d20" opacity=".13"/>
+          <path d="M87 119Q88 78 139 76L840 68Q897 69 928 107L1000 205Q1024 222 1028 269L1028 339Q1026 365 993 365H80Q55 360 57 333L66 163Q67 131 87 119" fill="#f9f4da" stroke="#183e2d" stroke-width="4"/>
+          <path d="M89 120Q97 86 140 87L838 80Q879 80 905 114Z" fill="#00734f"/>
+          <path d="M65 252H1024V335Q1025 358 991 359H78Q56 356 59 334Z" fill="#00734f"/>
+          <path d="M59 328H1027V348Q1024 364 991 366H79Q55 361 59 348Z" fill="#234b34"/>
+          <g fill="#2f5246" stroke="#193c2e" stroke-width="6"><rect x="112" y="135" width="142" height="105" rx="10"/><rect x="270" y="135" width="142" height="105" rx="10"/><rect x="428" y="135" width="142" height="105" rx="10"/><rect x="586" y="135" width="142" height="105" rx="10"/><path d="M849 132H906L970 226H849Z"/></g>
+          <rect x="746" y="130" width="88" height="218" rx="5" fill="#ede5c8" stroke="#254b37" stroke-width="5"/><rect x="759" y="145" width="61" height="95" rx="4" fill="#2f5246"/><rect x="753" y="253" width="74" height="75" fill="#00734f"/><path d="M789 140V331" stroke="#34563b" stroke-width="3"/>
+          <path d="M79 290H109M939 284H1009" stroke="#eddfb0" stroke-width="15"/>
+          <g><circle cx="227" cy="349" r="57" fill="#1d2924" stroke="#f0e6c9" stroke-width="8"/><circle cx="227" cy="349" r="29" fill="#9eab99" stroke="#536355" stroke-width="9"/><path d="M227 325V373M203 349H251" stroke="#536355" stroke-width="7"/></g>
+          <g><circle cx="878" cy="349" r="57" fill="#1d2924" stroke="#f0e6c9" stroke-width="8"/><circle cx="878" cy="349" r="29" fill="#9eab99" stroke="#536355" stroke-width="9"/><path d="M878 325V373M854 349H902" stroke="#536355" stroke-width="7"/></g>
+          <text x="421" y="300" fill="#f6edd5" text-anchor="middle" font-size="30" font-weight="bold" letter-spacing="9">香港專線小巴</text>
+          <rect x="608" y="157" width="99" height="60" rx="3" fill="#fff9e5"/><text x="657" y="199" fill="#c8102e" text-anchor="middle" font-size="45" font-weight="bold">31</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cell cell-pulse">
+      <div class="art">
+        <div class="week-slip slip-back"><span>LAST WEEK</span><div class="mini-bars"><i></i><i></i><i></i><i></i></div></div>
+        <div class="week-slip slip-front"><span>A WEEK IN YOUR LIFE</span>
+          <svg class="pulse-chart" viewBox="0 0 270 220" fill="none">
+            <g stroke="#d8d6e3" stroke-width="1"><path d="m135 35 85 75-85 75-85-75Z"/><path d="m135 60 57 50-57 50-57-50Z"/><path d="m135 85 28 25-28 25-28-25Z"/><path d="M135 35v150M50 110h170"/></g>
+            <g><path d="m135 47 67 63-67 55-48-55Z" fill="#9c8ddc" fill-opacity=".23" stroke="#8270bf" stroke-width="2"/><circle cx="135" cy="47" r="5" fill="#4e8bf5"/><circle cx="202" cy="110" r="5" fill="#22b889"/><circle cx="135" cy="165" r="5" fill="#ef7879"/><circle cx="87" cy="110" r="5" fill="#9b59b6"/></g>
+            <g font-size="10" font-family="system-ui, sans-serif" fill="#646071" text-anchor="middle"><text x="135" y="18">WORK</text><text x="245" y="114">PLAY</text><text x="135" y="211">LOVE</text><text x="23" y="114">HEALTH</text></g>
+          </svg>
+          <div class="slip-footer"><span class="four-dots"><i></i><i></i><i></i><i></i></span><span>A moment to check in.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cell cell-pluck">
+      <div class="art">
+        <div class="source-note">
+          <div class="note-toolbar"><span class="window-dots">● ● ●</span><span>something-worth-keeping.png</span></div>
+          <div class="note-content"><span class="note-eyebrow">NOTE TO SELF</span><p>Good ideas turn up<br />in unexpected places.</p><span class="source-highlight">Keep the good bits.</span><div class="fake-lines"><i></i><i></i></div></div>
+          <span class="crop crop-tl"></span><span class="crop crop-tr"></span><span class="crop crop-bl"></span><span class="crop crop-br"></span>
+        </div>
+        <div class="lifted-text">Keep the good bits.<svg class="pluck-cursor" viewBox="0 0 32 36"><path d="m3 2 24 19-12 1-6 10Z" fill="#22221e" stroke="#fffef8" stroke-width="2"/></svg></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
