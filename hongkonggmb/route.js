@@ -197,7 +197,7 @@ motionPreference.addEventListener('change', event => {
   }
   layout();
 });
-// Horizontal trackpad swipe or shift-wheel drives the same scroll position. Touch stays native (pan-y).
+// Horizontal trackpad swipe, shift-wheel or touch drag drives the same scroll position.
 addEventListener('wheel', event => {
   if (dialog.open) return;
   if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
@@ -205,4 +205,42 @@ addEventListener('wheel', event => {
   const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1;
   scrollBy({top: event.deltaX * unit, behavior: 'instant'});
 }, {passive: false});
+// Vertical touch pans natively; .route-viewport's touch-action:pan-y leaves horizontal pans
+// unclaimed, so their touchmoves stay cancelable and are mapped onto the vertical scroll here.
+let touch, glide;
+addEventListener('touchstart', event => {
+  cancelAnimationFrame(glide);
+  touch = event.touches.length === 1 && !dialog.open
+    ? {x: event.touches[0].clientX, y: event.touches[0].clientY, horizontal: null, moves: []} : null;
+}, {passive: true});
+addEventListener('touchmove', event => {
+  if (!touch || event.touches.length !== 1) { touch = null; return; }
+  const dx = touch.x - event.touches[0].clientX, dy = touch.y - event.touches[0].clientY;
+  if (touch.horizontal === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) touch.horizontal = Math.abs(dx) > Math.abs(dy);
+  if (!touch.horizontal) return;
+  event.preventDefault();
+  scrollBy({top: dx, behavior: 'instant'});
+  touch.x = event.touches[0].clientX;
+  touch.moves = [...touch.moves.slice(-4), {dx, t: event.timeStamp}];
+}, {passive: false});
+// A horizontal flick keeps gliding with decaying velocity, like native momentum scrolling.
+addEventListener('touchend', event => {
+  const moves = touch?.horizontal ? touch.moves.filter(move => event.timeStamp - move.t < 100) : [];
+  touch = null;
+  if (moves.length < 2) return;
+  // px per ms, over at least a frame and capped, so coalesced moves with near-equal timestamps can't fling to the terminus.
+  let velocity = moves.slice(1).reduce((sum, move) => sum + move.dx, 0) / Math.max(moves.at(-1).t - moves[0].t, 16);
+  velocity = Math.max(-5, Math.min(velocity, 5));
+  let then = performance.now();
+  const step = now => {
+    const elapsed = Math.max(0, now - then); // a frame's timestamp can precede the performance.now() taken before it
+    velocity *= .95 ** (elapsed / 16);
+    if (Math.abs(velocity) < .02) return;
+    scrollBy({top: velocity * elapsed, behavior: 'instant'});
+    then = now;
+    glide = requestAnimationFrame(step);
+  };
+  glide = requestAnimationFrame(step);
+});
+addEventListener('touchcancel', () => { touch = null; });
 document.addEventListener('langchange', () => { renderPin(); setDoor(bus.classList.contains('door-open')); current = -1; render(); });
