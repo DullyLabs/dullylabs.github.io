@@ -51,7 +51,7 @@ const layers = places.map(stop => [stop.querySelector('.far'), stop.querySelecto
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reducedMotion = motionPreference.matches;
 const initialStop = places.findIndex(stop => `#${stop.id}` === location.hash);
-let stopWidth = 0, scale = 1, scrollPerStop = 0, current = -1, lastX = 0, idleTimer;
+let stopWidth = 0, scale = 1, scrollPerStop = 0, current = -1, lastX = 0, idleTimer, glide;
 let journeyReady = false, previousPosition = null, calloutArmed = false, speechTimer;
 let ferryExitPosition = wanChaiIndex, ferryTravel = 0;
 
@@ -65,7 +65,7 @@ places.forEach((stop, index) => {
   strip.append(button);
 });
 const buttons = strip.querySelectorAll('button');
-function driveTo(index) { scrollTo({top: index * scrollPerStop, behavior: reducedMotion ? 'instant' : 'smooth'}); }
+function driveTo(index) { cancelAnimationFrame(glide); scrollTo({top: index * scrollPerStop, behavior: reducedMotion ? 'instant' : 'smooth'}); }
 document.querySelectorAll('[data-stop]').forEach(link => link.addEventListener('click', event => { event.preventDefault(); driveTo(Number(link.dataset.stop)); }));
 
 function layout() {
@@ -207,7 +207,7 @@ addEventListener('wheel', event => {
 }, {passive: false});
 // Vertical touch pans natively; .route-viewport's touch-action:pan-y leaves horizontal pans
 // unclaimed, so their touchmoves stay cancelable and are mapped onto the vertical scroll here.
-let touch, glide;
+let touch;
 addEventListener('touchstart', event => {
   cancelAnimationFrame(glide);
   touch = event.touches.length === 1 && !dialog.open
@@ -233,6 +233,7 @@ addEventListener('touchend', event => {
   velocity = Math.max(-5, Math.min(velocity, 5));
   let then = performance.now();
   const step = now => {
+    if (dialog.open) return;
     const elapsed = Math.max(0, now - then); // a frame's timestamp can precede the performance.now() taken before it
     velocity *= .95 ** (elapsed / 16);
     if (Math.abs(velocity) < .02) return;
