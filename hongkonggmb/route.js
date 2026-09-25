@@ -34,6 +34,7 @@ const stops = [...track.children];
 const depot = document.querySelector('.depot');
 const places = [...stops, depot];
 const last = places.length - 1;
+const routeScroll = document.querySelector('.route-scroll');
 const strip = document.querySelector('.route-strip');
 const progress = strip.querySelector('.route-progress');
 const backdrops = document.querySelectorAll('.skyline');
@@ -52,7 +53,7 @@ const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reducedMotion = motionPreference.matches;
 const initialStop = places.findIndex(stop => `#${stop.id}` === location.hash);
 let stopWidth = 0, scale = 1, scrollPerStop = 0, current = -1, lastX = 0, idleTimer, glide;
-let journeyReady = false, previousPosition = null, calloutArmed = false, speechTimer;
+let journeyReady = false, previousPosition = null, calloutArmed = false, speechTimer, provisional = true;
 let ferryExitPosition = wanChaiIndex, ferryTravel = 0;
 
 places.forEach((stop, index) => {
@@ -74,6 +75,8 @@ function layout() {
   stopWidth = viewport.clientWidth;
   // Give narrow screens more scroll per stop so a single flick doesn't skip districts.
   scrollPerStop = Math.max(stopWidth, viewport.clientHeight * .9);
+  // Safari can lay out while the panel lags the window, or the window is still empty or toolbar-less.
+  provisional = !(Math.abs(viewport.clientHeight - innerHeight) <= 2 && innerHeight > 0 && innerHeight < screen.height);
   track.style.setProperty('--stop', `${stopWidth}px`);
   const svg = stops[0].querySelector('.landmarks');
   scale = Math.min(svg.clientWidth / 1000, svg.clientHeight / 300);
@@ -86,7 +89,7 @@ function layout() {
   const harbourScale = harbourBounds.width / ferry.ownerSVGElement.viewBox.baseVal.width;
   // Include the wake and a small stroke allowance so the whole ferry clears the viewport.
   ferryTravel = (viewport.getBoundingClientRect().right - harbourBounds.left) / harbourScale - ferry.getBBox().x + 2;
-  document.querySelector('.route-scroll').style.height = `${last * scrollPerStop + viewport.clientHeight}px`;
+  routeScroll.style.height = `${last * scrollPerStop + viewport.clientHeight}px`;
   scrollTo({top: position * scrollPerStop, behavior: 'instant'});
   render();
 }
@@ -146,7 +149,16 @@ function render() {
   history.replaceState(null, '', `#${places[index].id}`);
 }
 addEventListener('scroll', render, {passive: true});
-addEventListener('resize', () => { if (viewport.clientWidth !== stopWidth) layout(); });
+// Watch the panel itself: on launch or restore, iOS Safari can hand layout a stale box (386x2741 on
+// a 402x714 screen) or an empty or toolbar-less window (402x874) that settles without a window
+// resize, even mid-drag, so re-lay out on any mismatch until a layout lands on a settled size.
+// After that, ignore height-only changes within 1.5x so toolbar show/hide doesn't re-layout and
+// jump the scroll position; just keep the scroll length matched so the depot is still reachable.
+new ResizeObserver(() => {
+  const fit = Math.max(viewport.clientWidth, viewport.clientHeight * .9);
+  if (viewport.clientWidth !== stopWidth || Math.max(fit, scrollPerStop) > (provisional ? 1 : 1.5) * Math.min(fit, scrollPerStop)) layout();
+  else if (stopWidth) routeScroll.style.height = `${last * scrollPerStop + viewport.clientHeight}px`;
+}).observe(viewport);
 addEventListener('keydown', event => {
   if (dialog.open || event.target.closest('input,textarea,select,[contenteditable="true"]') || event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
