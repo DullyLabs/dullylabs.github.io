@@ -32,8 +32,9 @@
      tokens and the three exhibit artworks are copied from index.html
      and assets/home.css rather than linked. A share card should be
      frozen artwork, not something that silently changes the next time
-     the homepage is restyled. Keep the only words on the card to the
-     wordmark and the tagline; the exhibits are there as easter eggs.
+     the homepage is restyled. The card has no words beyond the wordmark,
+     the tagline and the small labels inside the artwork; the exhibits are
+     there as easter eggs, so keep those labels.
      ────────────────────────────────────────────────────────────── -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -99,7 +100,8 @@ h1 em { font-style: normal; color: var(--accent); }
 
 /* Exhibit artwork, copied from assets/home.css. Hover/transition rules and
    the handwritten stickers and captions are left out: the card carries no
-   words beyond the wordmark and tagline. */
+   words beyond the wordmark, the tagline and the small labels inside the
+   artwork. */
 .road { position: absolute; left: -200px; right: -200px; top: 232px; height: 26px; background: #55605a; border-top: 3px solid #3f4a44; }
 .road::after { content: ""; position: absolute; left: 0; right: 0; top: 11px; border-top: 3px dashed #d9d2ad; }
 .stop-plate { position: absolute; left: 352px; top: 82px; width: 52px; padding: 5px 4px 6px; background: #00734f; color: #f9f4da; text-align: center; font-size: 7px; letter-spacing: .6px; line-height: 1.3; border-radius: 3px; box-shadow: 0 8px 18px #2b3a2e26; }

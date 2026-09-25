@@ -15,7 +15,7 @@ Then open `http://localhost:4173`.
 ## Homepage collection
 
 The homepage lives in `index.html`, with styles in `assets/home.css` and a small
-theme switcher in `assets/home.js`. Project links and illustrations work without
+theme switcher in `assets/theme.js`. Project links and illustrations work without
 JavaScript. Illustrations use HTML and SVG; there is no build step.
 
 To add a project, add an `article.project` inside `.project-grid`, following an
