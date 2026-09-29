@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Launch at login for ad-hoc-signed macOS apps — Dully Labs</title>
+  <meta name="description" content="We tested SMAppService and a LaunchAgent plist for an ad-hoc-signed Mac app on macOS 26.6.2, with real reboots, rebuilds and moves. SMAppService.mainApp worked without a certificate. The LaunchAgent broke silently when the app moved." />
+  <link rel="canonical" href="https://dullylabs.github.io/notes/launch-at-login-ad-hoc-signed-macos-apps/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dullylabs.github.io/notes/launch-at-login-ad-hoc-signed-macos-apps/" />
+  <meta property="og:site_name" content="Dully Labs" />
+  <meta property="og:title" content="Launch at login for ad-hoc-signed macOS apps" />
+  <meta property="og:description" content="SMAppService.mainApp worked on macOS 26.6.2 with plain ad-hoc signing. It survived rebuilds and moves with no duplicate login items. Tested in disposable VMs with real reboots." />
+  <meta property="og:image" content="https://dullylabs.github.io/notes/launch-at-login-ad-hoc-signed-macos-apps/smappservice-login-items.jpg" />
+  <meta property="og:image:width" content="630" />
+  <meta property="og:image:height" content="440" />
+  <meta property="og:image:alt" content="macOS Login Items settings listing LoginProbe under Open at Login, with a Login Item Added notification." />
+  <meta property="article:published_time" content="2026-09-29" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#f6f3ec" />
+  <link rel="icon" href="/assets/img/profile.jpeg" />
+  <script src="/assets/theme.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,20,1;9..144,600,20,1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/home.css" />
+  <link rel="stylesheet" href="/notes/notes.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Launch at login for ad-hoc-signed macOS apps",
+    "description": "We tested SMAppService and a LaunchAgent plist for an ad-hoc-signed Mac app on macOS 26.6.2, with real reboots, rebuilds and moves. SMAppService.mainApp worked without a certificate. The LaunchAgent broke silently when the app moved.",
+    "datePublished": "2026-09-29",
+    "dateModified": "2026-09-29",
+    "inLanguage": "en",
+    "url": "https://dullylabs.github.io/notes/launch-at-login-ad-hoc-signed-macos-apps/",
+    "mainEntityOfPage": "https://dullylabs.github.io/notes/launch-at-login-ad-hoc-signed-macos-apps/",
+    "image": "https://dullylabs.github.io/notes/launch-at-login-ad-hoc-signed-macos-apps/smappservice-login-items.jpg",
+    "author": { "@type": "Organization", "name": "Dully Labs", "url": "https://dullylabs.github.io/" },
+    "publisher": { "@type": "Organization", "name": "Dully Labs", "url": "https://dullylabs.github.io/" },
+    "proficiencyLevel": "Expert",
+    "dependencies": "macOS 13 or later (tested on macOS 26.6.2), ServiceManagement framework",
+    "keywords": ["SMAppService", "launch at login", "login items", "ad-hoc code signing", "LaunchAgents", "Background Task Management", "sfltool", "macOS"],
+    "about": [
+      { "@type": "Thing", "name": "SMAppService" },
+      { "@type": "Thing", "name": "macOS code signing" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="wordmark" href="/" aria-label="Dully Labs home">
+        <svg class="studio-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2v28M2 16h28M6.1 6.1l19.8 19.8M6.1 25.9 25.9 6.1" stroke="currentColor" stroke-width="3.5"/></svg>
+        dully labs<span class="wordmark-dot">.</span>
+      </a>
+      <div class="header-links">
+        <a class="current" href="/notes/">Notes</a>
+        <button class="theme-toggle" type="button" aria-label="Use dark appearance" hidden>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.5 14A8.6 8.6 0 0 1 10 3.5 8.6 8.6 0 1 0 20.5 14Z"/></svg>
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="notes-main" id="main" tabindex="-1">
+      <article>
+        <header>
+          <h1>Launch at login for ad-hoc-signed macOS apps</h1>
+          <p class="byline">Dully Labs · <time datetime="2026-09-29">29 September 2026</time></p>
+          <p class="lede">We wanted a "Launch at login" toggle in a small Mac app that has no Apple Developer certificate. The advice we found said ad-hoc signing and SMAppService don't mix. So we tested it in throwaway VMs, with real reboots.</p>
+        </header>
+
+        <section class="summary" aria-labelledby="tldr">
+          <h2 id="tldr">TL;DR</h2>
+          <p>On macOS 26.6.2, <code>SMAppService.mainApp.register()</code> worked for an ad-hoc-signed app. The login item survived a rebuild and a move to another folder. It never duplicated, and the app could always read its true status. A hand-written LaunchAgent plist also launched the app, but moving the app broke it, and nothing told the app. A self-signed certificate made no difference we could measure. To give the app to other people, you still need Developer ID signing and notarization.</p>
+        </section>
+
+        <section class="summary agents" aria-labelledby="for-agents">
+          <h2 id="for-agents">For agents</h2>
+          <ul>
+            <li>Scope: macOS 26.6.2 only. Non-sandboxed AppKit app, ad-hoc signed (codesign --sign -), no Apple certificate.</li>
+            <li>Use SMAppService.mainApp.register(). Worked with ad-hoc signing. Survived rebuild (new CDHash, same path) and move (/Applications to ~/Apps). No duplicate BTM entries, even after re-registering from the rebuilt binary.</li>
+            <li>Avoid ~/Library/LaunchAgents plists for app launch-at-login. Moving the app breaks it (launchd exit 78, EX_CONFIG) while BTM and SMAppService.statusForLegacyPlist(at:) still report enabled.</li>
+            <li>A self-signed codesigning certificate made no observable difference.</li>
+            <li>Register once, only when running from /Applications or ~/Applications. Store a flag on success. Never re-register after the user turns it off. Read SMAppService.mainApp.status live. On .requiresApproval, call SMAppService.openSystemSettingsLoginItems().</li>
+            <li>Untested: Gatekeeper quarantine on first launch, other macOS versions, Apple Development and Developer ID certificates, BTM consent across many restarts.</li>
+          </ul>
+        </section>
+
+        <h2 id="problem">An ad-hoc-signed app with no paid developer account</h2>
+        <p>The app is a small menu-bar utility for macOS 14 and later. It's an AppKit app built as a SwiftPM executable. A Makefile assembles the <code>.app</code> bundle and signs it ad hoc:</p>
+        <pre><code>codesign --force --deep --sign - MyApp.app</code></pre>
+        <p>It isn't sandboxed, it isn't on the App Store, and there's no paid developer account behind it. We wanted a "Launch at login" setting, on by default.</p>
+
+        <h2 id="prior-art">Why ad-hoc signing looked risky</h2>
+        <p>Apple's answer for macOS 13 and later is <a href="https://developer.apple.com/documentation/servicemanagement/smappservice">SMAppService</a>, which replaces hand-installed plists in <code>~/Library/LaunchAgents</code> (<a href="https://developer.apple.com/documentation/servicemanagement/updating-helper-executables-from-earlier-versions-of-macos">migration guide</a>).</p>
+        <p>The catch is identity. macOS recognises an app across updates by its designated requirement, and ad-hoc code doesn't have a stable one (<a href="https://developer.apple.com/documentation/technotes/tn3127-inside-code-signing-requirements">TN3127</a>). Apple DTS says it plainly: macOS "is unable to tell that version N+1 of your app is the 'same code' as version N" (<a href="https://developer.apple.com/forums/thread/795739">forum thread</a>). In a thread about apps losing background permission on restart, DTS added that with ad-hoc signing "you will see problems like this" (<a href="https://developer.apple.com/forums/thread/799910">forum thread</a>).</p>
+        <p>There are also reports of more than 100 duplicate login items piling up after repeated rebuilds (<a href="https://github.com/sindresorhus/LaunchAtLogin-Legacy/issues/100">LaunchAtLogin-Legacy #100</a>). A self-signed identity gives you a stable signature without paying Apple, which is enough where only stability matters (<a href="https://developer.apple.com/library/archive/technotes/tn2206/_index.html">TN2206</a>).</p>
+        <p>Our desk research predicted that SMAppService with ad-hoc signing would duplicate the login item on every rebuild. It didn't.</p>
+
+        <h2 id="method">How we tested</h2>
+        <p>We wrote a probe app, LoginProbe (bundle ID <code>dev.dulangaj.LoginProbe</code>, <code>LSUIElement</code>), that does nothing but append a line to <code>~/loginprobe.log</code> each time it launches: timestamp, build tag, bundle path and XPC service name. It also has command-line modes for each mechanism.</p>
+        <ul>
+          <li><code>sma-register</code>, <code>sma-unregister</code>, <code>sma-status</code> call <code>SMAppService.mainApp</code>.</li>
+          <li><code>la-install</code>, <code>la-remove</code>, <code>la-status</code> write, delete and inspect a LaunchAgent plist. The status mode uses <code>SMAppService.statusForLegacyPlist(at:)</code>.</li>
+        </ul>
+        <p>The LaunchAgent plist it writes:</p>
+        <pre><code>&lt;dict&gt;
+  &lt;key&gt;Label&lt;/key&gt;&lt;string&gt;dev.dulangaj.LoginProbe&lt;/string&gt;
+  &lt;key&gt;ProgramArguments&lt;/key&gt;
+  &lt;array&gt;&lt;string&gt;/Applications/LoginProbe.app/Contents/MacOS/LoginProbe&lt;/string&gt;&lt;/array&gt;
+  &lt;key&gt;RunAtLoad&lt;/key&gt;&lt;true/&gt;
+  &lt;key&gt;AssociatedBundleIdentifiers&lt;/key&gt;&lt;string&gt;dev.dulangaj.LoginProbe&lt;/string&gt;
+&lt;/dict&gt;</code></pre>
+        <p>We built two versions, v1 and v2, that differ only in the build tag string. That gives them different CDHashes, the same thing a real rebuild does.</p>
+        <p>Each scenario ran in a fresh, disposable <a href="https://tart.run">Tart</a> VM cloned from Cirrus Labs' <code>macos-tahoe-base</code> image, which runs macOS 26.6.2. The VM logged in to the admin user automatically. Every "login" was a real reboot with <code>sudo shutdown -r now</code>. After each step we dumped Background Task Management state with <code>sudo sfltool dumpbtm</code>, read the probe's log, and took screenshots over SSH with <code>screencapture</code>.</p>
+        <p>We ran three scenarios.</p>
+        <ul>
+          <li><strong>A.</strong> LaunchAgent plist, ad-hoc signed.</li>
+          <li><strong>B1.</strong> <code>SMAppService.mainApp</code>, ad-hoc signed.</li>
+          <li><strong>B2.</strong> <code>SMAppService.mainApp</code>, signed with a self-signed certificate from the login keychain.</li>
+        </ul>
+        <p>In each scenario we installed v1 in <code>/Applications</code>, enabled launch at login and rebooted. Then we replaced it with v2 at the same path without registering again, and rebooted. Last, we moved the app to <code>~/Apps</code> and rebooted.</p>
+
+        <h2 id="results">Only the LaunchAgent broke, and only when the app moved</h2>
+        <div class="table-scroll" role="region" aria-labelledby="results-caption" tabindex="0">
+          <table>
+            <caption id="results-caption">Launch-at-login behaviour on macOS 26.6.2, one fresh VM per scenario</caption>
+            <thead>
+              <tr><th scope="col"></th><th scope="col">A: LaunchAgent (ad hoc)</th><th scope="col">B1: SMAppService (ad hoc)</th><th scope="col">B2: SMAppService (self-signed)</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Launches at login</th><td>Yes, via launchd. XPC name <code>dev.dulangaj.LoginProbe</code>.</td><td>Yes. XPC name <code>application.dev.dulangaj.LoginProbe.&lt;n&gt;</code>.</td><td>Yes</td></tr>
+              <tr><th scope="row">Survives rebuild (v2 at same path, no re-register)</th><td>Yes. BTM generation 0 to 1, one entry.</td><td>Yes. Status <code>enabled</code>, BTM generation 1 to 2.</td><td>Yes</td></tr>
+              <tr><th scope="row">Duplicates in BTM</th><td>None. One "legacy agent" entry.</td><td>None, even after registering again from v2. One "app" entry.</td><td>None</td></tr>
+              <tr><th scope="row">Survives move (/Applications to ~/Apps)</th><td><strong>No.</strong> Nothing launched. launchd reported <code>last exit code = 78: EX_CONFIG</code> because the path is hardcoded. BTM and <code>statusForLegacyPlist</code> still said enabled.</td><td>Yes. Launched from ~/Apps, and BTM updated the URL.</td><td>Yes</td></tr>
+              <tr><th scope="row">Notification</th><td>"App Background Activity: 'LoginProbe' can run in the background..." It showed again after the v2 reboot.</td><td>"Login Item Added: 'LoginProbe' will open automatically when you log in." Unclear whether it showed again after the rebuild.</td><td>Same as B1</td></tr>
+              <tr><th scope="row">Where Login Items lists it</th><td>App Background Activity, "Item from unidentified developer"</td><td>Open at Login, Kind "Application"</td><td>Open at Login, Kind "Application". BTM Developer Name still <code>(null)</code>.</td></tr>
+              <tr><th scope="row">App can read its status</th><td>Partly. Stale after a move.</td><td>Yes, correct after rebuild and move</td><td>Yes</td></tr>
+              <tr><th scope="row">Setup</th><td>Plist with a hardcoded path. Has to be rewritten whenever the app moves.</td><td>One call: <code>SMAppService.mainApp.register()</code></td><td>Same code, plus a signing identity in the keychain. No benefit observed.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>For B2 we made the identity with <code>openssl</code>, then <code>security import</code>, <code>security set-key-partition-list</code> and <code>security add-trusted-cert -p codeSign</code>. That is four commands of setup, and in this test it made no difference we could observe.</p>
+
+        <figure>
+          <img src="smappservice-login-items.jpg" width="630" height="440" alt="System Settings, Login Items and Extensions. Under Open at Login, LoginProbe is listed with Kind Application. A notification reads: Login Item Added. LoginProbe will open automatically when you log in. You can manage this in Login Items and Extensions." />
+          <figcaption>B1: ad-hoc-signed app registered with <code>SMAppService.mainApp</code>. It appears under Open at Login like any other app. The Cirrus Labs and launchctl entries come from the VM base image.</figcaption>
+        </figure>
+        <figure>
+          <img src="launchagent-login-items.jpg" width="630" height="490" alt="System Settings, Login Items and Extensions. Open at Login is empty. Under App Background Activity, LoginProbe is listed as Item from unidentified developer, with its toggle on. A notification reads: App Background Activity. LoginProbe can run in the background. You can manage background activity in Login Items and Extensions." />
+          <figcaption>A: the same app launched by a LaunchAgent plist. It lands under App Background Activity as "Item from unidentified developer".</figcaption>
+        </figure>
+
+        <p>The LaunchAgent failure is the one to worry about. After the move, the plist still pointed at <code>/Applications</code>, launchd gave up with <code>EX_CONFIG</code>, and every status API still said enabled. An app that trusts that status will show a ticked toggle that does nothing. SMAppService tracks the bundle itself, so the app still launched after the move and BTM updated its URL.</p>
+
+        <h2 id="shipped">What we shipped</h2>
+        <p>Our menu-bar app, Never Press Start, now uses <code>SMAppService.mainApp</code> with its existing ad-hoc signature. The rules:</p>
+        <ul>
+          <li>Register once, on first launch, and only when running from <code>/Applications</code> or <code>~/Applications</code>. Dev builds run from <code>build/</code>, and we didn't want them to register a login item.</li>
+          <li>Set a <code>didInitialLoginItemSetup</code> flag only if <code>register()</code> succeeds, so a failure gets retried next launch.</li>
+          <li>Never register again on our own. If the user turns it off, it stays off.</li>
+          <li>The toggle shows the live <code>SMAppService.mainApp.status</code>, read again whenever the settings window becomes key, because the user can change it in System Settings.</li>
+          <li>On <code>.requiresApproval</code>, show a short note and a button that calls <code>SMAppService.openSystemSettingsLoginItems()</code>.</li>
+        </ul>
+        <pre><code>import AppKit
+import ServiceManagement
+
+enum LaunchAtLogin {
+    private static let setupKey = "didInitialLoginItemSetup"
+    private static var service: SMAppService { .mainApp }
+
+    static var status: SMAppService.Status { service.status }
+
+    /// Call from applicationDidFinishLaunching.
+    static func setUpOnFirstLaunch() {
+        let defaults = UserDefaults.standard
+        guard !defaults.bool(forKey: setupKey), isInstalled else { return }
+        do {
+            try service.register()
+            defaults.set(true, forKey: setupKey)
+        } catch {
+            // Flag stays unset, so the next launch tries again.
+        }
+    }
+
+    static func setEnabled(_ enabled: Bool) throws {
+        if enabled { try service.register() } else { try service.unregister() }
+    }
+
+    private static var isInstalled: Bool {
+        let folder = Bundle.main.bundleURL.deletingLastPathComponent().path
+        let home = FileManager.default.homeDirectoryForCurrentUser.path
+        return folder == "/Applications" || folder == home + "/Applications"
+    }
+}
+
+// In the settings window controller:
+func windowDidBecomeKey(_ notification: Notification) {
+    let status = LaunchAtLogin.status
+    launchAtLoginToggle.state = status == .enabled ? .on : .off
+    approvalNote.isHidden = status != .requiresApproval
+}
+
+@objc func openLoginItems(_ sender: Any?) {
+    SMAppService.openSystemSettingsLoginItems()
+}</code></pre>
+
+        <h2 id="caveats">Limits of this test</h2>
+        <ul>
+          <li>We tested one macOS version, 26.6.2. Older releases may behave differently.</li>
+          <li>The VMs had Gatekeeper disabled globally, and we copied the apps in over SSH, so they carried no quarantine attribute. We didn't test the first-launch Gatekeeper prompt or "unidentified developer" blocking that a downloaded app would hit.</li>
+          <li>The DTS warning may still apply on other macOS versions or to BTM consent over many restarts. DTS was replying to a developer whose app lost background permission on every restart. We rebooted a handful of times, not hundreds.</li>
+          <li>We didn't test Apple Development or Developer ID certificates.</li>
+          <li>For B1 we couldn't tell whether the "Login Item Added" notification appeared again after the rebuild.</li>
+          <li>This is about apps you build and run yourself. To give an app to other people, sign it with Developer ID and notarize it.</li>
+        </ul>
+
+        <h2 id="reproduce">Reproduce the test</h2>
+        <p>Clone a fresh VM per scenario so no BTM state carries over:</p>
+        <pre><code>tart clone ghcr.io/cirruslabs/macos-tahoe-base:latest probe-b1
+tart run probe-b1</code></pre>
+        <p>Inside the VM, install the probe and use its modes:</p>
+        <pre><code>/Applications/LoginProbe.app/Contents/MacOS/LoginProbe sma-register
+/Applications/LoginProbe.app/Contents/MacOS/LoginProbe sma-status
+sudo shutdown -r now
+
+# after login
+cat ~/loginprobe.log
+sudo sfltool dumpbtm | grep -B3 -A14 -i loginprobe</code></pre>
+        <p>For a rebuild, swap in the v2 bundle at the same path and reboot. For a move, <code>mv</code> it to another folder and reboot. <code>launchctl print gui/$(id -u)/dev.dulangaj.LoginProbe</code> shows the LaunchAgent's last exit code in scenario A. Delete the VM with <code>tart delete</code> when you're done.</p>
+      </article>
+    </main>
+    <footer class="site-footer"><p>© 2026 Dully Labs</p><a href="/notes/">All notes</a></footer>
+  </div>
+</body>
+</html>
