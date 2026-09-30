@@ -7,24 +7,20 @@ document.querySelectorAll('[data-download]').forEach(button => {
     else dialog.showModal();
   });
 });
-dialog.querySelectorAll('.dialog-close, .dialog-done').forEach(button => {
-  button.addEventListener('click', () => dialog.close());
-});
-dialog.addEventListener('click', event => {
-  if (event.target === dialog) {
-    const rect = dialog.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-  }
+document.querySelector('#my-stops').addEventListener('click', () => document.querySelector('#stops-dialog').showModal());
+const modalOpen = () => document.querySelector('dialog[open]');
+document.querySelectorAll('dialog').forEach(modal => {
+  modal.querySelectorAll('.dialog-close, .dialog-done').forEach(button => {
+    button.addEventListener('click', () => modal.close());
+  });
+  modal.addEventListener('click', event => {
+    if (event.target === modal) {
+      const rect = modal.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) modal.close();
+    }
+  });
 });
 const zh = () => document.documentElement.lang.startsWith('zh');
-const pinButton = document.querySelector('#pin-stop');
-let pinned = false;
-const renderPin = () => pinButton.textContent = pinned ? (zh() ? '✓ 已釘選' : '✓ Stop pinned') : (zh() ? '＋ 釘選此站' : '＋ Pin this stop');
-pinButton.addEventListener('click', () => {
-  pinned = !pinned;
-  pinButton.setAttribute('aria-pressed', String(pinned));
-  renderPin();
-});
 
 // Vertical scroll drives the bus horizontally along the route.
 const viewport = document.querySelector('.route-viewport');
@@ -160,7 +156,7 @@ new ResizeObserver(() => {
   else if (stopWidth) routeScroll.style.height = `${last * scrollPerStop + viewport.clientHeight}px`;
 }).observe(viewport);
 addEventListener('keydown', event => {
-  if (dialog.open || event.target.closest('input,textarea,select,[contenteditable="true"]') || event.altKey || event.ctrlKey || event.metaKey) return;
+  if (modalOpen() || event.target.closest('input,textarea,select,[contenteditable="true"]') || event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
     event.preventDefault();
     driveTo(Math.max(0, Math.min(current + (event.key === 'ArrowRight' ? 1 : -1), last)));
@@ -211,7 +207,7 @@ motionPreference.addEventListener('change', event => {
 });
 // Horizontal trackpad swipe, shift-wheel or touch drag drives the same scroll position.
 addEventListener('wheel', event => {
-  if (dialog.open) return;
+  if (modalOpen()) return;
   if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
   event.preventDefault();
   const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1;
@@ -222,7 +218,7 @@ addEventListener('wheel', event => {
 let touch;
 addEventListener('touchstart', event => {
   cancelAnimationFrame(glide);
-  touch = event.touches.length === 1 && !dialog.open
+  touch = event.touches.length === 1 && !modalOpen()
     ? {x: event.touches[0].clientX, y: event.touches[0].clientY, horizontal: null, moves: []} : null;
 }, {passive: true});
 addEventListener('touchmove', event => {
@@ -245,7 +241,7 @@ addEventListener('touchend', event => {
   velocity = Math.max(-5, Math.min(velocity, 5));
   let then = performance.now();
   const step = now => {
-    if (dialog.open) return;
+    if (modalOpen()) return;
     const elapsed = Math.max(0, now - then); // a frame's timestamp can precede the performance.now() taken before it
     velocity *= .95 ** (elapsed / 16);
     if (Math.abs(velocity) < .02) return;
@@ -256,4 +252,4 @@ addEventListener('touchend', event => {
   glide = requestAnimationFrame(step);
 });
 addEventListener('touchcancel', () => { touch = null; });
-document.addEventListener('langchange', () => { renderPin(); setDoor(bus.classList.contains('door-open')); current = -1; render(); });
+document.addEventListener('langchange', () => { setDoor(bus.classList.contains('door-open')); current = -1; render(); });
