@@ -1,6 +1,6 @@
-# Hong Kong Green Minibus
+# Minibus Hunter
 
-Marketing site for the iPhone and Apple Watch app. `index.html` redirects to `the-route.html`.
+Marketing site for the Minibus Hunter iPhone and Apple Watch app. `index.html` redirects to `the-route.html`.
 
 From the repository root:
 
