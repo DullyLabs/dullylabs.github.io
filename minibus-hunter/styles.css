@@ -122,7 +122,7 @@
 .route-strip button i{width:12px;height:12px;border-radius:50%;background:var(--street);border:2px solid var(--street-edge);transition:.3s}
 .route-strip button[aria-current=step]{color:var(--street-ink)}
 .route-strip button[aria-current=step] i{background:var(--street-accent);border-color:var(--street-accent);box-shadow:0 0 0 5px #00734f22}
-@media(max-width:900px){.territory{grid-template-columns:1fr;padding-top:11vh;gap:10px}.territory .arrival-plate{margin-top:0;align-self:start;max-width:340px}.route-page .sky-type{display:none}.landmarks{height:24vh}.territory .arrival-plate{transform:scale(.9);transform-origin:left top}.route-bus{left:6vw;width:80vw;bottom:14%}.stop-sign{display:none}.route-strip:before,.route-progress{bottom:17px}.route-strip button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.route-strip button{gap:0}.territory h2{font-size:clamp(26px,7vw,32px)}.territory-copy>p:not(.eyebrow){font-size:14px}.territory .arrival-plate{padding:12px 16px}.territory .arrival-plate b{font-size:40px}.territory .arrival-plate .minutes{font-size:32px}.day-page header nav>button{min-height:40px}.day-page #day-light{padding:0;align-self:stretch;aspect-ratio:1;justify-content:center}.day-page #day-light span{display:none}.route-page header{background:linear-gradient(var(--street) 55%,transparent)}}
+@media(max-width:900px){.territory{grid-template-columns:1fr;padding-top:11vh;gap:10px}.territory .arrival-plate{margin-top:0;align-self:start;max-width:340px}.route-page .sky-type{display:none}.territory .arrival-plate{transform:scale(.9);transform-origin:left top}.route-bus{left:6vw;width:80vw;bottom:14%}.stop-sign{display:none}.route-strip:before,.route-progress{bottom:17px}.route-strip button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.route-strip button{gap:0}.territory h2{font-size:clamp(26px,7vw,32px)}.territory-copy>p:not(.eyebrow){font-size:14px}.territory .arrival-plate{padding:12px 16px}.territory .arrival-plate b{font-size:40px}.territory .arrival-plate .minutes{font-size:32px}.day-page header nav>button{min-height:40px}.day-page #day-light{padding:0;align-self:stretch;aspect-ratio:1;justify-content:center}.day-page #day-light span{display:none}.route-page header{background:linear-gradient(var(--street) 55%,transparent)}}
 @media(min-width:901px) and (max-height:700px){.territory{padding-top:max(11vh,110px)}.territory h1{font-size:clamp(34px,4vw,48px);margin:10px 0}.route-bus{width:min(400px,42vw);bottom:8%}}
 .door-toggle{position:absolute;left:67%;top:28%;width:9%;height:52%;border:0;background:none;cursor:pointer;border-radius:4px}
 /* Small discoveries across the water, kept on a slower plane than the street. */
@@ -157,9 +157,12 @@
 .route-bus:after{content:"";position:absolute;left:91%;top:57%;width:35%;height:32%;background:linear-gradient(90deg,#f8e6ab33,transparent);clip-path:polygon(0 38%,100% 0,100% 100%,0 62%);pointer-events:none;opacity:0}
 [data-theme=dark] .route-bus:after{opacity:1}
 @media(max-width:900px){
-  .territory{padding-top:max(13vh,100px)}
-  .harbour-view{right:4%;bottom:38%;width:57vw;max-width:320px}
-  .landmarks{height:19vh}
+  .territory{padding-top:max(13vh,100px);overflow-x:clip}
+  .route-page{--lm-h:clamp(19vh,100vh - 690px,21vh)}
+  .road{height:26%}
+  .skyline{bottom:26%;height:20vh}
+  .landmarks{bottom:26%;left:50%;height:var(--lm-h);width:max(100%,var(--lm-h)*10/3);margin-left:calc(max(100%,var(--lm-h)*10/3)/-2)}
+  .harbour-view{right:4%;bottom:calc(26% + 11vh);width:60vw;max-width:none}
   .territory .arrival-plate{margin-top:16px;transform:none;width:290px}
   .ride-caption{bottom:7%;font-size:9px;letter-spacing:.3px}
   }
@@ -175,8 +178,8 @@
   .territory .arrival-plate b{font-size:32px}
   .territory .arrival-plate .minutes{font-size:28px}
   .territory .arrival-plate p{margin-top:7px;padding-top:7px}
-  .harbour-view{bottom:33%;width:48vw}
-  .landmarks{height:9vh}
+  .route-page{--lm-h:clamp(9vh,100vh - 560px,21vh)}
+  .harbour-view{bottom:calc(26% + 6vh);width:48vw}
 }
 /* A passenger calls out as the bus leaves Wan Chai. */
 .bus-speech{position:absolute;left:38%;bottom:calc(85% + 12px);z-index:2;width:max-content;max-width:90%;margin:0;padding:11px 17px;border:1px solid var(--street-edge);border-radius:12px;background:var(--street);color:var(--street-ink);font-size:14px;line-height:1.4;box-shadow:0 4px 14px #0000000c;pointer-events:none;opacity:0;transform:translate(-50%,5px);transition:opacity .2s,transform .2s}
