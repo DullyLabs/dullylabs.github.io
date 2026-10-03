@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="robots" content="noindex" />
+<title>PluckIt — share card source</title>
+
+<!-- ──────────────────────────────────────────────────────────────
+     Source for /pluckit/assets/og.png, the 1200x630 share card for
+     PluckIt. Link unfurlers (Slack, iMessage, X, LinkedIn, WhatsApp)
+     show it when a page that points og:image at it is shared. Crawlers
+     never see this file: they download the flat PNG. This exists so the
+     PNG can be regenerated instead of re-screenshotted. /og.html is the
+     studio card; this is PluckIt's card built on the same layout.
+
+     To rebuild after editing, from the repo root. It goes through a
+     server so the capture matches how the site is served, and so the
+     web fonts load the same way they do on the homepage.
+
+       python3 -m http.server 8899 &
+
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+         --headless --disable-gpu --hide-scrollbars \
+         --force-color-profile=srgb --virtual-time-budget=8000 \
+         --window-size=1200,630 \
+         --screenshot="pluckit/assets/og.png" \
+         http://localhost:8899/pluckit/og.html
+
+     Then bump the ?v= on og:image and twitter:image in pluckit/index.html, so scrapers that have cached the old image fetch the new one.
+
+     Everything here is deliberately self-contained: the light-theme
+     tokens and the exhibit artwork are copied from index.html and
+     assets/home.css rather than linked. A share card should be frozen
+     artwork, not something that silently changes the next time the
+     homepage is restyled. The layout is a full-bleed band in the
+     project's tile colour, deepened so it holds an edge against the
+     cream, over the studio line (mark, wordmark, project name, tagline).
+     The window toolbar and "NOTE TO SELF" would render under ~9px, so
+     they are hidden; the lifted "Keep the good bits." tag is kept.
+     ────────────────────────────────────────────────────────────── -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,500,20,1;9..144,600,20,1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* Light-theme tokens from assets/home.css, frozen. */
+:root {
+  --paper: #f6f3ec;
+  --ink: #252720;
+  --muted: #6c6c61;
+  --rule: #d9d7cc;
+  --accent: #5b7047;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Space Grotesk", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+h1, p { margin: 0; }
+svg { display: block; }
+
+/* The canvas is a fixed 1200x630 (1.91:1, the size every unfurler wants).
+   Nothing here may use viewport or fluid units: the capture runs at exactly
+   this size, so clamp() and vw would bake one arbitrary value into the PNG.
+   WhatsApp and iMessage crop the edges, so everything that matters sits
+   inside an 80px safe area. */
+html, body { width: 1200px; height: 630px; overflow: hidden; margin: 0; }
+body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+.canvas { position: relative; width: 1200px; height: 630px; display: grid; grid-template-rows: 378px 1fr; }
+
+/* ── top: the project, full bleed ── */
+/* 378px is 60% of the card. The artwork is the full-size exhibit from
+   index.html (460x310), scaled and clipped by the band. */
+.band { position: relative; overflow: hidden; background: #e6dea8; color: #34312e; font-family: var(--sans); }
+.art { position: absolute; width: 460px; height: 310px; left: 0; top: 0; transform-origin: 0 0; transform: translate(340px, 22px) scale(1.3); }
+
+/* ── bottom: the studio, on the 80px margins ── */
+/* Same construction as the header wordmark on the homepage (.wordmark,
+   .studio-mark, .wordmark-dot), scaled up. */
+.studio { display: flex; align-items: center; justify-content: space-between; padding: 0 80px; }
+.wordmark { display: flex; align-items: center; font-size: 76px; font-weight: 700; letter-spacing: -4.5px; line-height: 1; }
+.studio-mark { width: 70px; height: 70px; margin-right: 24px; color: var(--accent); flex-shrink: 0; }
+.wordmark-dot { color: var(--accent); }
+/* The project name, in the small caps of the homepage eyebrows. */
+.project-name { margin: 20px 0 0 94px; font-size: 17px; font-weight: 600; letter-spacing: 2.4px; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--serif); font-weight: 500; font-size: 44px; line-height: 1.1; letter-spacing: -1.6px; text-align: right; }
+
+/* Exhibit artwork, copied from assets/home.css. Hover/transition rules and
+   the handwritten stickers and captions are left out. */
+.source-note { position: absolute; width: 290px; height: 223px; left: 66px; top: 31px; background: #fffdf2; transform: rotate(-7deg); box-shadow: 0 12px 25px #625a2f18; }
+.note-toolbar { height: 28px; padding: 0 11px; display: flex; align-items: center; gap: 13px; border-bottom: 1px solid #e7e4d8; color: #787669; font-size: 7px; }
+.window-dots { font-size: 6px; color: #c5c1ae; }
+.note-content { padding: 18px 24px; }
+.note-eyebrow { font-size: 7px; letter-spacing: 1.8px; color: #898271; }
+.note-content p { font: 500 19px/1.35 var(--serif); margin: 9px 0; }
+.source-highlight { display: inline-block; background: #f1e59b; color: #6f6643; font-size: 15px; padding: 0 4px; }
+.fake-lines { display: grid; gap: 7px; margin-top: 12px; }
+.fake-lines i { height: 3px; background: #e9e6d8; width: 92%; }
+.fake-lines i:last-child { width: 65%; }
+.crop { position: absolute; width: 10px; height: 10px; border-color: #8b855e; border-style: solid; }
+.crop-tl { top: -5px; left: -5px; border-width: 1px 0 0 1px; }
+.crop-tr { top: -5px; right: -5px; border-width: 1px 1px 0 0; }
+.crop-bl { bottom: -5px; left: -5px; border-width: 0 0 1px 1px; }
+.crop-br { bottom: -5px; right: -5px; border-width: 0 1px 1px 0; }
+.lifted-text { position: absolute; top: 167px; left: 153px; padding: 7px 13px; background: #f4db48; color: #36311c; font-size: 23px; font-weight: 500; letter-spacing: -.7px; white-space: nowrap; transform: rotate(3deg); box-shadow: 0 7px 0 #776b1820, 0 14px 24px #6457181a; }
+.pluck-cursor { position: absolute; bottom: -28px; right: 7px; width: 29px; height: 33px; }
+
+/* Per-card overrides, after the artwork rules they adjust. */
+/* The toolbar and eyebrow would render under ~9px, so they are hidden and the
+   note is shortened by the toolbar's 28px; the markup is unchanged. The lifted
+   "Keep the good bits." tag carries the app. */
+.note-toolbar, .note-eyebrow { display: none; }
+.source-note { height: 195px; }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <div class="band" aria-hidden="true">
+    <div class="art">
+      <div class="source-note">
+        <div class="note-toolbar"><span class="window-dots">● ● ●</span><span>something-worth-keeping.png</span></div>
+        <div class="note-content"><span class="note-eyebrow">NOTE TO SELF</span><p>Good ideas turn up<br />in unexpected places.</p><span class="source-highlight">Keep the good bits.</span><div class="fake-lines"><i></i><i></i></div></div>
+        <span class="crop crop-tl"></span><span class="crop crop-tr"></span><span class="crop crop-bl"></span><span class="crop crop-br"></span>
+      </div>
+      <div class="lifted-text">Keep the good bits.<svg class="pluck-cursor" viewBox="0 0 32 36"><path d="m3 2 24 19-12 1-6 10Z" fill="#22221e" stroke="#fffef8" stroke-width="2"/></svg></div>
+    </div>
+  </div>
+
+  <div class="studio">
+    <div>
+      <div class="wordmark">
+        <svg class="studio-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2v28M2 16h28M6.1 6.1l19.8 19.8M6.1 25.9 25.9 6.1" stroke="currentColor" stroke-width="3.5"/></svg>
+        dully labs<span class="wordmark-dot">.</span>
+      </div>
+      <p class="project-name">PluckIt</p>
+    </div>
+    <h1>Small apps.<br />Interesting possibilities.</h1>
+  </div>
+</div>
+</body>
+</html>
