@@ -27,3 +27,10 @@ The grid adds rows automatically and stacks on mobile. Keep hover effects option
 and provide the equivalent keyboard-focus treatment and reduced-motion rules.
 
 The share card (`assets/img/og.png`) is rendered from `og.html`; the comment at the top of that file has the headless Chrome command to regenerate it.
+
+## Notes
+
+Long-form write-ups live under `notes/`, one folder per note with its own
+`index.html` and images. They reuse `assets/home.css` plus `notes/notes.css`.
+To add one, copy an existing note, update its canonical URL, Open Graph tags and
+JSON-LD, and list it (newest first) in `notes/index.html`.
