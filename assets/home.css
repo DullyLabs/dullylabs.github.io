@@ -123,6 +123,17 @@ h1 em { font-style: normal; color: var(--accent); }
 .pluck-cursor { position: absolute; bottom: -28px; right: 7px; width: 29px; height: 33px; }
 .pluck-caption { position: absolute; top: 246px; left: 183px; display: flex; align-items: center; gap: 9px; transform: rotate(-4deg); color: #6d6232; font: 500 15px var(--serif); }
 .pluck-caption svg { width: 48px; margin-top: -21px; }
+.neverpressstart-exhibit { background: #e8d9cf; }
+.neverpressstart-art { position: absolute; width: min(280px, 85%); height: 240px; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.neverpressstart-plinth { position: absolute; left: 5%; right: 5%; top: 165px; height: 29px; border-radius: 50%; background: #66564a; box-shadow: 0 9px 0 #473c34, 0 18px 22px #473c3426; }
+.neverpressstart-button { position: absolute; left: 30%; width: 40%; top: 127px; height: 45px; display: grid; place-items: center; border-radius: 50%; background: #bd372e; color: #fff3e5; border: 2px solid #d55648; box-shadow: 0 10px 0 #812820, 0 14px 0 5px #b4a08b; font-size: 15px; font-weight: 700; letter-spacing: 2px; }
+.neverpressstart-dome { position: absolute; left: 13%; right: 13%; top: 13px; height: 167px; border: 2px solid #fff9eeaa; border-bottom-color: #fff9ee66; border-radius: 100px 100px 22px 22px; background: linear-gradient(110deg, #fffdf540, transparent 45%, #fffdf526); box-shadow: inset 8px 2px 12px #fff9ee33; transition: transform .5s ease; }
+.neverpressstart-dome::before { content: ""; position: absolute; left: 22px; top: 32px; width: 20px; height: 76px; border-left: 5px solid #fffdf599; border-radius: 50%; transform: rotate(15deg); }
+.neverpressstart-label { position: absolute; top: 215px; width: 100%; text-align: center; font-size: 9px; font-weight: 600; letter-spacing: 1.3px; }
+.neverpressstart-label span { display: block; margin-top: 3px; font: 500 12px var(--serif); letter-spacing: 0; }
+.project-link:focus-visible .neverpressstart-dome { transform: translateY(-7px); }
+.project-neverpressstart .project-link:focus-visible .project-cta > span { transform: translate(3px, -3px); }
+.project-neverpressstart .project-link:focus-visible .exhibit { box-shadow: 0 8px 25px #2527200d; }
 .project-body { padding: 24px 1px 0; }
 .project-identity, .project-identity > div { display: flex; align-items: center; }
 .project-identity { justify-content: space-between; gap: 12px; }
@@ -140,6 +151,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .project-link:focus-visible .chart-shape { transform: scale(.86, 1.1); }
 .project-link:focus-visible .lifted-text { transform: translate(7px, -12px) rotate(-1deg); }
 @media (hover: hover) {
+  .project-link:hover .neverpressstart-dome { transform: translateY(-7px); }
   .project-link:hover .gmb-bus { transform: translateX(14px); }
   .project-link:hover .wheel { transform: rotate(60deg); }
   .project-link:hover .slip-front { transform: rotate(0deg) translateY(-6px); }
@@ -166,6 +178,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .footer-links { display: flex; gap: 22px; }
 @media (min-width: 1400px) { .exhibit { height: 375px; } }
 @media (max-width: 1050px) {
+  .neverpressstart-art { transform: translate(-50%, -50%) scale(.8); }
   .intro { align-items: flex-start; }
   .intro-note { padding-top: 40px; font-size: 12px; }
   h1 { font-size: 48px; letter-spacing: -2px; }
@@ -210,6 +223,7 @@ h1 em { font-style: normal; color: var(--accent); }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .project-link .neverpressstart-dome { transform: none !important; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .project-link .gmb-bus, .project-link .wheel { transform: none !important; }
   .project-link .slip-front { transform: rotate(6deg) !important; }

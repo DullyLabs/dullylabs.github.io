@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#eeeae1">
+<title>Never Press Start · The Museum of Unpressed Buttons</title>
+<meta name="description" content="Never Press Start is a Mac menu-bar pomodoro that starts itself when you start working and takes over the screen when it's time for a break.">
+<link rel="icon" href="/neverpressstart/assets/app-icon.png"><link rel="apple-touch-icon" href="/neverpressstart/assets/app-icon.png">
+<script src="/assets/theme.js"></script>
+<link rel="stylesheet" href="style.css"><script src="script.js" defer></script>
+</head>
+<body>
+<header class="masthead"><a class="brand" href="/"><img class="brand-icon" src="/neverpressstart/assets/app-icon.png" alt="" width="28" height="28"> NEVER PRESS START</a><a class="source-link" href="#build">Get the Mac app <span aria-hidden="true">↗</span></a></header>
+<main>
+<section class="hero" aria-labelledby="title">
+<h1 id="title">The Museum of<br>Unpressed <em>Buttons.</em></h1>
+<div class="hero-grid">
+<div class="intro"><p class="lead">You do your thing, it does its thing.</p><p>A Mac pomodoro that starts itself when you start working.</p><div class="admission">FREE ADMISSION. NO MOTIVATION REQUIRED.</div></div>
+<div class="specimen"><span class="specimen-note">Please do not press the exhibit.</span><div class="glass"><span class="glass-shine"></span><button id="start-button" class="big-button" aria-describedby="button-response">START</button><span class="specimen-shadow"></span></div><div class="plinth"></div><div class="museum-label"><div><h2>The start button</h2><p id="button-response" role="status">Condition: untouched.</p></div></div></div>
+</div>
+</section>
+<section class="confession" aria-labelledby="confession-title"><h2 id="confession-title">“I never actually switched on the pomodoro timer I had.”</h2><span class="scribble">Sound familiar?</span></section>
+<section class="how" id="how" aria-labelledby="how-title"><h2 id="how-title">Less self-discipline.<br><em>More automatic.</em></h2><div class="steps"><article><div class="step-visual keyboard" aria-hidden="true"><span>⌘</span><span>C</span><span>V</span><i>● WORK DETECTED</i></div><h3>You work. It starts.</h3><p>Touch the keyboard or mouse and the 20-minute timer starts. No app to open, nothing to press.</p></article><article><div class="step-visual tiny-screen" aria-hidden="true"><span>Take a break.</span><i>YES, YOU.</i></div><h3>It gets in your face.</h3><p>Time's up: a full-screen break covers every display, even over full-screen apps, until you dismiss it.</p><button class="inline-button" id="preview">See what that feels like ↗</button></article><article><div class="step-visual away-visual" aria-hidden="true"><span>19:42</span><b>↻</b><span>20:00</span></div><h3>Walk away. That counts.</h3><p>Five idle minutes count as a break. Come back to a fresh 20 minutes.</p><button class="inline-button" id="away">Pretend to step away ↗</button></article></div></section>
+<section class="build" id="build" aria-labelledby="build-title"><h2 id="build-title">Build it <em>yourself.</em></h2><pre><code>git clone https://github.com/DullyLabs/NeverPressStart
+cd NeverPressStart
+make
+cp -R build/NeverPressStart.app /Applications/</code></pre><p>Needs macOS 26 and Xcode. <a href="https://github.com/DullyLabs/NeverPressStart">Source on GitHub <span aria-hidden="true">↗</span></a></p></section>
+<section class="closing"><span class="eyebrow">PLEASE EXIT THROUGH THE GIFT SHOP</span><h2>You have enough<br>things to <em>remember.</em></h2><div class="closing-row"><p>A quiet timer in your menu bar.<br>A very unquiet reminder to take a break.</p><a class="cta" href="#build">Get Never Press Start <span aria-hidden="true">↗</span></a></div><p class="small-print">For macOS · Open source · No macOS permissions needed</p></section>
+</main>
+<footer><span class="links"><a href="/">Dully Labs</a><a href="https://dulangaj.com">Developer</a></span><span>© <span data-year></span> Dulanga Jayawardena · END OF EXHIBITION</span></footer>
+<aside class="demo-bar" aria-label="Interactive timer demo"><div class="demo-light"></div><div class="demo-copy"><strong id="demo-status">You showed up. It started.</strong><span id="demo-detail">20-second website demo. The Mac app gives you 20 minutes.</span></div><span id="countdown" class="countdown" aria-label="Seconds remaining">00:20</span><button id="pause">Pause demo</button></aside>
+<dialog id="break-dialog" aria-labelledby="break-title" aria-describedby="break-description"><div class="break-content"><div class="break-asterisk" aria-hidden="true">✳</div><h2 id="break-title">Take a<br><em>break.</em></h2><p id="break-description">The museum can wait.<br>Your shoulders would like a word.</p><button id="dismiss" class="break-dismiss">Okay, back to the museum ↗</button><span class="break-footnote">Website demo. The Mac app covers every display.<br>Esc or Return to dismiss.</span></div></dialog>
+<noscript><div class="no-script">The interactive exhibit needs JavaScript. The Mac app starts a 20-minute timer automatically when you work.</div></noscript>
+</body></html>
