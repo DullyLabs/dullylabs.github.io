@@ -163,6 +163,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .site-footer { border-top: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 23px 0 27px; color: var(--muted); font-size: 10px; }
 .site-footer a { color: var(--ink); }
 .site-footer a span { margin-left: 10px; }
+.footer-links { display: flex; gap: 22px; }
 @media (min-width: 1400px) { .exhibit { height: 375px; } }
 @media (max-width: 1050px) {
   .intro { align-items: flex-start; }
