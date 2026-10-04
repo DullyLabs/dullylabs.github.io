@@ -83,6 +83,66 @@
 .landmarks .far{fill:var(--far)}.landmarks .mid{fill:var(--mid)}.landmarks .near{fill:var(--near);color:var(--near)}.landmarks .shade{fill:color-mix(in oklch,var(--near),#000 15%)}
 .window{fill:var(--street);opacity:.35}.neon rect{fill:var(--red)}.neon text{fill:var(--street)}
 [data-theme=dark] .route-page .window{fill:#f4d468;opacity:.6}
+/* Night-only architectural lights. Slow colour cycles suggest the real installations. */
+.route-page .night-light{display:none}
+[data-theme=dark] .route-page .night-light{display:inline;stroke:none}
+[data-theme=dark] .route-page .night-windows{fill:url(#night-win)}
+[data-theme=dark] .route-page .night-grid{fill:url(#night-led)}
+[data-theme=dark] .route-page .night-edge{fill:none;stroke:#dce9ec;stroke-width:1.2;opacity:.8;filter:drop-shadow(0 0 2px #dce9ec55)}
+[data-theme=dark] .route-page .night-warm{stroke:#e8cf91}
+[data-theme=dark] .route-page .hsbc-frame{stroke:#e5e5d7;filter:drop-shadow(0 0 2px #e8cf9155)}
+[data-theme=dark] .route-page .night-colour{color:#da91b7;animation:skyline-colour 96s ease-in-out infinite;filter:drop-shadow(0 0 2px currentColor)}
+[data-theme=dark] .route-page .night-edge.night-colour{stroke:currentColor}
+[data-theme=dark] .route-page .hsbc-bands{fill:currentColor;opacity:.42}
+[data-theme=dark] .route-page .hsbc-light{color:#89ccc7;stroke-width:2;opacity:.8;animation-delay:-32s}
+[data-theme=dark] .route-page .hsbc-roof{stroke:#fff0e5;opacity:.95}
+[data-theme=dark] .route-page :is(.boc-frame,.boc-edge,.boc-facet){stroke:#fff;stroke-width:.9;opacity:1;filter:drop-shadow(0 0 1.6px #ffffffaa)}
+[data-theme=dark] .route-page .boc-windows{opacity:.18}
+.route-page .boc-mast{fill:var(--near)}.route-page .boc-mast-side{fill:var(--mid)}
+[data-theme=dark] .route-page .boc-left{fill:#263d32}
+[data-theme=dark] .route-page .boc-dim{opacity:.6}
+[data-theme=dark] .route-page .boc-windows.boc-dim{opacity:.1}
+[data-theme=dark] .route-page .boc-mast{fill:#67796e}
+[data-theme=dark] .route-page .boc-mast-side{fill:#43594d}
+[data-theme=dark] .route-page .boc-beacon{fill:#d18b84}
+[data-theme=dark] .route-page :is(.observation-rim,.observation-spokes){stroke:#e5ece7;filter:drop-shadow(0 0 2px #e5ece755)}
+[data-theme=dark] .route-page .observation-rim{stroke-width:1.5;opacity:.7}
+[data-theme=dark] .route-page .observation-spokes{opacity:.5}
+[data-theme=dark] .route-page .henderson-edge{stroke:#d5e6ed;stroke-width:.7;opacity:.25}
+[data-theme=dark] .route-page .henderson-shimmer{stroke:#e1eff5;stroke-width:1.1;stroke-dasharray:4 16;opacity:.45;animation:henderson-flow 60s linear infinite}
+[data-theme=dark] .route-page .henderson-bands{stroke:#d5e6ed;stroke-width:1.5;opacity:.18}
+[data-theme=dark] .route-page .lippo-windows{opacity:.7}
+@keyframes henderson-flow{0%{stroke-dashoffset:0;opacity:.35}65%{stroke-dashoffset:-100;opacity:.55}75%,100%{stroke-dashoffset:-100;opacity:.25}}
+
+[data-theme=dark] .route-page .ifc-crown{stroke:#f5ead7;opacity:.95;filter:drop-shadow(0 0 2.5px #f5ead780)}
+[data-theme=dark] .route-page .ck-face{fill:#111d1c}
+[data-theme=dark] .route-page .ck-mullions{stroke:#293c36}
+[data-theme=dark] .route-page .ck-stars{fill:#e0e7ee;opacity:.65}
+[data-theme=dark] .route-page .ck-sparkle{fill:currentColor;color:#8fcfc6;animation:skyline-colour 120s ease-in-out -40s infinite,skyline-sparkle 18s ease-in-out infinite alternate}
+[data-theme=dark] .route-page .aia-lantern{fill:#e3e6cb;opacity:.22;filter:drop-shadow(0 0 3px #e3e6cb55)}
+[data-theme=dark] .route-page .aia-struts{color:#92ccc6;stroke-width:.7;opacity:.5;animation-delay:-40s}
+[data-theme=dark] .route-page .aia-screen{fill:currentColor;opacity:.75;animation-delay:-64s}
+[data-theme=dark] .route-page .plaza-crown{color:#97cbb6;stroke-width:1.6;animation-duration:180s;animation-delay:-60s}
+[data-theme=dark] .route-page .plaza-spire{color:#dab48d;animation:skyline-colour 180s ease-in-out infinite,skyline-sparkle 24s ease-in-out infinite alternate}
+[data-theme=dark] .route-page .hopewell-ribs{color:#9ac8df;stroke-width:.7;opacity:.45;animation-delay:-48s}
+[data-theme=dark] .route-page .hopewell-crown{color:#9ac8df;animation-delay:-48s}
+/* The Center: closer neon bars at the crown, with staggered spectrum colours. */
+[data-theme=dark] .route-page #the-center .night-colour{animation-name:center-spectrum;animation-duration:120s}
+[data-theme=dark] .route-page .center-bars{stroke-width:.8;opacity:.55}
+[data-theme=dark] .route-page .center-upper{color:#db9bcb;animation-delay:-80s}
+[data-theme=dark] .route-page .center-middle{color:#91cbd4;animation-delay:-40s}
+[data-theme=dark] .route-page .center-lower{color:#e1b28b}
+[data-theme=dark] .route-page .center-chevrons{color:#b9b0e6;stroke:currentColor;stroke-width:1.2;opacity:.85;animation-delay:-60s}
+@keyframes center-spectrum{0%,100%{color:#df939f}17%{color:#e1b28b}33%{color:#d6d08b}50%{color:#94cba5}67%{color:#91bfe1}83%{color:#c49cdd}}
+@keyframes skyline-colour{0%,100%{color:#da91b7}33%{color:#89ccc7}66%{color:#b5a0df}}
+@keyframes skyline-sparkle{from{opacity:.4}to{opacity:.85}}
+[data-theme=dark] .route-page :is(.jardine-window,.hku-clock,.hku-arcade){fill:#e8cf91;opacity:.65}
+[data-theme=dark] .route-page .night-sign{fill:#eee7d5;filter:drop-shadow(0 0 2px #eee7d555)}
+[data-theme=dark] .route-page .sign-cool{fill:#a7c9ed}
+[data-theme=dark] .route-page .times-sign{fill:#293a60}
+[data-theme=dark] .route-page #sogo .window{fill:#dfdfce;opacity:.75;filter:drop-shadow(0 0 2px #dfdfce44)}
+[data-theme=dark] .route-page .ferry-star{fill:#eee5c8}
+
 [data-theme=dark] .route-page .neon{filter:drop-shadow(0 0 6px #ff4f7a);animation:flicker 5s steps(1) infinite}[data-theme=dark] .route-page .neon rect{fill:#ff2e63}[data-theme=dark] .route-page .neon text{fill:#fff2b0}
 @keyframes flicker{0%,100%{opacity:1}7%{opacity:.6}8%{opacity:1}52%{opacity:.75}54%{opacity:1}55%{opacity:.6}56%{opacity:1}}
 .route-page header{position:fixed;inset:0 0 auto;z-index:3;max-width:none;border:0;background:linear-gradient(var(--street) 40%,transparent)}
@@ -140,7 +200,14 @@
 .ferry-deck{fill:var(--street)}
 .ferry-windows{stroke:var(--mid)}
 .ferry-wake{stroke:var(--harbour-tone);opacity:.5}
-[data-theme=dark] .icc-crown{stroke:#e7ce91;opacity:.45}
+/* ICC's cool LED strips stay dim across the harbour. */
+[data-theme=dark] .route-page .icc{fill:#203533}
+[data-theme=dark] .route-page .icc-face{fill:#91bac5;opacity:.1}
+[data-theme=dark] .route-page .icc-day-glass{display:none}
+[data-theme=dark] .route-page .icc-night-glass{fill:url(#icc-night-glass)}
+[data-theme=dark] .route-page .icc-led-strip{stroke:#9ecbd6;stroke-width:.7;opacity:.3}
+[data-theme=dark] .route-page .icc-corners{fill:none;stroke:#9ecbd6;stroke-width:.7;opacity:.28}
+[data-theme=dark] .route-page .icc-crown{stroke:#a8cdd7;stroke-width:1;opacity:.4}
 [data-theme=dark] .mplus-screen{fill:var(--harbour-tone)}
 [data-theme=dark] .mplus-art{stroke:#e7c391;opacity:.45}
 [data-theme=dark] .harbour-reflection{stroke:#d8bc83;opacity:.45}
