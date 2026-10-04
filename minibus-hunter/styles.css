@@ -135,16 +135,14 @@
 .icc-crown,.harbour-ripples{stroke:var(--harbour-tone)}
 .mplus-screen{fill:var(--harbour-tone)}
 .mplus-art{stroke:var(--street);opacity:.5}
-.mplus-mark{fill:var(--street)}
 .harbour-reflection{opacity:.2}
 .star-ferry{fill:var(--mid);color:var(--mid)}
-.ferry-deck,.ferry-star{fill:var(--street)}
+.ferry-deck{fill:var(--street)}
 .ferry-windows{stroke:var(--mid)}
 .ferry-wake{stroke:var(--harbour-tone);opacity:.5}
 [data-theme=dark] .icc-crown{stroke:#e7ce91;opacity:.45}
 [data-theme=dark] .mplus-screen{fill:var(--harbour-tone)}
 [data-theme=dark] .mplus-art{stroke:#e7c391;opacity:.45}
-[data-theme=dark] .mplus-mark{fill:#f5eedb;opacity:.5}
 [data-theme=dark] .harbour-reflection{stroke:#d8bc83;opacity:.45}
 .route-track{pointer-events:none}
 .territory.active :is(.territory-copy,.stop-sign){pointer-events:auto}
