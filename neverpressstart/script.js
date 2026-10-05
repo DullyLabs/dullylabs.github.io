@@ -24,7 +24,7 @@ function showBreak() {
   if (again) {
     $('break-title').innerHTML = 'Annoying,<br><em>right?</em>';
     $('break-description').innerHTML = 'Good. That’s the whole product.<br>A Pomodoro should nag you into resting on time.';
-    $('dismiss').textContent = 'Fine, back to the museum ↗';
+    $('dismiss').firstChild.textContent = 'Fine, back to the museum';
   }
   $('pause-demo').hidden = !again;
   dialog.showModal();
@@ -54,7 +54,7 @@ $('pause').addEventListener('click', () => {
 });
 function restart(status) {
   away = false; paused = false; seconds = 20;
-  $('away').textContent = 'Pretend to step away ↗';
+  $('away').firstChild.textContent = 'Pretend to step away';
   $('demo-status').textContent = status;
   $('demo-detail').textContent = '20-second website demo. The Mac app gives you 20 minutes.';
   lastTick = Date.now(); render();
@@ -62,7 +62,7 @@ function restart(status) {
 $('away').addEventListener('click', () => {
   if (away) { restart('Welcome back. A fresh 20 minutes.'); return; }
   away = true; paused = true; seconds = 20;
-  $('away').textContent = 'I’m back at my desk ↗';
+  $('away').firstChild.textContent = 'I’m back at my desk';
   $('demo-status').textContent = 'Away from your desk? That’s a break.';
   $('demo-detail').textContent = 'Simulating 5 minutes away.';
   render();
