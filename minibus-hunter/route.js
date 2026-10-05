@@ -1,16 +1,7 @@
-// Set once the App Store listing is live; until then the buttons open the coming-soon dialog.
-const APP_STORE_URL = '';
-const dialog = document.querySelector('#download-dialog');
-document.querySelectorAll('[data-download]').forEach(button => {
-  button.addEventListener('click', () => {
-    if (APP_STORE_URL) window.location.assign(APP_STORE_URL);
-    else dialog.showModal();
-  });
-});
 document.querySelector('#my-stops').addEventListener('click', () => document.querySelector('#stops-dialog').showModal());
 const modalOpen = () => document.querySelector('dialog[open]');
 document.querySelectorAll('dialog').forEach(modal => {
-  modal.querySelectorAll('.dialog-close, .dialog-done').forEach(button => {
+  modal.querySelectorAll('.dialog-close').forEach(button => {
     button.addEventListener('click', () => modal.close());
   });
   modal.addEventListener('click', event => {
