@@ -1,0 +1,19 @@
+name: Merge on approval
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  merge:
+    if: github.event.review.state == 'approved' && github.event.review.user.login == 'dulangaj' && github.event.pull_request.user.login == 'dullybot'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - run: gh pr merge "$PR_URL" --repo "$REPO" --squash --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          REPO: ${{ github.repository }}
