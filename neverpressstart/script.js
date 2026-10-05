@@ -8,6 +8,8 @@ let away = false;
 let previousFocus;
 let lastTick = Date.now();
 let presses = 0;
+let breaks = 0;
+let pauseAfterBreak = false;
 const replies = ['You pressed it. A promising start to Never Press Start.', 'Still unnecessary. But lovely enthusiasm.', 'The curator is making a note.', 'Okay. You are now part of the exhibition.'];
 function render() {
   $('countdown').textContent = `00:${String(seconds).padStart(2, '0')}`;
@@ -18,6 +20,13 @@ function render() {
 function showBreak() {
   if (dialog.open) return;
   previousFocus = document.activeElement;
+  const again = breaks++ > 0;
+  if (again) {
+    $('break-title').innerHTML = 'Annoying,<br><em>right?</em>';
+    $('break-description').innerHTML = 'Good. That’s the whole product.<br>A Pomodoro should nag you into resting on time.';
+    $('dismiss').textContent = 'Fine, back to the museum ↗';
+  }
+  $('pause-demo').hidden = !again;
   dialog.showModal();
   document.body.style.overflow = 'hidden';
   $('dismiss').focus();
@@ -26,9 +35,11 @@ function closeBreak() { dialog.close(); }
 dialog.addEventListener('close', () => {
   document.body.style.overflow = '';
   restart('Break over. A fresh 20 minutes started on its own.');
+  if (pauseAfterBreak) { pauseAfterBreak = false; paused = true; $('demo-status').textContent = 'Demo paused.'; render(); }
   if (previousFocus instanceof HTMLElement && previousFocus !== document.body) previousFocus.focus();
 });
 $('dismiss').addEventListener('click', closeBreak);
+$('pause-demo').addEventListener('click', () => { pauseAfterBreak = true; closeBreak(); });
 dialog.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') { event.preventDefault(); closeBreak(); }
 });
