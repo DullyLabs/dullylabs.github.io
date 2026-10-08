@@ -111,8 +111,9 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radiu
 #card .dl{background:var(--hot);color:#111;text-decoration:none;font-weight:800;padding:14px 24px;border-radius:99px}
 .screens{display:flex;gap:12px}
 .screens img{height:min(36vh,calc((100vw - 56px)/3/.46));border-radius:14px}
-footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max(env(safe-area-inset-bottom),40px));display:flex;flex-wrap:wrap;gap:24px;justify-content:center;font-size:14px}
-footer small{white-space:nowrap;font-size:12px;opacity:.7}
+footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max(env(safe-area-inset-bottom),40px));display:flex;flex-direction:column;align-items:center;gap:20px;font-size:14px}
+footer .note{font-size:13px;opacity:.72;text-align:center} /* 6:1+ in both themes */
+footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;width:min(560px,100%);padding-top:20px;border-top:1px solid color-mix(in srgb,currentColor 20%,transparent)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
@@ -148,7 +149,7 @@ footer small{white-space:nowrap;font-size:12px;opacity:.7}
     <div id="dot"></div>
   </div>
 </main>
-<footer><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a><small>Not a medical app.</small><small>Export anytime.</small></footer>
+<footer><p class="note">Not a medical app. Export anytime.</p><div class="links"><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div></footer>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
