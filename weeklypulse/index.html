@@ -48,19 +48,24 @@
 <meta name="twitter:image:alt" content="How's your week really going? Beside the words, a Weekly Pulse check-in card with sliders for Work 8, Play 5, Love 7 and Health 6." />
 <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
 <link rel="apple-touch-icon" href="/weeklypulse/assets/app-icon.png" />
+<script src="/assets/theme.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;800&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#F3EFE7;--ink:#111;--hot:#FF5B1F}
+/* --base: background of the base beats (sliders, trends); --inv: background of the inverse beats (pillars, privacy, card).
+   Each is also the text colour on the other. Dark mode swaps them. --acc-*: orange text on that background (4.5:1+). */
+:root{--base:#F3EFE7;--inv:#111111;--hot:#FF5B1F;--acc-base:#B83A0C;--acc-inv:#FF5B1F}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--base:#151311;--inv:#F3EFE7;--acc-base:#FF5B1F;--acc-inv:#B83A0C}}
+:root[data-theme=dark]{--base:#151311;--inv:#F3EFE7;--acc-base:#FF5B1F;--acc-inv:#B83A0C}
 *{box-sizing:border-box;margin:0}
-body{background:var(--ink);color:var(--ink);font:500 16px/1.4 "Inter Tight",system-ui,sans-serif}
+body{background:var(--inv);color:var(--inv);font:500 16px/1.4 "Inter Tight",system-ui,sans-serif}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--hot);outline-offset:3px}
 nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,40px);font-weight:800}
 nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
 nav .get{border:1.5px solid}
 #run{height:520vh}
-#stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--paper);cursor:pointer}
+#stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--base);cursor:pointer}
 #stage>*{position:absolute;left:0;top:0}
 #stage>[aria-hidden]{pointer-events:none}
 .row{inset:0;display:flex;justify-content:center;align-items:center;white-space:nowrap;font-weight:800;letter-spacing:-.045em;line-height:1}
@@ -70,8 +75,8 @@ nav .get{border:1.5px solid}
 #sliders label{display:grid;grid-template-columns:4.4em 1fr 1.4em;align-items:center;gap:.6em;width:min(640px,100%);font-weight:800;font-size:clamp(20px,2.4vw,28px)}
 #sliders output{text-align:right;font-variant-numeric:tabular-nums}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:none;cursor:grab;touch-action:pan-y}
-input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--ink)}
-input[type=range]::-moz-range-track{height:4px;background:var(--ink)}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--inv)}
+input[type=range]::-moz-range-track{height:4px;background:var(--inv)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-12px;border:0;border-radius:50%;background:var(--hot)}
 input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--hot)}
 #cue{top:auto;bottom:calc(100lvh - 100svh + 52px + env(safe-area-inset-bottom));left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
@@ -84,28 +89,29 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radiu
 .bar{position:fixed;left:0;right:0;z-index:8;pointer-events:none;height:max(env(safe-area-inset-top),40px);top:0}
 .bar+.bar{top:auto;bottom:0;height:max(env(safe-area-inset-bottom),40px)}
 #graph{width:100%;height:100%}
-.ln{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;opacity:.3}
+.ln{fill:none;stroke:var(--inv);stroke-width:2;stroke-linecap:round;opacity:.3}
 .ln.lo{stroke:var(--hot);stroke-width:4;opacity:1}
-#lbl{font-size:clamp(18px,2.2vw,28px);font-weight:800;fill:var(--hot)}
+#lbl{font-size:clamp(18px,2.2vw,28px);font-weight:800;fill:var(--acc-base)}
+#base,#cue path{stroke:var(--inv)}
 #cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
-.word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--paper)}
-.word b{color:var(--hot);font-size:1.3em}
-#priv{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.5em;color:var(--paper);font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
+.word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--base)}
+.word b{color:var(--acc-inv);font-size:1.3em}
+#priv{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.5em;color:var(--base);font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
 #priv p:first-child{font-size:min(11vw,110px)}
 #priv p+p{font-size:min(6.2vw,60px)}
 .small{width:100%;padding:0 16px;text-align:center;font-size:clamp(16px,1.8vw,22px)}
-#mine{color:var(--paper)}
+#mine{color:var(--base)}
 #chips{display:flex;gap:6px;font-weight:800;font-size:13px}
 #chips span{padding:5px 10px;border:1.5px solid;border-radius:99px}
-#chips span:first-child{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-#priv .dot{color:var(--hot)}
-#card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--paper);text-align:center}
+#chips span:first-child{background:var(--inv);color:var(--base);border-color:var(--inv)}
+#priv .dot{color:var(--acc-inv)}
+#card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--base);text-align:center}
 #card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh)}
 #card p{font-size:clamp(18px,2.2vw,28px)}
-#card .dl{background:var(--hot);color:var(--ink);text-decoration:none;font-weight:800;padding:14px 24px;border-radius:99px}
+#card .dl{background:var(--hot);color:#111;text-decoration:none;font-weight:800;padding:14px 24px;border-radius:99px}
 .screens{display:flex;gap:12px}
 .screens img{height:min(36vh,calc((100vw - 56px)/3/.46));border-radius:14px}
-footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;font-size:14px}
+footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max(env(safe-area-inset-bottom),40px));display:flex;flex-wrap:wrap;gap:24px;justify-content:center;font-size:14px}
 footer small{white-space:nowrap;font-size:12px;opacity:.7}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
@@ -124,11 +130,11 @@ footer small{white-space:nowrap;font-size:12px;opacity:.7}
       <label><span>Love</span><input type="range" min="1" max="10" value="7" aria-label="Love"><output>7</output></label>
       <label><span>Health</span><input type="range" min="1" max="10" value="6" aria-label="Health"><output>6</output></label>
     </form>
-    <svg id="cue" viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2l10 10L22 2" stroke="#111" stroke-width="2.5" fill="none"/></svg>
+    <svg id="cue" viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2l10 10L22 2" stroke-width="2.5" fill="none"/></svg>
     <div class="row" id="hero" aria-hidden="true"><span><span class="split">Track Your Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
     <div class="word" aria-hidden="true">WORK<b>6</b></div><div class="word" aria-hidden="true">PLAY<b>5</b></div><div class="word" aria-hidden="true">LOVE<b>7</b></div><div class="word" aria-hidden="true">HEALTH<b>6</b></div>
     <p id="mine" class="small split" aria-hidden="true">Make them yours.</p>
-    <svg id="graph" aria-hidden="true"><path id="base" stroke="#111" stroke-width="2" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
+    <svg id="graph" aria-hidden="true"><path id="base" stroke-width="2" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
     <p id="cap" class="split" aria-hidden="true">Spot what's slipping.</p>
     <p id="why" class="small split" aria-hidden="true">Read why it moved.</p>
     <div id="chips" aria-hidden="true"><span>1M</span><span>3M</span><span>1Y</span></div>
@@ -155,7 +161,7 @@ const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a
 const Z=.35,W0=12,WD=W0*Math.sqrt(1-Z*Z);
 const spring=t=>t<=0?0:t>=1?1:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>`rgb(${rgb(a).map((v,i)=>Math.round(lerp(v,rgb(b)[i],t)))})`;
-const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.17,.39,.63,.82,1],ST=[.25,.32,.48,.55,.62,.79,.86,.93],IN=[[.08,.25],[.3,.45],[.6,.75]];
+const B=[0,.17,.39,.63,.82,1],ST=[.25,.32,.48,.55,.62,.79,.86,.93],IN=[[.08,.25],[.3,.45],[.6,.75]];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let M={};
 const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.width/2,y:r.top-o.top+r.height/2,w:r.width,h:r.height}};
@@ -164,7 +170,8 @@ function measure(){
   const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
   const hf=fs($('#hero')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o);
   const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.2; // chart: score 1 at y0, 10 at yT
-  M={W,H,hf,wk:box(inputs[0],o),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
+  const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(); // colour tokens, re-read on theme change
+  M={W,H,hf,base:tok('--base'),inv:tok('--inv'),wk:box(inputs[0],o),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
     cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
     words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),
     S:PD.map(e=>{const b=box(e,o),i=document.createElement('i'),f=fs(e);i.style.display='inline-block';e.append(i);const y=i.getBoundingClientRect().top-o.top;i.remove();return{x:b.x,y:y-f*.09,d:f*.17}})}; // privacy full stops, on the baseline
@@ -224,8 +231,8 @@ function render(p){
   [[dl,.35],[screens,.4]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
   const r5=seg(u5,.05,.7);
   if(r5>0){const s=spring(r5),z=S.at(-1);D={x:lerp(z.x,M.cper.x,s),y:lerp(z.y,M.cper.y,s),w:lerp(z.d,M.cd,ease(r5))};D.h=D.w}
-  const bg=mix(PAPER,INK,dk); // html/body track it too: Safari tints its bars from the page background
-  stage.style.background=document.documentElement.style.background=document.body.style.background=bars[0].style.background=bars[1].style.background=nav.style.background=bg;nav.style.color=dk>.5?PAPER:INK;theme.content=dk>.5?INK:PAPER;nav.style.setProperty('--nb',bg);
+  const {base,inv}=M,bg=mix(base,inv,dk); // html/body track it too: Safari tints its bars from the page background
+  stage.style.background=document.documentElement.style.background=document.body.style.background=bars[0].style.background=bars[1].style.background=nav.style.background=bg;nav.style.color=dk>.5?base:inv;theme.content=dk>.5?inv:base;nav.style.setProperty('--nb',bg);
   Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
 }
 let raf=0,P=0;
@@ -236,6 +243,7 @@ stage.onclick=e=>{if(e.target.closest('a,label'))return;const b=B.find(b=>b>P+.0
   scrollTo({top:b==null?document.body.scrollHeight:run.offsetTop+b*(run.offsetHeight-innerHeight),behavior:reduce.matches?'auto':'smooth'})};
 inputs.forEach((n,k)=>{n.oninput=()=>{n.nextElementSibling.value=words[k].lastChild.textContent=n.value;req()};n.oninput()});
 addEventListener('scroll',req,{passive:true});addEventListener('scrollend',req);addEventListener('resize',re);reduce.addEventListener('change',req);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>requestAnimationFrame(re));new MutationObserver(re).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 document.fonts.ready.then(re);re();
 </script>
 </body>
