@@ -17,24 +17,21 @@ a{color:inherit}
 nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,40px);font-weight:800}
 nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
 nav .get{border:1.5px solid}
-#run{height:700vh}
-#stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper)}
+#run{height:500vh}
+#stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper);cursor:pointer}
 #stage>*{position:absolute;left:0;top:0}
 .row{inset:0;display:flex;justify-content:center;align-items:center;white-space:nowrap;font-weight:800;letter-spacing:-.045em;line-height:1}
 .row span,.split span{display:inline-block;white-space:pre}
 #label{font-size:min(10vw,110px);gap:.35em}
-#track{width:1.7em;height:.9em;border:.08em solid var(--ink);border-radius:1em}
+#rail{width:3.4em;height:.47em;padding:.2em 0;background:var(--ink);background-clip:content-box;touch-action:none}
+#num{width:1.1em;font-variant-numeric:tabular-nums}
 #hero{font-size:min(28vw,40vh)}
-#dot{background:var(--hot);z-index:5}
-#cursor{width:28px;z-index:6}
+#note{font-size:min(11vw,110px)}
+#dot{background:var(--hot);z-index:5;touch-action:none}
 #graph{width:100%;height:100%}
-#cap,#cap4{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
-#cap4{font-size:clamp(18px,2.4vw,28px);font-weight:500;color:var(--paper)}
-#call{font-weight:800;font-size:clamp(36px,5vw,64px);line-height:1;text-align:right}
-#call small{display:block;font:500 13px/1.4 "Inter Tight",system-ui,sans-serif;margin-top:6px}
-.word{font-weight:800;font-size:clamp(22px,5vw,56px);letter-spacing:.02em;color:var(--paper)}
-.word.o{color:var(--hot)}
-canvas{width:100%;height:100%}
+#cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
+.word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--paper)}
+.word b{color:var(--hot);font-size:1.3em}
 #card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--paper);text-align:center}
 #card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh)}
 #card p{font-size:clamp(18px,2.2vw,28px)}
@@ -50,129 +47,103 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
 <main id="run">
   <div id="stage">
     <h1 class="sr">Weekly Pulse, a private weekly check-in</h1>
-    <div class="row" id="label" aria-hidden="true"><span id="track"></span><span class="split">Reduce noise</span></div>
+    <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Add a note. See how they change.</p>
+    <div class="row" id="label" aria-hidden="true"><span class="split">Work</span><span id="rail"></span><span id="num">5</span></div>
     <div class="row" id="hero" aria-hidden="true"><span><span class="split">Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
+    <div class="word" aria-hidden="true">WORK<b>8</b></div><div class="word" aria-hidden="true">PLAY<b>6</b></div><div class="word" aria-hidden="true">LOVE<b>9</b></div><div class="word" aria-hidden="true">HEALTH<b>7</b></div>
+    <div class="row" id="note" aria-hidden="true"><span class="split">Add a note.</span></div>
     <svg id="graph" aria-hidden="true"><path id="base" stroke="#111" stroke-width="2" fill="none"/><path id="target" stroke="#111" stroke-width="1.5" stroke-dasharray="6 6" fill="none"/><path id="curve" stroke="#FF5B1F" stroke-width="4" stroke-linecap="round" fill="none"/></svg>
-    <p id="cap" class="split">See how they change.</p>
-    <div id="call">+22%<small>Illustrative example, not real data</small></div>
-    <canvas id="dots" aria-hidden="true"></canvas>
-    <div class="word split">WORK</div><div class="word o split">PLAY</div><div class="word split">LOVE</div><div class="word o split">HEALTH</div>
-    <p id="cap4" class="split">Use the four defaults, or change them.</p>
+    <p id="cap" class="split" aria-hidden="true">See how they change.</p>
     <section id="card">
       <h2><span class="split">Weekly Pulse</span><span id="period" style="display:inline-block;width:.2em"></span></h2>
-      <p class="split">Four ratings. One minute a week.</p>
+      <p class="split">Four scores. One minute a week.</p>
       <a class="dl" href="https://apps.apple.com/app/id6761065411">Download on the App Store</a>
       <div class="screens"><img src="../weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen"><img src="../weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen"><img src="../weeklypulse/assets/screens/trends.png" alt="Weekly Pulse trends screen"></div>
     </section>
-    <svg id="cursor" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 2l16 11-7 1.5L9.5 21z" fill="#111" stroke="#F3EFE7" stroke-width="1.5"/></svg>
     <div id="dot"></div>
   </div>
 </main>
 <footer><a href="../weeklypulse/privacy/">Privacy</a><a href="../weeklypulse/support/">Support</a></footer>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-$$('.split').forEach(el=>{el.innerHTML=[...el.textContent].map(c=>`<span>${c}</span>`).join('')});
-const stage=$('#stage'),dot=$('#dot'),cur=$('#cursor'),track=$('#track'),cv=$('#dots'),cx2=cv.getContext('2d'),card=$('#card'),nav=$('#nav');
-const L=$$('#label .split span'),Hs=$$('#hero .split span'),cap=$$('#cap span'),call=$('#call'),words=$$('.word'),cap4=$$('#cap4 span');
-const title=$$('#card h2 .split span'),line=$$('#card p span'),dl=$('#card .dl'),screens=$('.screens');
-const SH={3:1,10:3,11:4}; // label letter index -> hero letter index (u, s, e)
+$$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
+const stage=$('#stage'),dot=$('#dot'),rail=$('#rail'),num=$('#num'),label=$('#label'),card=$('#card'),nav=$('#nav'),run=$('#run');
+const A=s=>$$(s+' [aria-hidden]'),L=A('#label .split'),Hs=A('#hero .split'),N=A('#note .split'),cap=A('#cap'),words=$$('.word');
+const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
 const Z=.35,W0=12,WD=W0*Math.sqrt(1-Z*Z);
-const spring=t=>t<=0?0:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
+const spring=t=>t<=0?0:t>=1?1:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>`rgb(${rgb(a).map((v,i)=>Math.round(lerp(v,rgb(b)[i],t)))})`;
-const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.17,.34,.52,.68,.86,1],REP=[1,1,1,.5,1,1];
+const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.12,.34,.56,.78,1];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let M={};
 const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.width/2,y:r.top-o.top+r.height/2,w:r.width,h:r.height}};
 function measure(){
-  $$('#stage span,#stage .word,#card *').forEach(e=>e.style.transform='');
-  const o=stage.getBoundingClientRect(),W=o.width,H=o.height,g=W<600?14:20;
-  const dpr=devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;cx2.setTransform(dpr,0,0,dpr,0,0);
-  const t=box(track,o),hf=parseFloat(getComputedStyle($('#hero')).fontSize),lf=parseFloat(getComputedStyle($('#label')).fontSize);
-  const hp=box($('#hper'),o),per=box($('#period'),o),cf=parseFloat(getComputedStyle($('#card h2')).fontSize);
-  const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.74,yT=H*.42;
-  M={W,H,g,hf,lf,t,L:L.map(e=>box(e,o)),Hs:Hs.map(e=>box(e,o)),
-    kOff:{x:t.x-t.w/2+t.h/2,y:t.y},kOn:{x:t.x+t.w/2-t.h/2,y:t.y},kd:t.h*.66,
-    per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
-    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
-    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight,l:[...w.children].map(s=>s.offsetLeft+s.offsetWidth/2-w.offsetWidth/2)}))};
+  $$('#stage span,.word,#card *').forEach(e=>e.style.transform='');
+  const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
+  const hf=fs($('#hero')),nf=fs($('#note')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o),n=N.map(e=>box(e,o)),z=n.at(-1);
+  const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.38;
+  M={W,H,hf,t:box(rail,o),kd:fs(label)*.3,Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
+    N:n,nf,cE:{x:z.x+z.w/2+nf*.04,y:n[0].y},cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
+    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight}))};
   $('#graph').setAttribute('viewBox',`0 0 ${W} ${H}`);
   $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);$('#target').setAttribute('d',`M${x0} ${yT}H${W}`);
-  call.style.cssText=`left:auto;top:auto;right:${W-x1}px;bottom:${H-yT+(y0-yT)*.34+12}px`;
-  $('#cap').style.top=H*.8+'px';$('#cap4').style.top=H*.86+'px';
+  $('#cap').style.top=H*.8+'px';
 }
 const T=(el,x,y,s=1,r=0,o=1)=>{el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;el.style.opacity=o};
-function txt(arr,u,a,b,c=2,d=3){ // per-letter: in over [a,b], out over [c,d], letters staggered
+function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out over [c,d] of uo, letters staggered
   const n=arr.length,fs=parseFloat(getComputedStyle(arr[0]).fontSize);
-  arr.forEach((s,i)=>{const f=i/n*.5,ki=ease(seg(u,a+(b-a)*f,a+(b-a)*(f+.5))),ko=ease(seg(u,c+(d-c)*f,c+(d-c)*(f+.5)));
+  arr.forEach((s,i)=>{const f=i/n*.5,ki=ease(seg(ui,a+(b-a)*f,a+(b-a)*(f+.5))),ko=ease(seg(uo,c+(d-c)*f,c+(d-c)*(f+.5)));
     T(s,0,(1-ki)*fs*.5-ko*fs*.5,1,(1-ki)*8,ki*(1-ko))});
 }
 function render(p){
-  const {W,H}=M,i=B.findIndex((b,k)=>p<B[k+1]);
-  const u=B.slice(0,6).map((b,k)=>reduce.matches?(k<i?1:k>i?0:REP[k]):seg(p,b,B[k+1]));
-  const [u1,u2,u3,u4,u5,u6]=u;
-  let D={x:M.kOff.x,y:M.kOff.y,w:M.kd,h:M.kd,rad:.5,rot:0,c:INK},bg=PAPER;
-  // 1. toggle click, letters bend away to "Pulse"
-  const cIn=ease(seg(u1,0,.2)),press=seg(u1,.2,.24)-seg(u1,.24,.28),on=ease(seg(u1,.22,.32)),m=seg(u1,.38,1);
-  T(cur,lerp(W*.8,M.kOn.x,cIn)+seg(u1,.3,.45)*60,lerp(H*.9,M.kOn.y,cIn)+seg(u1,.3,.45)*60,1-press*.2,0,seg(u1,0,.05)*(1-seg(u1,.3,.45)));
-  track.style.background=mix(PAPER,INK,on);
-  D.x=lerp(M.kOff.x,M.kOn.x,on);D.c=mix(INK,HOT,on);
-  const out2=j=>ease(seg(u2,j*.04,.2+j*.04));
-  L.forEach((s,k)=>{const a=M.L[k];
-    if(k in SH){const j=SH[k],h=M.Hs[j],q=ease(seg(m,.1+j*.06,.6+j*.06)),o2=out2(j);
-      T(s,(h.x-a.x)*q,(h.y-a.y)*q+o2*M.hf*.4,lerp(1,M.hf/M.lf,q),0,1-o2)}
-    else{const q=ease(seg(m,k*.025,.3+k*.025)),d=k%2?1:-1;T(s,0,-d*q*H*.25,1,d*q*55,1-q)}});
-  track.style.opacity=1-seg(m,0,.2);
-  Hs.forEach((s,j)=>{if(j!==0&&j!==2)return T(s,0,0,1,0,0);const q=ease(seg(m,.4+j*.05,.85+j*.05)),o2=out2(j);T(s,0,(1-q)*M.hf*.4+o2*M.hf*.4,1,(1-q)*-12,q*(1-o2))});
-  const tr=seg(m,.3,.95),sp=spring(tr);
-  if(tr>0){D.x=lerp(M.kOn.x,M.per.x,sp);D.y=lerp(M.kOn.y,M.per.y,sp);D.w=D.h=lerp(M.kd,M.hd,ease(tr))}
-  // 2. spring graph
-  const j2=seg(u2,0,.3),td=seg(u2,.3,.85),{x0,x1,y0,yT}=M;
-  if(u2>0){D.x=lerp(M.per.x,x0,ease(j2));D.y=lerp(M.per.y,y0,ease(j2))-Math.sin(Math.PI*j2)*H*.15;D.w=D.h=lerp(M.hd,18,ease(j2))}
+  const {W,H,x0,x1,y0,yT}=M,i=B.findIndex((b,k)=>p<B[k+1]);
+  const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?+(k<=i):seg(p,b,B[k+1]));
+  const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u5,0,.3));
+  // 1. rate Work: dot springs 5 -> 8, "Work" flies out, "Pulse." flies in
+  const v=5+3*spring(seg(u1,.05,.45)),m=seg(u1,.5,1),ro=1-seg(m,0,.3),rx=M.t.x-M.t.w/2+(v-1)/9*M.t.w;
+  num.textContent=Math.round(Math.min(v,8));rail.style.opacity=num.style.opacity=ro;label.style.visibility=ro?'visible':'hidden';
+  L.forEach((s,k)=>{const q=ease(seg(m,k*.06,.35+k*.06)),d=k%2?1:-1;T(s,0,-d*q*H*.25,1,d*q*55,1-q)});
+  Hs.forEach((s,j)=>{const q=ease(seg(m,.3+j*.08,.6+j*.08)),o2=ease(seg(u2,j*.04,.2+j*.04));T(s,0,(1-q)*M.hf*.4+o2*M.hf*.4,1,(1-q)*-12,q*(1-o2))});
+  const tr=seg(m,.2,1),sp=spring(tr);
+  let D={x:lerp(rx,M.per.x,sp),y:lerp(M.t.y,M.per.y,sp),w:lerp(M.kd,M.hd,ease(tr))};D.h=D.w;
+  // 2. four pillars orbit in around the dot, each with its score
+  if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w,h:w}}
+  const R=Math.min(W*.32,H*.3);
+  words.forEach((w,k)=>{const ki=ease(seg(u2,.2+k*.08,.6+k*.08)),ko=ease(seg(u3,k*.03,.25+k*.03)),mw=M.words[k];
+    const th=(k-1)*Math.PI/2-(1-ease(seg(u2,.2,1)))*Math.PI+ko*Math.PI/2,r=R*lerp(.3,1,ki)*(1-ko);
+    T(w,W/2+r*Math.cos(th)-mw.w/2,H/2+r*Math.sin(th)-mw.h/2,lerp(.5,1,ki)*(1-ko*.6),0,ki*(1-ko))});
+  // 3. the dot narrows to a caret and types the note
+  const n=Math.round(seg(u3,.35,.9)*N.length);
+  N.forEach((s,k)=>{const ko=ease(seg(u4,k*.02,.2+k*.02));T(s,0,-ko*M.nf*.5,1,0,(k<n)*(1-ko))});
+  if(u3>0){const c=ease(seg(u3,.1,.35)),s=spring(seg(u3,.05,.4)),e=M.N[n-1],cx=e?e.x+e.w/2+M.nf*.04:M.N[0].x-M.N[0].w/2-M.nf*.04;
+    D={x:lerp(W/2,cx,s),y:lerp(H/2,M.cE.y,s),w:lerp(18,M.nf*.07,c),h:lerp(18,M.nf*.85,c)}}
+  // 4. the caret drops to a dot that draws the trend line
+  const j2=seg(u4,0,.3),td=seg(u4,.3,.9);
+  if(u4>0){const e=ease(j2);D={x:lerp(M.cE.x,x0,e),y:lerp(M.cE.y,y0,e)-Math.sin(Math.PI*j2)*H*.15,w:lerp(M.nf*.07,18,e),h:lerp(M.nf*.85,18,e)}}
   if(td>0){D.x=x0+td*(x1-x0);D.y=y0-spring(td)*(y0-yT)}
   let d='';for(let k=0;k<=80;k++){const t=td*k/80;d+=(k?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+(y0-spring(t)*(y0-yT)).toFixed(1)}
   $('#curve').setAttribute('d',td>0?d:'');
-  $('#graph').style.opacity=seg(u2,.1,.3)*(1-seg(u3,.1,.2));
-  txt(cap,u2,.15,.45,u3>0?0:2,.15);
-  call.style.opacity=seg(u2,.82,1)*(1-seg(u3,0,.1));call.style.transform=`translateY(${(1-seg(u2,.82,1))*20}px)`;
-  // 3. dot -> frame-filling circle -> rotating square -> pill -> dot (one shape)
-  if(u3>0){
-    const s=spring(seg(u3,0,.15)),g=ease(seg(u3,.15,.35)),cx=lerp(x1,W/2,s),S=Math.min(W,H)*.36,cover=2*Math.hypot(W/2,Math.max(yT,H-yT))+8;
-    const q=ease(seg(u3,.35,.55)),pl=ease(seg(u3,.55,.75)),v=ease(seg(u3,.75,.85)),c=ease(seg(u3,.85,1));
-    D={x:cx,y:lerp(yT,H/2,q),w:lerp(18,cover,g*g),h:0,rad:.5,rot:0,c:HOT};D.h=D.w;
-    if(q>0){D.w=D.h=lerp(cover,S,q);D.rad=lerp(.5,.2,q);D.rot=q*90;D.c=mix(HOT,INK,q);bg=HOT}
-    if(pl>0){D.w=lerp(S,Math.min(W*.86,S*2.6),pl);D.h=lerp(S,S*.42,pl);D.rad=lerp(.2,.5,pl);D.rot=90+pl*90}
-    if(v>0){bg=mix(HOT,INK,v);D.c=mix(INK,HOT,v)}
-    if(c>0){D.w=lerp(D.w,18,c);D.h=lerp(D.h,18,c)}
-  }
-  // 4. pillars orbit, letters drift out into dots
-  words.forEach((w,k)=>{const mw=M.words[k],R=Math.min(W,H)*.32,th=-Math.PI/2+k*Math.PI/2+u4*Math.PI*1.2,wx=W/2+R*Math.cos(th),wy=H/2+R*Math.sin(th);
-    const ki=ease(seg(u4,k*.05,.2+k*.05));T(w,wx-mw.w/2,wy-mw.h/2,1,0,u4>0&&u4<1?1:0);
-    [...w.children].forEach((s,l)=>{const ko=ease(seg(u4,.6+l*.03,.85+l*.03)),lx=wx+mw.l[l]-W/2,ly=wy-H/2,n=Math.hypot(lx,ly)||1;
-      T(s,lx/n*ko*Math.max(W,H)*.4,ly/n*ko*Math.max(W,H)*.4+(1-ki)*20,1-ko*.85,0,ki*(1-ko))})});
-  txt(cap4,u4,.1,.35,.6,.8);
-  if(u4>0){bg=INK;D={x:W/2,y:H/2,w:18,h:18,rad:.5,rot:0,c:HOT}}
-  // 5. halftone grows from the dot, flips to black, card arrives
-  const grow=seg(u5,0,.55)*1.4,flip=seg(u5,.5,.8)*1.4,G=M.g,Dg=Math.hypot(W/2,H/2);
-  cx2.clearRect(0,0,W,H);
-  if((u4>.6&&u5===0)||(u5>0&&flip<1.4)){cx2.fillStyle=PAPER;cx2.globalAlpha=u5>0?1:seg(u4,.6,1);cx2.beginPath();
-    for(let y=G/2;y<H+G;y+=G)for(let x=G/2;x<W+G;x+=G){const r=Math.hypot(x-W/2,y-H/2)/Dg,rr=u5>0?G*.75*ease(clamp((grow-r)/.4))*(1-ease(clamp((flip-(1-r))/.4))):1;
-      if(rr>.3){cx2.moveTo(x+rr,y);cx2.arc(x,y,rr,0,7)}}cx2.fill()}
-  if(u5>0){const dr=spring(seg(u5,.55,.9));D.y=lerp(H/2,H-28,dr)}
-  card.style.visibility=u5>.55?'visible':'hidden';
-  txt(title,u5,.6,.85);txt(line,u5,.7,.9);
-  [[dl,.78],[screens,.82]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.18));T(e,0,(1-k)*30,1,0,k)});
-  // 6. dot returns up to the title, matching the opening "Pulse."
-  const r6=seg(u6,.1,.8);
-  if(r6>0){const s=spring(r6);D.x=lerp(W/2,M.cper.x,s);D.y=lerp(H-28,M.cper.y,s);D.w=D.h=lerp(18,M.cd,ease(r6))}
-  stage.style.background=bg;
-  const ht=u5>.25&&u5<.75,dark=p>B[2]+(B[3]-B[2])*.8&&!ht;nav.style.color=dark?PAPER:INK;nav.style.setProperty('--nb',ht?PAPER:bg);
-  Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)*D.rad+'px',background:D.c,
-    transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px) rotate(${D.rot}deg)`});
+  $('#graph').style.opacity=seg(u4,.1,.3)*(1-seg(u5,0,.2));
+  txt(cap,u4,.15,.45,u5,0,.2);
+  // 5. end card; the dot springs back to the period of "Pulse."
+  card.style.visibility=u5>.2?'visible':'hidden';
+  txt(title,u5,.3,.6);txt(line,u5,.4,.7);
+  [[dl,.55],[screens,.6]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
+  const r5=seg(u5,.3,.95);
+  if(r5>0){const s=spring(r5);D={x:lerp(x1,M.cper.x,s),y:lerp(yT,M.cper.y,s),w:lerp(18,M.cd,ease(r5))};D.h=D.w}
+  const bg=mix(PAPER,INK,dk);stage.style.background=bg;nav.style.color=dk>.5?PAPER:INK;nav.style.setProperty('--nb',bg);
+  Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
 }
-let raf=0;const tick=()=>{raf=0;const r=$('#run').getBoundingClientRect();render(clamp(-r.top/(r.height-innerHeight),0,.9999))};
+const t0=performance.now(),intro=()=>reduce.matches?B[1]:B[1]*clamp((performance.now()-t0-500)/1800);
+let raf=0,P=0,drag=0,px=0;
+const tick=()=>{raf=0;const r=run.getBoundingClientRect(),a=intro();P=Math.max(a,clamp(-r.top/(r.height-innerHeight),0,.9999));render(P);if(a<B[1])req()};
 const req=()=>raf||(raf=requestAnimationFrame(tick));
 const re=()=>{measure();req()};
+stage.onclick=e=>{if(drag||e.target.closest('a'))return drag=0;const b=B.find(b=>b>P+.005);
+  scrollTo({top:b==null?document.body.scrollHeight:run.offsetTop+b*(run.offsetHeight-innerHeight),behavior:reduce.matches?'auto':'smooth'})};
+[rail,dot].forEach(el=>{el.onpointerdown=e=>{px=e.clientX;drag=0;el.setPointerCapture(e.pointerId)};
+  el.onpointermove=e=>{if(!e.buttons)return;drag=1;scrollBy(0,(e.clientX-px)*6);px=e.clientX}});
 addEventListener('scroll',req,{passive:true});addEventListener('resize',re);reduce.addEventListener('change',req);
 document.fonts.ready.then(re);re();
 </script>
