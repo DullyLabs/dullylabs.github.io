@@ -17,17 +17,27 @@ a{color:inherit}
 nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,40px);font-weight:800}
 nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
 nav .get{border:1.5px solid}
-#run{height:500vh}
+#run{height:550vh}
 #stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper);cursor:pointer}
 #stage>*{position:absolute;left:0;top:0}
+#stage>[aria-hidden]{pointer-events:none}
 .row{inset:0;display:flex;justify-content:center;align-items:center;white-space:nowrap;font-weight:800;letter-spacing:-.045em;line-height:1}
 .row span,.split span{display:inline-block;white-space:pre}
-#label{font-size:min(10vw,110px);gap:.35em}
-#rail{width:3.4em;height:.47em;padding:.2em 0;background:var(--ink);background-clip:content-box;touch-action:none}
-#num{width:1.1em;font-variant-numeric:tabular-nums}
-#hero{font-size:min(28vw,40vh)}
+#sliders{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(4px,1.4vh,14px);padding:0 16px;cursor:auto}
+#sliders h2{font-weight:800;letter-spacing:-.04em;line-height:1.05;text-align:center;font-size:clamp(32px,5vw,64px);margin-bottom:clamp(12px,4vh,40px)}
+#sliders label{display:grid;grid-template-columns:4.4em 1fr 1.4em;align-items:center;gap:.6em;width:min(640px,100%);font-weight:800;font-size:clamp(20px,2.4vw,28px)}
+#sliders output{text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:none;cursor:grab;touch-action:pan-y}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:4px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-12px;border:0;border-radius:50%;background:var(--hot)}
+input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--hot)}
+#cue{top:auto;bottom:20px;left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){#cue{animation:none}}
+#hero{font-size:min(10vw,15vh)}
 #note{font-size:min(11vw,110px)}
-#dot{background:var(--hot);z-index:5;touch-action:none}
+#dot{background:var(--hot);z-index:5;pointer-events:none}
 #graph{width:100%;height:100%}
 #cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
 .word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--paper)}
@@ -48,9 +58,16 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
   <div id="stage">
     <h1 class="sr">Weekly Pulse, a private weekly check-in</h1>
     <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Add a note. See how they change.</p>
-    <div class="row" id="label" aria-hidden="true"><span class="split">Work</span><span id="rail"></span><span id="num">5</span></div>
-    <div class="row" id="hero" aria-hidden="true"><span><span class="split">Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
-    <div class="word" aria-hidden="true">WORK<b>8</b></div><div class="word" aria-hidden="true">PLAY<b>6</b></div><div class="word" aria-hidden="true">LOVE<b>9</b></div><div class="word" aria-hidden="true">HEALTH<b>7</b></div>
+    <form id="sliders" onsubmit="return false">
+      <h2>How's your week really going?</h2>
+      <label><span>Work</span><input type="range" min="1" max="10" value="6" aria-label="Work"><output>6</output></label>
+      <label><span>Play</span><input type="range" min="1" max="10" value="5" aria-label="Play"><output>5</output></label>
+      <label><span>Love</span><input type="range" min="1" max="10" value="7" aria-label="Love"><output>7</output></label>
+      <label><span>Health</span><input type="range" min="1" max="10" value="6" aria-label="Health"><output>6</output></label>
+    </form>
+    <svg id="cue" viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2l10 10L22 2" stroke="#111" stroke-width="2.5" fill="none"/></svg>
+    <div class="row" id="hero" aria-hidden="true"><span><span class="split">Track Your Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
+    <div class="word" aria-hidden="true">WORK<b>6</b></div><div class="word" aria-hidden="true">PLAY<b>5</b></div><div class="word" aria-hidden="true">LOVE<b>7</b></div><div class="word" aria-hidden="true">HEALTH<b>6</b></div>
     <div class="row" id="note" aria-hidden="true"><span class="split">Add a note.</span></div>
     <svg id="graph" aria-hidden="true"><path id="base" stroke="#111" stroke-width="2" fill="none"/><path id="target" stroke="#111" stroke-width="1.5" stroke-dasharray="6 6" fill="none"/><path id="curve" stroke="#FF5B1F" stroke-width="4" stroke-linecap="round" fill="none"/></svg>
     <p id="cap" class="split" aria-hidden="true">See how they change.</p>
@@ -67,23 +84,23 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
-const stage=$('#stage'),dot=$('#dot'),rail=$('#rail'),num=$('#num'),label=$('#label'),card=$('#card'),nav=$('#nav'),run=$('#run');
-const A=s=>$$(s+' [aria-hidden]'),L=A('#label .split'),Hs=A('#hero .split'),N=A('#note .split'),cap=A('#cap'),words=$$('.word');
+const stage=$('#stage'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
+const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),N=A('#note .split'),cap=A('#cap'),words=$$('.word');
 const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
 const Z=.35,W0=12,WD=W0*Math.sqrt(1-Z*Z);
 const spring=t=>t<=0?0:t>=1?1:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>`rgb(${rgb(a).map((v,i)=>Math.round(lerp(v,rgb(b)[i],t)))})`;
-const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.12,.34,.56,.78,1];
+const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.16,.36,.57,.78,1];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let M={};
 const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.width/2,y:r.top-o.top+r.height/2,w:r.width,h:r.height}};
 function measure(){
-  $$('#stage span,.word,#card *').forEach(e=>e.style.transform='');
+  $$('#stage span,#sliders>*,.word,#card *').forEach(e=>e.style.transform='');
   const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
   const hf=fs($('#hero')),nf=fs($('#note')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o),n=N.map(e=>box(e,o)),z=n.at(-1);
   const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.38;
-  M={W,H,hf,t:box(rail,o),kd:fs(label)*.3,Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
+  M={W,H,hf,wk:box(inputs[0],o),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
     N:n,nf,cE:{x:z.x+z.w/2+nf*.04,y:n[0].y},cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
     words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight}))};
   $('#graph').setAttribute('viewBox',`0 0 ${W} ${H}`);
@@ -97,17 +114,17 @@ function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out o
     T(s,0,(1-ki)*fs*.5-ko*fs*.5,1,(1-ki)*8,ki*(1-ko))});
 }
 function render(p){
-  const {W,H,x0,x1,y0,yT}=M,i=B.findIndex((b,k)=>p<B[k+1]);
-  const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?+(k<=i):seg(p,b,B[k+1]));
+  const {W,H,x0,x1,y0,yT}=M;
+  const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?Math.round(seg(p,b,B[k+1])):seg(p,b,B[k+1]));
   const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u5,0,.3));
-  // 1. rate Work: dot springs 5 -> 8, "Work" flies out, "Pulse." flies in
-  const v=5+3*spring(seg(u1,.05,.45)),m=seg(u1,.5,1),ro=1-seg(m,0,.3),rx=M.t.x-M.t.w/2+(v-1)/9*M.t.w;
-  num.textContent=Math.round(Math.min(v,8));rail.style.opacity=num.style.opacity=ro;label.style.visibility=ro?'visible':'hidden';
-  L.forEach((s,k)=>{const q=ease(seg(m,k*.06,.35+k*.06)),d=k%2?1:-1;T(s,0,-d*q*H*.25,1,d*q*55,1-q)});
-  Hs.forEach((s,j)=>{const q=ease(seg(m,.3+j*.08,.6+j*.08)),o2=ease(seg(u2,j*.04,.2+j*.04));T(s,0,(1-q)*M.hf*.4+o2*M.hf*.4,1,(1-q)*-12,q*(1-o2))});
-  const tr=seg(m,.2,1),sp=spring(tr);
-  let D={x:lerp(rx,M.per.x,sp),y:lerp(M.t.y,M.per.y,sp),w:lerp(M.kd,M.hd,ease(tr))};D.h=D.w;
-  // 2. four pillars orbit in around the dot, each with its score
+  // 1. sliders fly out, "Track Your Pulse." flies in, the Work handle becomes its full stop
+  const tx=M.wk.x-M.wk.w/2+14+(inputs[0].value-1)/9*(M.wk.w-28);
+  rows.forEach((r,k)=>{const q=ease(seg(u1,k*.05,.3+k*.05)),d=k%2?1:-1;T(r,d*q*W*.06,-q*H*.12,1,d*q*6,1-q)});
+  form.style.visibility=u1<.5?'visible':'hidden';cue.style.opacity=1-seg(u1,0,.1);
+  Hs.forEach((s,j)=>{const q=ease(seg(u1,.3+j*.025,.6+j*.025)),o2=ease(seg(u2,j*.015,.2+j*.015));T(s,0,(1-q)*M.hf*.4+o2*M.hf*.4,1,(1-q)*-12,q*(1-o2))});
+  const tr=seg(u1,.15,1),sp=spring(tr);
+  let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:lerp(28,M.hd,ease(tr))};D.h=D.w;
+  // 2. four pillars orbit in around the dot, each with the visitor's score
   if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w,h:w}}
   const R=Math.min(W*.32,H*.3);
   words.forEach((w,k)=>{const ki=ease(seg(u2,.2+k*.08,.6+k*.08)),ko=ease(seg(u3,k*.03,.25+k*.03)),mw=M.words[k];
@@ -135,15 +152,13 @@ function render(p){
   const bg=mix(PAPER,INK,dk);stage.style.background=bg;nav.style.color=dk>.5?PAPER:INK;nav.style.setProperty('--nb',bg);
   Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
 }
-const t0=performance.now(),intro=()=>reduce.matches?B[1]:B[1]*clamp((performance.now()-t0-500)/1800);
-let raf=0,P=0,drag=0,px=0;
-const tick=()=>{raf=0;const r=run.getBoundingClientRect(),a=intro();P=Math.max(a,clamp(-r.top/(r.height-innerHeight),0,.9999));render(P);if(a<B[1])req()};
+let raf=0,P=0;
+const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);render(P)};
 const req=()=>raf||(raf=requestAnimationFrame(tick));
 const re=()=>{measure();req()};
-stage.onclick=e=>{if(drag||e.target.closest('a'))return drag=0;const b=B.find(b=>b>P+.005);
+stage.onclick=e=>{if(e.target.closest('a,label'))return;const b=B.find(b=>b>P+.005);
   scrollTo({top:b==null?document.body.scrollHeight:run.offsetTop+b*(run.offsetHeight-innerHeight),behavior:reduce.matches?'auto':'smooth'})};
-[rail,dot].forEach(el=>{el.onpointerdown=e=>{px=e.clientX;drag=0;el.setPointerCapture(e.pointerId)};
-  el.onpointermove=e=>{if(!e.buttons)return;drag=1;scrollBy(0,(e.clientX-px)*6);px=e.clientX}});
+inputs.forEach((n,k)=>{n.oninput=()=>{n.nextElementSibling.value=words[k].lastChild.textContent=n.value;req()};n.oninput()});
 addEventListener('scroll',req,{passive:true});addEventListener('resize',re);reduce.addEventListener('change',req);
 document.fonts.ready.then(re);re();
 </script>
