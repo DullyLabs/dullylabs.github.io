@@ -19,7 +19,7 @@ nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-b
 nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
 nav .get{border:1.5px solid}
 #run{height:550vh}
-#stage{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--paper);cursor:pointer}
+#stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--paper);cursor:pointer}
 #stage>*{position:absolute;left:0;top:0}
 #stage>[aria-hidden]{pointer-events:none}
 .row{inset:0;display:flex;justify-content:center;align-items:center;white-space:nowrap;font-weight:800;letter-spacing:-.045em;line-height:1}
@@ -33,7 +33,7 @@ input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--ink
 input[type=range]::-moz-range-track{height:4px;background:var(--ink)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-12px;border:0;border-radius:50%;background:var(--hot)}
 input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--hot)}
-#cue{top:auto;bottom:calc(100vh - 100svh + 20px + env(safe-area-inset-bottom));left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
+#cue{top:auto;bottom:calc(100lvh - 100svh + 20px + env(safe-area-inset-bottom));left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(6px)}}
 @media (prefers-reduced-motion:reduce){#cue{animation:none}}
 #sliders.go label:first-of-type input::-webkit-slider-thumb{background:transparent}
@@ -87,7 +87,7 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
-const theme=$('meta[name=theme-color]'),stage=$('#stage'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
+const theme=$('meta[name=theme-color]'),stage=$('#stage'),hero=$('#hero'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
 const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),N=A('#note .split'),cap=A('#cap'),words=$$('.word');
 const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
@@ -110,7 +110,7 @@ function measure(){
   $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);$('#target').setAttribute('d',`M${x0} ${yT}H${W}`);
   $('#cap').style.top=H*.8+'px';
 }
-const T=(el,x,y,s=1,r=0,o=1)=>{el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;el.style.opacity=o};
+const T=(el,x,y,s=1,r=0,o=1)=>{o=o>.01?o:0;el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;el.style.opacity=o;el.style.visibility=o?'':'hidden'};
 function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out over [c,d] of uo, letters staggered
   const n=arr.length,fs=parseFloat(getComputedStyle(arr[0]).fontSize);
   arr.forEach((s,i)=>{const f=i/n*.5,ki=ease(seg(ui,a+(b-a)*f,a+(b-a)*(f+.5))),ko=ease(seg(uo,c+(d-c)*f,c+(d-c)*(f+.5)));
@@ -123,7 +123,7 @@ function render(p){
   // 1. sliders fly out, "Track Your Pulse." flies in, the Work handle becomes its full stop
   const tx=M.wk.x-M.wk.w/2+14+(inputs[0].value-1)/9*(M.wk.w-28);
   rows.forEach((r,k)=>{const q=ease(seg(u1,k*.05,.3+k*.05)),d=k%2?1:-1;T(r,d*q*W*.06,-q*H*.12,1,d*q*6,1-q)});
-  form.style.visibility=u1<.5?'visible':'hidden';form.classList.toggle('go',u1>0); // the Work handle hands off to the dot
+  form.style.visibility=u1<.5?'visible':'hidden';form.classList.toggle('go',u1>0);hero.style.visibility=u1>0&&u2<.5?'':'hidden'; // the Work handle hands off to the dot
   cue.style.opacity=1-seg(u1,0,.1);
   Hs.forEach((s,j)=>{const q=ease(seg(u1,.3+j*.025,.6+j*.025)),o2=ease(seg(u2,j*.015,.2+j*.015));T(s,0,(1-q)*M.hf*.4+o2*M.hf*.4,1,(1-q)*-12,q*(1-o2))});
   const tr=seg(u1,.15,1),sp=spring(tr);
@@ -153,17 +153,18 @@ function render(p){
   [[dl,.35],[screens,.4]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
   const r5=seg(u5,.05,.7);
   if(r5>0){const s=spring(r5);D={x:lerp(x1,M.cper.x,s),y:lerp(yT,M.cper.y,s),w:lerp(18,M.cd,ease(r5))};D.h=D.w}
-  const bg=mix(PAPER,INK,dk);stage.style.background=bg;nav.style.color=dk>.5?PAPER:INK;theme.content=dk>.5?INK:PAPER;nav.style.setProperty('--nb',bg);
+  const bg=mix(PAPER,INK,dk); // html/body track it too: Safari tints its bars from the page background
+  stage.style.background=document.documentElement.style.background=document.body.style.background=bg;nav.style.color=dk>.5?PAPER:INK;theme.content=dk>.5?INK:PAPER;nav.style.setProperty('--nb',bg);
   Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
 }
 let raf=0,P=0;
-const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);render(P)};
+const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);if(P<1e-3)P=0;render(P)};
 const req=()=>raf||(raf=requestAnimationFrame(tick));
 const re=()=>{measure();req()};
 stage.onclick=e=>{if(e.target.closest('a,label'))return;const b=B.find(b=>b>P+.005);
   scrollTo({top:b==null?document.body.scrollHeight:run.offsetTop+b*(run.offsetHeight-innerHeight),behavior:reduce.matches?'auto':'smooth'})};
 inputs.forEach((n,k)=>{n.oninput=()=>{n.nextElementSibling.value=words[k].lastChild.textContent=n.value;req()};n.oninput()});
-addEventListener('scroll',req,{passive:true});addEventListener('resize',re);reduce.addEventListener('change',req);
+addEventListener('scroll',req,{passive:true});addEventListener('scrollend',req);addEventListener('resize',re);reduce.addEventListener('change',req);
 document.fonts.ready.then(re);re();
 </script>
 </body>
