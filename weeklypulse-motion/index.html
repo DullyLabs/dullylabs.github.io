@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F3EFE7">
 <title>Weekly Pulse</title>
 <meta name="description" content="Weekly Pulse is a private check-in app. Rate Work, Play, Love, and Health each week and see how they change.">
 <link rel="icon" href="../weeklypulse/assets/app-icon.png">
@@ -32,9 +33,11 @@ input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--ink
 input[type=range]::-moz-range-track{height:4px;background:var(--ink)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-12px;border:0;border-radius:50%;background:var(--hot)}
 input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--hot)}
-#cue{top:auto;bottom:20px;left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
+#cue{top:auto;bottom:calc(100vh - 100svh + 20px + env(safe-area-inset-bottom));left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(6px)}}
 @media (prefers-reduced-motion:reduce){#cue{animation:none}}
+#sliders.go label:first-of-type input::-webkit-slider-thumb{background:transparent}
+#sliders.go label:first-of-type input::-moz-range-thumb{background:transparent}
 #hero{font-size:min(10vw,15vh)}
 #note{font-size:min(11vw,110px)}
 #dot{background:var(--hot);z-index:5;pointer-events:none}
@@ -84,7 +87,7 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
-const stage=$('#stage'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
+const theme=$('meta[name=theme-color]'),stage=$('#stage'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
 const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),N=A('#note .split'),cap=A('#cap'),words=$$('.word');
 const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
@@ -116,14 +119,15 @@ function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out o
 function render(p){
   const {W,H,x0,x1,y0,yT}=M;
   const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?Math.round(seg(p,b,B[k+1])):seg(p,b,B[k+1]));
-  const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u5,0,.3));
+  const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u5,0,.2));
   // 1. sliders fly out, "Track Your Pulse." flies in, the Work handle becomes its full stop
   const tx=M.wk.x-M.wk.w/2+14+(inputs[0].value-1)/9*(M.wk.w-28);
   rows.forEach((r,k)=>{const q=ease(seg(u1,k*.05,.3+k*.05)),d=k%2?1:-1;T(r,d*q*W*.06,-q*H*.12,1,d*q*6,1-q)});
-  form.style.visibility=u1<.5?'visible':'hidden';cue.style.opacity=1-seg(u1,0,.1);
+  form.style.visibility=u1<.5?'visible':'hidden';form.classList.toggle('go',u1>0); // the Work handle hands off to the dot
+  cue.style.opacity=1-seg(u1,0,.1);
   Hs.forEach((s,j)=>{const q=ease(seg(u1,.3+j*.025,.6+j*.025)),o2=ease(seg(u2,j*.015,.2+j*.015));T(s,0,(1-q)*M.hf*.4+o2*M.hf*.4,1,(1-q)*-12,q*(1-o2))});
   const tr=seg(u1,.15,1),sp=spring(tr);
-  let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:lerp(28,M.hd,ease(tr))};D.h=D.w;
+  let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:u1>0?lerp(28,M.hd,ease(tr)):0};D.h=D.w;
   // 2. four pillars orbit in around the dot, each with the visitor's score
   if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w,h:w}}
   const R=Math.min(W*.32,H*.3);
@@ -141,15 +145,15 @@ function render(p){
   if(td>0){D.x=x0+td*(x1-x0);D.y=y0-spring(td)*(y0-yT)}
   let d='';for(let k=0;k<=80;k++){const t=td*k/80;d+=(k?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+(y0-spring(t)*(y0-yT)).toFixed(1)}
   $('#curve').setAttribute('d',td>0?d:'');
-  $('#graph').style.opacity=seg(u4,.1,.3)*(1-seg(u5,0,.2));
+  $('#graph').style.opacity=seg(u4,.1,.3)*(1-seg(u5,0,.15));
   txt(cap,u4,.15,.45,u5,0,.2);
   // 5. end card; the dot springs back to the period of "Pulse."
-  card.style.visibility=u5>.2?'visible':'hidden';
-  txt(title,u5,.3,.6);txt(line,u5,.4,.7);
-  [[dl,.55],[screens,.6]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
-  const r5=seg(u5,.3,.95);
+  card.style.visibility=u5>.1?'visible':'hidden';
+  txt(title,u5,.1,.45);txt(line,u5,.2,.55);
+  [[dl,.35],[screens,.4]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
+  const r5=seg(u5,.05,.7);
   if(r5>0){const s=spring(r5);D={x:lerp(x1,M.cper.x,s),y:lerp(yT,M.cper.y,s),w:lerp(18,M.cd,ease(r5))};D.h=D.w}
-  const bg=mix(PAPER,INK,dk);stage.style.background=bg;nav.style.color=dk>.5?PAPER:INK;nav.style.setProperty('--nb',bg);
+  const bg=mix(PAPER,INK,dk);stage.style.background=bg;nav.style.color=dk>.5?PAPER:INK;theme.content=dk>.5?INK:PAPER;nav.style.setProperty('--nb',bg);
   Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
 }
 let raf=0,P=0;
