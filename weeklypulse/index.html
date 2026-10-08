@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#fff8ec" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F3EFE7" />
 <title>Weekly Pulse | A private weekly check-in</title>
 <meta name="description" content="Weekly Pulse is a private check-in app. Rate Work, Play, Love, and Health each week and see how they change." />
 <!-- Unfurl card.
@@ -48,506 +48,195 @@
 <meta name="twitter:image:alt" content="How's your week really going? Beside the words, a Weekly Pulse check-in card with sliders for Work 8, Play 5, Love 7 and Health 6." />
 <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
 <link rel="apple-touch-icon" href="/weeklypulse/assets/app-icon.png" />
-<script src="/assets/theme.js"></script>
-<script>
-  /* Scroll reveals hide their targets, so they have to be opt-in: without this
-     class every section below the hero stays at opacity:0 when scripting is
-     off or blocked, and the page becomes a hero over five thousand pixels of
-     blank scroll. Set here rather than on load so nothing flashes in first. */
-  document.documentElement.classList.add("js");
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/weeklypulse/tokens.css" />
-<link rel="stylesheet" href="/weeklypulse/base.css" />
-<script src="/weeklypulse/script.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;800&display=swap" rel="stylesheet">
 <style>
-/* Page-specific components only. Palette lives in tokens.css, and the
-   nav, buttons, footer and reset live in base.css. */
-
-/* confetti dots background */
-.sprinkle{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;overflow:hidden}
-.sprinkle i{position:absolute;border-radius:50%;animation:bob 9s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-26px) rotate(180deg)}}
-.wrap{position:relative;z-index:1}
-
-/* ── hero ── */
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,70px);align-items:center;
-  max-width:1280px;margin:0 auto;padding:clamp(40px,7vw,86px) clamp(14px,3.4vw,34px) clamp(60px,8vw,110px)}
-@media(max-width:960px){.hero{grid-template-columns:1fr}}
-.badge{display:inline-flex;align-items:center;gap:9px;background:var(--sun);color:var(--on-accent);
-  border:2.5px solid var(--edge);
-  border-radius:99px;padding:8px 17px;font-size:13.5px;font-weight:800;box-shadow:3px 3px 0 var(--shadow);
-  transform:rotate(-2deg);animation:in .8s var(--sp) both}
-h1{margin:18px 0 0;font-size:clamp(42px,6.6vw,84px);line-height:.98}
-h1 > span{display:inline-block;animation:in .9s var(--sp) both}
-@keyframes in{from{opacity:0;transform:translateY(28px) rotate(-3deg) scale(.9)}to{opacity:1;transform:none}}
-h1 .hl{position:relative;white-space:nowrap}
-/* the bar sits under the word by lifting the text above it, not by pushing the
-   bar to z-index:-1. A negative layer mis-composites on the first paint while
-   the parent is still running its entrance animation, and lands on top */
-h1 .hl > span{position:relative;z-index:1}
-h1 .hl::after{content:"";position:absolute;left:-4px;right:-4px;bottom:.06em;height:.34em;
-  background:var(--hl);border-radius:6px;transform:scaleX(0);transform-origin:left;
-  animation:hl .7s var(--e) 1.1s forwards}
-@keyframes hl{to{transform:scaleX(1)}}
-.lede{margin:22px 0 0;font-size:clamp(16px,1.85vw,20px);color:var(--sub);max-width:46ch;
-  animation:in .9s var(--sp) .7s both}
-.acts{margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;animation:in .9s var(--sp) .85s both}
-.ghost{background:var(--card);color:var(--ink)}
-.hint{margin-top:24px;font-size:13.5px;font-weight:800;color:var(--sub);display:flex;align-items:center;gap:8px;
-  animation:in .9s var(--sp) 1s both}
-.hint b{color:var(--love-txt)}
-.arrowdown{display:inline-block;animation:nudge 1.6s ease-in-out infinite}
-@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
-
-/* ── the toy ── */
-.toy{background:var(--card);border:3px solid var(--edge);border-radius:32px;padding:clamp(20px,2.6vw,30px);
-  box-shadow:10px 10px 0 var(--shadow);position:relative;animation:in 1s var(--sp) .5s both;
-  transition:transform .5s var(--sp)}
-.toy:hover{transform:rotate(-.5deg)}
-.toyhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.toyhead h2{margin:0;font-size:24px}
-.toyhead s{text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--sub)}
-.toygrid{display:grid;grid-template-columns:1fr 200px;gap:22px;align-items:center}
-@media(max-width:560px){.toygrid{grid-template-columns:1fr}}
-.sl{margin-top:16px}
-.sl .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
-/* --ct is the text-safe twin of --c: the label and the value are type, so they
-   can't use the fill colour that the track and thumb use. */
-.sl .nm{font-family:Fredoka;font-size:17px;color:var(--ct)}
-.sl .vv{font-family:Fredoka;font-size:26px;color:var(--ct);font-variant-numeric:tabular-nums;
-  display:inline-block;transition:transform .34s var(--sp)}
-.sl .vv.kick{transform:scale(1.32) rotate(-5deg)}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:16px;border-radius:99px;
-  background:color-mix(in srgb,var(--c) 20%,transparent);border:2.5px solid var(--edge);cursor:grab;
-  background-image:linear-gradient(var(--c),var(--c));background-repeat:no-repeat;background-size:var(--f,50%) 100%}
-/* these are the main interaction on the page, so they must show keyboard focus.
-   The rule is written on the element because a bare :focus-visible loses the
-   specificity contest against input[type=range] and never applies. */
-input[type=range]:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
-input[type=range]:active{cursor:grabbing}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;
-  background:var(--card);border:3px solid var(--edge);box-shadow:0 3px 0 var(--shadow);transition:transform .22s var(--sp)}
-input[type=range]:active::-webkit-slider-thumb{transform:scale(1.24)}
-input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--card);border:3px solid var(--edge)}
-.radar{width:100%;height:auto}
-.radar .grid{fill:none;stroke:var(--ink);opacity:.14;stroke-width:1.5}
-.radar .spoke{stroke:var(--ink);opacity:.14;stroke-width:1.5}
-/* Geometry is deliberately NOT transitioned here. The polygon and the four dots
-   draw the same four points, so giving each its own CSS transition means five
-   clocks racing to describe one number: they only agree while every duration and
-   easing happens to match, and `d` isn't animatable in every engine, so where it
-   isn't the shape snaps while the dots ease. The script eases the scores instead
-   and paints both marks from one coordinate array, so they cannot disagree.
-   Colour stays here: it's a separate channel from position, and it has to be
-   free to resolve theme tokens the script can't interpolate. */
-.radar .poly{fill:var(--play);fill-opacity:.2;stroke:var(--play);stroke-width:3;stroke-linejoin:round;
-  transition:fill .45s var(--e),stroke .45s var(--e)}
-.radar circle.v{stroke:var(--edge);stroke-width:2.5}
-.toyfoot{display:flex;gap:12px;align-items:center;margin-top:20px;flex-wrap:wrap}
-.note{flex:1;min-width:180px;border:2.5px solid var(--edge);border-radius:16px;padding:12px 15px;
-  font-family:Nunito;font-weight:700;font-size:14.5px;background:var(--card);color:var(--ink)}
-.note:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
-.note::placeholder{color:var(--sub)}
-.note:focus{box-shadow:3px 3px 0 var(--play)}
-.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,calc(100% + 60px));z-index:80;
-  background:var(--ink);color:var(--paper);border-radius:20px;padding:14px 22px;display:flex;gap:12px;align-items:center;
-  font-family:Fredoka;font-size:16px;box-shadow:0 14px 40px #0004;transition:transform .6s var(--sp)}
-.toast.on{transform:translate(-50%,0)}
-.toast i{width:32px;height:32px;border-radius:50%;background:var(--sun);color:var(--on-accent);display:grid;place-items:center;font-style:normal}
-canvas.conf{position:fixed;inset:0;z-index:90;pointer-events:none}
-
-/* ── sections ── */
-section{padding:clamp(70px,10vw,140px) clamp(14px,3.4vw,34px);position:relative}
-.in{max-width:1280px;margin:0 auto}
-.kick2.onsun{background:var(--sun);color:var(--on-accent)}
-.kick2{display:inline-block;background:var(--ink);color:var(--paper);border-radius:99px;padding:7px 16px;
-  font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;transform:rotate(-1.5deg);margin-bottom:20px}
-h2{margin:0;font-size:clamp(34px,5.6vw,68px);line-height:1.02}
-.big{margin:20px 0 0;font-size:clamp(16px,1.85vw,19.5px);color:var(--sub);max-width:56ch}
-.rv{transition:opacity .8s var(--e),transform .95s var(--sp)}
-.js .rv{opacity:0;transform:translateY(46px) rotate(-1.5deg)}
-.js .rv.on{opacity:1;transform:none}
-/* the toy and the streak grid are built by script, so they are empty boxes
-   without it. Drop them rather than leave holes, and let the hero go single
-   column so the copy isn't stranded beside a gap. */
-html:not(.js) .toy,
-html:not(.js) .hint,
-html:not(.js) .cal{display:none}
-html:not(.js) .hero{grid-template-columns:1fr}
-
-/* steps */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,26px);margin-top:56px}
-@media(max-width:920px){.cards{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
-.c{background:var(--card);border:3px solid var(--edge);border-radius:30px;padding:26px 26px 0;overflow:hidden;
-  min-height:500px;box-shadow:8px 8px 0 var(--shadow);transition:transform .5s var(--sp),box-shadow .4s var(--e)}
-.c:hover{transform:translate(-5px,-9px) rotate(-1deg);box-shadow:14px 16px 0 var(--c)}
-.c .n{width:48px;height:48px;border-radius:16px;border:2.5px solid var(--edge);background:var(--c);color:var(--on-accent);
-  display:grid;place-items:center;font-family:Fredoka;font-size:21px;box-shadow:3px 3px 0 var(--shadow);
-  transition:transform .45s var(--sp)}
-.c:hover .n{transform:rotate(-12deg) scale(1.12)}
-.c h3{margin:18px 0 8px;font-size:27px}
-.c p{margin:0;font-size:15.5px;color:var(--sub)}
-.c img{margin:24px auto -100px;width:82%;border:3px solid var(--edge);border-radius:26px 26px 0 0;
-  transition:transform .55s var(--sp)}
-.c:hover img{transform:translateY(-16px) scale(1.02)}
-
-/* pillars */
-.pils{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.8vw,18px);margin-top:48px;
-  padding:0;list-style:none}
-@media(max-width:820px){.pils{grid-template-columns:repeat(2,1fr)}}
-.pil{background:var(--card);border:3px solid var(--edge);border-radius:26px;padding:24px 20px;
-  box-shadow:6px 6px 0 var(--shadow);transition:transform .45s var(--sp),box-shadow .35s var(--e)}
-.pil:hover{transform:translateY(-9px) rotate(-2deg);box-shadow:11px 14px 0 var(--c)}
-.pil i{display:block;width:44px;height:44px;margin-bottom:14px;border-radius:14px;border:2.5px solid var(--edge);
-  background:var(--c);box-shadow:3px 3px 0 var(--shadow);transition:transform .45s var(--sp)}
-.pil:hover i{transform:rotate(-10deg) scale(1.1)}
-.pil strong{display:block;font-family:Fredoka;font-weight:600;font-size:22px;color:var(--ct)}
-.pil small{display:block;margin-top:4px;font-size:14.5px;color:var(--sub)}
-
-/* streak calendar */
-.cal{display:grid;grid-template-columns:repeat(26,1fr);gap:6px;margin-top:44px}
-@media(max-width:700px){.cal{grid-template-columns:repeat(13,1fr)}}
-.cal i{aspect-ratio:1;border-radius:7px;border:2px solid var(--edge);background:var(--card);
-  transform:scale(0);transition:transform .5s var(--sp),background .3s}
-.cal.on i{transform:scale(1)}
-.cal i.f{background:var(--c)}
-.hot{color:var(--flame-txt)}
-
-/* privacy */
-.priv{background:var(--panel);color:var(--panel-fg);border:3px solid var(--edge);border-radius:40px;
-  padding:clamp(36px,6vw,76px);max-width:1280px;margin:0 auto;position:relative;overflow:hidden;
-  /* the panel is --ink in light mode, and so is the default ring, so the only
-     link in here would focus to a 1:1 ring against its own background */
-  --focus:var(--panel-fg)}
-.priv h2{color:var(--panel-fg)}
-.priv .big{color:color-mix(in srgb,var(--panel-fg) 66%,transparent)}
-.nos{display:flex;flex-wrap:wrap;gap:11px;margin-top:34px}
-.nos span{border:2.5px solid var(--panel-edge);border-radius:99px;padding:11px 19px;font-weight:800;font-size:14.5px;
-  transition:.35s var(--sp)}
-.nos span:hover{background:var(--sun);border-color:var(--sun);color:var(--on-accent);transform:rotate(-3deg) scale(1.08)}
-.priv::before{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:var(--play);
-  filter:blur(80px);opacity:.35;right:-60px;bottom:-90px}
-.priv .rd{display:inline-block;margin-top:28px;font-weight:800;font-size:15.5px;
-  border-bottom:2.5px solid var(--sun);padding-bottom:2px;transition:.3s var(--sp)}
-.priv .rd:hover{transform:translateX(5px);border-bottom-width:4px}
-
-/* end */
-.end{text-align:center}
-.end h2{font-size:clamp(40px,7.6vw,96px)}
-.end .plat{margin-top:20px;font-size:14px;font-weight:800;color:var(--sub)}
-/* The disclaimer sits below the availability line and must read as a footnote,
-   not as a second claim: lighter weight, narrower measure, no dot. */
-.end .disc{margin-top:8px;max-width:52ch;margin-inline:auto;font-size:13px;font-weight:700;opacity:.8}
+:root{--paper:#F3EFE7;--ink:#111;--hot:#FF5B1F}
+*{box-sizing:border-box;margin:0}
+body{background:var(--ink);color:var(--ink);font:500 16px/1.4 "Inter Tight",system-ui,sans-serif}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--hot);outline-offset:3px}
+nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,40px);font-weight:800}
+nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
+nav .get{border:1.5px solid}
+#run{height:520vh}
+#stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--paper);cursor:pointer}
+#stage>*{position:absolute;left:0;top:0}
+#stage>[aria-hidden]{pointer-events:none}
+.row{inset:0;display:flex;justify-content:center;align-items:center;white-space:nowrap;font-weight:800;letter-spacing:-.045em;line-height:1}
+.row span,.split span{display:inline-block;white-space:pre}
+#sliders{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(4px,1.4vh,14px);padding:0 16px;cursor:auto}
+#sliders h2{font-weight:800;letter-spacing:-.04em;line-height:1.05;text-align:center;font-size:clamp(32px,5vw,64px);margin-bottom:clamp(12px,4vh,40px)}
+#sliders label{display:grid;grid-template-columns:4.4em 1fr 1.4em;align-items:center;gap:.6em;width:min(640px,100%);font-weight:800;font-size:clamp(20px,2.4vw,28px)}
+#sliders output{text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:none;cursor:grab;touch-action:pan-y}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:4px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-12px;border:0;border-radius:50%;background:var(--hot)}
+input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--hot)}
+#cue{top:auto;bottom:calc(100lvh - 100svh + 52px + env(safe-area-inset-bottom));left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){#cue{animation:none}}
+#sliders.go label:first-of-type input::-webkit-slider-thumb{background:transparent}
+#sliders.go label:first-of-type input::-moz-range-thumb{background:transparent}
+#hero{font-size:min(10vw,15vh)}
+#dot{background:var(--hot);z-index:5;pointer-events:none}
+.bar{position:fixed;left:0;right:0;z-index:8;pointer-events:none;height:max(env(safe-area-inset-top),40px);top:0}
+.bar+.bar{top:auto;bottom:0;height:max(env(safe-area-inset-bottom),40px)}
+#graph{width:100%;height:100%}
+.ln{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;opacity:.3}
+.ln.lo{stroke:var(--hot);stroke-width:4;opacity:1}
+#lbl{font-size:clamp(18px,2.2vw,28px);font-weight:800;fill:var(--hot)}
+#cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
+.word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--paper)}
+.word b{color:var(--hot);font-size:1.3em}
+#priv{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.5em;color:var(--paper);font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
+#priv p:first-child{font-size:min(11vw,110px)}
+#priv p+p{font-size:min(6.2vw,60px)}
+.small{width:100%;padding:0 16px;text-align:center;font-size:clamp(16px,1.8vw,22px)}
+#mine{color:var(--paper)}
+#chips{display:flex;gap:6px;font-weight:800;font-size:13px}
+#chips span{padding:5px 10px;border:1.5px solid;border-radius:99px}
+#chips span:first-child{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+#priv .dot{color:var(--hot)}
+#card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--paper);text-align:center}
+#card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh)}
+#card p{font-size:clamp(18px,2.2vw,28px)}
+#card .dl{background:var(--hot);color:var(--ink);text-decoration:none;font-weight:800;padding:14px 24px;border-radius:99px}
+.screens{display:flex;gap:12px}
+.screens img{height:min(36vh,calc((100vw - 56px)/3/.46));border-radius:14px}
+footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;font-size:14px}
+footer small{white-space:nowrap;font-size:12px;opacity:.7}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
-<div class="sprinkle" id="spr" aria-hidden="true"></div>
-<canvas class="conf" aria-hidden="true"></canvas>
-<div class="toast" id="toast" role="status" aria-live="polite"><i>★</i><span id="tmsg">Check-in saved.</span></div>
-
-<div class="wrap">
-<nav class="top" aria-label="Primary navigation">
-  <a class="mark" href="/weeklypulse/" aria-label="Weekly Pulse home"><img src="/weeklypulse/assets/app-icon.png" alt="" />Weekly Pulse</a>
-  <div class="r">
-    <a href="#how-it-works">How it works</a>
-    <a href="/weeklypulse/privacy/">Privacy</a>
-    <a href="/weeklypulse/support/">Support</a>
-    <a class="get" href="https://apps.apple.com/app/id6761065411">Download</a>
-    <button class="theme-toggle" type="button" aria-label="Use dark appearance"><svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg><svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4 7 7M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/></svg></button>
+<div class="bar"></div><div class="bar"></div><!-- edge strips: iOS Safari tints its bars from fixed elements at the edges -->
+<nav id="nav"><a href="/">Dully Labs</a><a class="get" href="https://apps.apple.com/app/id6761065411">Download</a></nav>
+<main id="run">
+  <div id="stage">
+    <h1 class="sr">Weekly Pulse, a private weekly check-in</h1>
+    <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Make them yours. Spot what's slipping. Read why it moved. Yours, on device. No account. No ads. No server. No AI. No feed. No sharing.</p>
+    <form id="sliders" onsubmit="return false">
+      <h2>How's your week really going?</h2>
+      <label><span>Work</span><input type="range" min="1" max="10" value="6" aria-label="Work"><output>6</output></label>
+      <label><span>Play</span><input type="range" min="1" max="10" value="5" aria-label="Play"><output>5</output></label>
+      <label><span>Love</span><input type="range" min="1" max="10" value="7" aria-label="Love"><output>7</output></label>
+      <label><span>Health</span><input type="range" min="1" max="10" value="6" aria-label="Health"><output>6</output></label>
+    </form>
+    <svg id="cue" viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2l10 10L22 2" stroke="#111" stroke-width="2.5" fill="none"/></svg>
+    <div class="row" id="hero" aria-hidden="true"><span><span class="split">Track Your Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
+    <div class="word" aria-hidden="true">WORK<b>6</b></div><div class="word" aria-hidden="true">PLAY<b>5</b></div><div class="word" aria-hidden="true">LOVE<b>7</b></div><div class="word" aria-hidden="true">HEALTH<b>6</b></div>
+    <p id="mine" class="small split" aria-hidden="true">Make them yours.</p>
+    <svg id="graph" aria-hidden="true"><path id="base" stroke="#111" stroke-width="2" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
+    <p id="cap" class="split" aria-hidden="true">Spot what's slipping.</p>
+    <p id="why" class="small split" aria-hidden="true">Read why it moved.</p>
+    <div id="chips" aria-hidden="true"><span>1M</span><span>3M</span><span>1Y</span></div>
+    <div id="priv" aria-hidden="true"><p class="split">Yours. On device.</p><p class="split">No account. No ads. No server.</p><p class="split">No AI. No feed. No sharing.</p></div>
+    <section id="card">
+      <h2><span class="split">Weekly Pulse</span><span id="period" style="display:inline-block;width:.2em"></span></h2>
+      <div><p class="split">Four scores. Twenty seconds.</p><p class="split">Counts showing up. Never scores.</p></div>
+      <a class="dl" href="https://apps.apple.com/app/id6761065411">Download on the App Store</a>
+      <div class="screens"><img src="/weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen"><img src="/weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen"><img src="/weeklypulse/assets/screens/trends.png" alt="Weekly Pulse trends screen"></div>
+    </section>
+    <div id="dot"></div>
   </div>
-</nav>
-
-<main id="main">
-<header class="hero">
-  <div>
-    <span class="badge">🫶 No account · No ads · No server</span>
-    <h1><span style="animation-delay:.15s">How's your</span> <span style="animation-delay:.25s">week</span> <span class="hl" style="animation-delay:.35s"><span>really</span></span> <span style="animation-delay:.45s">going?</span></h1>
-    <p class="lede">Rate the foundational pillars of your life once a week. Add a note if you want, then look back to see what's changed. A check-in takes twenty seconds. Try one right here.</p>
-    <div class="acts">
-      <a class="pop" href="https://apps.apple.com/app/id6761065411">Download on the App Store →</a>
-      <a class="pop ghost" href="#how-it-works">See how it works</a>
-      <span class="status"><span class="dot"></span>Out now · Free for iPhone and iPad</span>
-    </div>
-    <p class="hint"><b>Go on →</b> drag the sliders, they're real <span class="arrowdown">👉</span></p>
-  </div>
-
-  <div class="toy">
-    <div class="toyhead"><h2>This week</h2><s id="today">Check-in</s></div>
-    <div class="toygrid">
-      <div id="sliders"></div>
-      <svg class="radar" viewBox="0 0 200 200" id="radar" aria-hidden="true">
-        <g id="rgrid"></g>
-        <path class="poly" id="poly" d=""></path>
-        <g id="rdots"></g>
-      </svg>
-    </div>
-    <div class="toyfoot">
-      <input class="note" id="note" placeholder="What do you want to remember?" maxlength="90" aria-label="Note for this check-in" />
-      <button class="pop" id="save" type="button">Save check-in</button>
-    </div>
-  </div>
-</header>
-
-<section id="how-it-works">
-  <div class="in">
-    <div class="rv"><span class="kick2">01 · How it works</span><h2>You write the week down,<br />and later you read it back.</h2>
-      <p class="big">Rate each pillar and add a note if there's something you want to remember.</p>
-      <p class="big">Come back in three months and you might find Work, which you thought was floundering, has been averaging at a 6 all along, while Play has been sitting at a 3 since April. You can decide if you want to do anything about that.</p></div>
-    <div class="cards">
-      <article class="c rv" style="--c:var(--work)"><div class="n">1</div><h3>Check in</h3><p>Four sliders, one optional note, twenty seconds.</p><img src="/weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen" /></article>
-      <article class="c rv" style="--c:var(--love)"><div class="n">2</div><h3>Keep a record</h3><p>Every check-in lands in your diary. Scroll back and read what was going on when the line moved.</p><img src="/weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen" /></article>
-      <article class="c rv" style="--c:var(--health)"><div class="n">3</div><h3>See your trends</h3><p>Chart any pillar over a month, three months or a year, against the period before.</p><img src="/weeklypulse/assets/screens/trends.png" alt="Weekly Pulse yearly trends screen" /></article>
-    </div>
-  </div>
-</section>
-
-<section id="pillars">
-  <div class="in">
-    <div class="rv"><span class="kick2">02 · Your pillars</span><h2>Use the four defaults,<br />or change them.</h2>
-      <p class="big">Weekly Pulse starts with Work, Play, Love, and Health.
-      </br>Rename, recolour, and rewrite what each one means to you and the prompt you see at check-in.
-      </br>Add your own, and retire the ones that stop mattering; remove School when it stops being part of your life, while keeping the history.</p></div>
-    <ol class="pils">
-      <li class="pil rv" style="--c:var(--work);--ct:var(--work-txt)"><i></i><strong>Work</strong><small>Purpose and progress</small></li>
-      <li class="pil rv" style="--c:var(--play);--ct:var(--play-txt)"><i></i><strong>Play</strong><small>Joy and curiosity</small></li>
-      <li class="pil rv" style="--c:var(--love);--ct:var(--love-txt)"><i></i><strong>Love</strong><small>People and connection</small></li>
-      <li class="pil rv" style="--c:var(--health);--ct:var(--health-txt)"><i></i><strong>Health</strong><small>Body and mind</small></li>
-    </ol>
-  </div>
-</section>
-
-<section>
-  <div class="in">
-    <div class="rv"><span class="kick2">03 · Showing up</span><h2>The number you pick<br />is never scored.</h2>
-      <p class="big">Streaks and awards are optional, and they count one thing: whether you showed up. They never look at what you rated. An app that rewards good weeks teaches you to report good weeks, and then the record is worth nothing.</p>
-      <p class="big">Set a weekly goal you can hit. The ring closes when you reach it, and a streak is weeks in a row of closing it, so you can't lose one mid-week, only by finishing under target.</p>
-      <p class="big">Or leave them off. If a streak would just be one more thing to keep up, the check-in works the same without one.</p></div>
-    <div class="cal rv" id="cal" style="--c:var(--flame)"></div>
-    <p class="big rv" style="margin-top:22px"><b class="hot">🔥 26 weeks</b>. Miss a stretch and nothing punishes you: back-date an entry so the record stays honest, or leave the gap where it is.</p>
-  </div>
-</section>
-
-<section>
-  <div class="priv rv">
-    <span class="kick2 onsun">04 · Private by design</span>
-    <h2>There's no server,<br />so there's nothing to leak.</h2>
-    <p class="big">Your check-ins are stored on your device. Turn on iCloud and they sync through your own private iCloud database. Nobody else can read it, including me. Export everything to CSV whenever you like — a plain text file you can open in a spreadsheet, not a backup that only this app knows how to read.</p>
-    <div class="nos"><span>No account</span><span>No sign-up</span><span>No ads</span><span>No analytics</span><span>No tracking</span><span>No SDKs</span></div>
-    <a class="rd" href="/weeklypulse/privacy/">Read the privacy policy →</a>
-  </div>
-</section>
-
-<section class="end">
-  <div class="in rv">
-    <h2>Start now.<br />Read it in a year.</h2>
-    <p class="big" style="margin-inline:auto">No AI insights, no coach, no feed, no sharing.</p>
-    <div class="acts" style="justify-content:center;margin-top:34px">
-      <a class="pop" href="https://apps.apple.com/app/id6761065411">Download on the App Store →</a>
-    </div>
-    <p class="plat"><span class="status"><span class="dot"></span>Out now</span> · Free for iPhone and iPad · No separate account, no subscription, no in-app purchases</p>
-    <p class="plat disc">Not a medical app, and it gives no medical advice. It stores the ratings and notes you type in, and nothing else.</p>
-  </div>
-</section>
 </main>
-
-<footer>
-  <div class="fl"><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div>
-  Made by Dulanga Jayawardena in Hong Kong.
-  <small>© <span data-year></span> Dulanga Jayawardena</small>
-</footer>
-</div>
-
+<footer><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><small>Not a medical app.</small><small>Export anytime.</small></footer>
 <script>
-/* The .js class hides every reveal target, and the observer below is what
-   brings them back. If anything in this file throws before that runs, the
-   page would keep the hiding and lose the un-hiding, so arm the escape first:
-   it only fires if the observer never got as far as being wired up. */
-let revealArmed=false;
-setTimeout(()=>{
-  if(!revealArmed) document.querySelectorAll('.rv').forEach(el=>el.classList.add('on'));
-},2500);
-
-const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/* The palette lives in tokens.css and flips with the theme, so anything drawn
-   from JS references the custom property rather than a baked hex. Canvas can't
-   read var(), so confetti resolves the computed values at burst time. */
-const COLVARS=['--work','--play','--love','--health','--sun','--flame'];
-const CS=getComputedStyle(document.documentElement);
-const swatches=()=>COLVARS.map(v=>CS.getPropertyValue(v).trim());
-
-/* sprinkle background */
-document.getElementById('spr').innerHTML=Array.from({length:26},(_, i)=>{
-  const s=8+Math.random()*22;
-  return `<i style="width:${s}px;height:${s}px;background:var(${COLVARS[i%6]});
-    top:${Math.random()*100}%;left:${Math.random()*100}%;
-    animation-delay:${-Math.random()*9}s;opacity:${.25+Math.random()*.4}"></i>`;
-}).join('');
-
-/* ── the interactive check-in toy ── */
-/* c is the fill (track, thumb, radar); t is the text-safe twin for the label
-   and the value, which fail contrast in light mode at the fill tone. */
-const P=[
-  {n:'Work',  c:'var(--work)',  t:'var(--work-txt)',  v:8},
-  {n:'Play',  c:'var(--play)',  t:'var(--play-txt)',  v:5},
-  {n:'Love',  c:'var(--love)',  t:'var(--love-txt)',  v:7},
-  {n:'Health',c:'var(--health)',t:'var(--health-txt)',v:6}
-];
-document.getElementById('sliders').innerHTML=P.map((p,i)=>`
-  <div class="sl" style="--c:${p.c};--ct:${p.t}">
-    <div class="top"><span class="nm">${p.n}</span><span class="vv" id="v${i}">${p.v}</span></div>
-    <input type="range" min="1" max="10" step="1" value="${p.v}" id="r${i}"
-      aria-label="${p.n} score" style="--f:${(p.v-1)/9*100}%" />
-  </div>`).join('');
-
-const R=95, CXY=100;
-const ang=i=>(-90+i*90)*Math.PI/180;
-const pt=(i,f)=>[CXY+Math.cos(ang(i))*R*f, CXY+Math.sin(ang(i))*R*f];
-
-/* radar grid */
-let g='';
-[.25,.5,.75,1].forEach(f=>{
-  g+=`<path class="grid" d="${[0,1,2,3].map((i,k)=>(k?'L':'M')+pt(i,f).map(n=>n.toFixed(1)).join(' ')).join(' ')} Z"/>`;
-});
-[0,1,2,3].forEach(i=>{const[x,y]=pt(i,1);g+=`<line class="spoke" x1="${CXY}" y1="${CXY}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`});
-document.getElementById('rgrid').innerHTML=g;
-document.getElementById('rdots').innerHTML=P.map((p,i)=>
-  `<circle class="v" id="d${i}" r="6" style="fill:${p.c}" cx="${CXY}" cy="${CXY}"/>`).join('');
-
-const poly=document.getElementById('poly');
-const dots=P.map((p,i)=>document.getElementById('d'+i));
-
-/* Each score carries a target (v, what the slider says) and a displayed value
-   (d, where the drawing currently is). Only d reaches the screen, and one frame
-   paints every mark from it, so the shape and the dots are the same number
-   rendered twice rather than two animations that have to be kept in step. */
-P.forEach(p=>{p.d=p.v; p.vel=0});
-
-function render(){
-  /* the whole point: one coordinate array, both marks */
-  const xy=P.map((p,i)=>pt(i,p.d/10));
-  poly.setAttribute('d',xy.map(([x,y],i)=>(i?'L':'M')+x.toFixed(2)+' '+y.toFixed(2)).join(' ')+' Z');
-  xy.forEach(([x,y],i)=>{dots[i].setAttribute('cx',x.toFixed(2));dots[i].setAttribute('cy',y.toFixed(2))});
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+$$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
+const bars=$$('.bar'),theme=$('meta[name=theme-color]'),stage=$('#stage'),hero=$('#hero'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
+const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),cap=A('#cap'),mine=A('#mine'),why=A('#why'),chips=$('#chips'),lns=$$('.ln'),lbl=$('#lbl'),words=$$('.word');
+const PD=A('#priv .split').filter(e=>e.textContent=='.'),PN=$$('#priv p').map(p=>A('#priv p:nth-child('+($$('#priv p').indexOf(p)+1)+')').filter(e=>!PD.includes(e)));
+PD.forEach(e=>e.className='dot');
+const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
+const Z=.35,W0=12,WD=W0*Math.sqrt(1-Z*Z);
+const spring=t=>t<=0?0:t>=1?1:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>`rgb(${rgb(a).map((v,i)=>Math.round(lerp(v,rgb(b)[i],t)))})`;
+const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.17,.39,.63,.82,1],ST=[.25,.32,.48,.55,.62,.79,.86,.93],IN=[[.08,.25],[.3,.45],[.6,.75]];
+const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+let M={};
+const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.width/2,y:r.top-o.top+r.height/2,w:r.width,h:r.height}};
+function measure(){
+  $$('#stage span,#sliders>*,.word,#card *').forEach(e=>e.style.transform='');
+  const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
+  const hf=fs($('#hero')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o);
+  const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.2; // chart: score 1 at y0, 10 at yT
+  M={W,H,hf,wk:box(inputs[0],o),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
+    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
+    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),
+    S:PD.map(e=>{const b=box(e,o),i=document.createElement('i'),f=fs(e);i.style.display='inline-block';e.append(i);const y=i.getBoundingClientRect().top-o.top;i.remove();return{x:b.x,y:y-f*.09,d:f*.17}})}; // privacy full stops, on the baseline
+  $('#graph').setAttribute('viewBox',`0 0 ${W} ${H}`);
+  $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);
+  $('#cap').style.top=H*.8+'px';$('#why').style.top=H*.9+'px';$('#mine').style.top=H*.88+'px';
 }
-
-/* A spring rather than a duration, because the sliders are dragged: a tweened
-   curve has to be cut short and restarted on every input event, which is where
-   the visible stutter comes from, while a spring just gets a new target and
-   keeps its velocity. D is 0.6 of critical damping (2*sqrt(K)), which overshoots
-   by ~9% and settles in ~0.5s: the same bounce and roughly the same duration as
-   the --sp curve this used to transition on. */
-const K=180, D=16, still=matchMedia('(prefers-reduced-motion: reduce)');
-let springRaf=0, springLast=0;
-function springFrame(now){
-  /* clamped at both ends: the ceiling stops a backgrounded tab's long gap from
-     integrating in one jump, and the floor matters because rAF reports the frame
-     start, which can be a hair earlier than the performance.now() that seeded
-     springLast. A negative dt runs the spring backwards and adds energy. */
-  const dt=Math.min(Math.max(now-springLast,0)/1000,1/30); springLast=now;
-  let moving=false;
-  P.forEach(p=>{
-    p.vel+=((p.v-p.d)*K-p.vel*D)*dt;
-    p.d+=p.vel*dt;
-    if(Math.abs(p.v-p.d)>.002||Math.abs(p.vel)>.002) moving=true;
-    else{p.d=p.v;p.vel=0}
-  });
-  render();
-  springRaf=moving?requestAnimationFrame(springFrame):0;
+const T=(el,x,y,s=1,r=0,o=1)=>{o=o>.01?o:0;el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;el.style.opacity=o;el.style.visibility=o?'':'hidden'};
+function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out over [c,d] of uo, letters staggered
+  const n=arr.length,fs=parseFloat(getComputedStyle(arr[0]).fontSize);
+  arr.forEach((s,i)=>{const f=i/n*.5,ki=ease(seg(ui,a+(b-a)*f,a+(b-a)*(f+.5))),ko=ease(seg(uo,c+(d-c)*f,c+(d-c)*(f+.5)));
+    T(s,0,(1-ki)*fs*.5-ko*fs*.5,1,(1-ki)*8,ki*(1-ko))});
 }
-function settle(){
-  /* base.css flattens CSS transitions under reduced motion, but this loop is
-     script, so it has to opt out on its own or it would be the one bit of the
-     page that still moves. */
-  if(still.matches){P.forEach(p=>{p.d=p.v;p.vel=0});render();return}
-  if(!springRaf){springLast=performance.now();springRaf=requestAnimationFrame(springFrame)}
+function render(p){
+  const {W,H,x0,x1,y0,yT}=M;
+  const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?Math.round(seg(p,b,B[k+1])):seg(p,b,B[k+1]));
+  const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u4,0,.2));
+  // 1. sliders fly out, "Track Your Pulse." flies in, the Work handle becomes its full stop
+  const tx=M.wk.x-M.wk.w/2+14+(inputs[0].value-1)/9*(M.wk.w-28);
+  rows.forEach((r,k)=>{const q=ease(seg(u1,k*.03,.18+k*.03)),d=k%2?1:-1;T(r,d*q*W*.06,-q*H*.12,1,d*q*6,1-q)});
+  form.style.visibility=u1<.5?'visible':'hidden';form.classList.toggle('go',u1>0);hero.style.visibility=u1>0&&u2<.5?'':'hidden'; // the Work handle hands off to the dot
+  cue.style.opacity=1-seg(u1,0,.1);
+  // sliders are gone by u1=.3; letters enter from .38 at full opacity (no grey frames), flying up from below the fold
+  Hs.forEach((s,j)=>{const q=ease(seg(u1,.38+j*.02,.62+j*.02)),o2=ease(seg(u2,j*.015,.2+j*.015));T(s,0,(1-q)*H*.6-o2*H*.6,1,(1-q)*-20,+(q>0&&o2<1))});
+  const tr=seg(u1,.15,1),sp=spring(tr);
+  let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:u1>0?lerp(28,M.hd,ease(tr)):0};D.h=D.w;
+  // 2. four pillars orbit in around the dot, each with the visitor's score
+  if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w,h:w}}
+  const R=Math.min(W*.32,H*.3);
+  words.forEach((w,k)=>{const ki=ease(seg(u2,.2+k*.08,.6+k*.08)),ko=ease(seg(u3,k*.03,.25+k*.03)),mw=M.words[k];
+    const th=(k-1)*Math.PI/2-(1-ease(seg(u2,.2,1)))*Math.PI+ko*Math.PI/2,r=R*lerp(.3,1,ki)*(1-ko);
+    T(w,W/2+r*Math.cos(th)-mw.w/2,H/2+r*Math.sin(th)-mw.h/2,lerp(.5,1,ki)*(1-ko*.6),0,ki*(1-ko))});
+  txt(mine,u2,.55,.85,u3,0,.2);
+  // 3. four pillar lines over the weeks: the visitor's lowest pillar slides while the others hold (illustrative)
+  const sc=inputs.map(n=>+n.value),lo=sc.indexOf(Math.min(...sc)),top=Math.min(sc[lo]+3,10);
+  const ov=t=>{const s=spring(t);return s>1?1+(s-1)*.38:s}; // softened overshoot: dip stays under 4% of chart height
+  const val=(k,t)=>k===lo?top-3*ov(seg(t,.35,1)):sc[k]+.3*Math.sin(t*9+k*2),Y=v=>lerp(y0,yT,(v-1)/9);
+  const j2=seg(u3,0,.3),td=seg(u3,.3,.9),ye=Y(val(lo,1));
+  if(u3>0){const e=ease(j2);D={x:lerp(W/2,x0,e),y:lerp(H/2,Y(val(lo,0)),e)-Math.sin(Math.PI*j2)*H*.15,w:18,h:18}}
+  if(td>0){D.x=x0+td*(x1-x0);D.y=Y(val(lo,td))}
+  lns.forEach((l,k)=>{let d='';for(let i=0;i<=80;i++){const t=td*i/80;d+=(i?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+Y(val(k,t)).toFixed(1)}
+    l.setAttribute('d',td>0?d:'');l.classList.toggle('lo',k===lo)});
+  lbl.textContent=rows[lo+1].firstChild.textContent;lbl.setAttribute('x',x1);lbl.setAttribute('y',ye+(ye>H*.6?-18:36));lbl.style.opacity=seg(u3,.8,.95);
+  $('#graph').style.opacity=seg(u3,.1,.3)*(1-seg(u4,0,.15));
+  txt(cap,u3,.15,.45,u4,0,.2);txt(why,u3,.5,.75,u4,0,.2);
+  const ch=seg(u3,.2,.4)*(1-seg(u4,0,.15));T(chips,x0,H*.12,1,0,ch);
+  // 4. privacy: the dot is each full stop in turn, leaving a period behind as it moves on
+  const S=M.S,po=ease(seg(u5,0,.2));
+  PN.forEach((l,k)=>txt(l,u4,...IN[k],u5,0,.2));
+  PD.forEach((e,k)=>T(e,0,0,1,0,(k<PD.length-1&&u4>=ST[k+1]-.06)*(1-po)));
+  if(u4>0){const a=seg(u4,.08,ST[0]),s0=spring(a);let x=lerp(x1,S[0].x,s0),y=lerp(ye,S[0].y,s0),w=lerp(18,S[0].d,ease(a));
+    for(let k=1;k<S.length;k++){const s=spring(seg(u4,ST[k]-.06,ST[k]));x=lerp(x,S[k].x,s);y=lerp(y,S[k].y,s);w=lerp(w,S[k].d,s)}
+    D={x,y,w,h:w}}
+  // 5. end card; the dot springs back to the period of "Pulse."
+  card.style.visibility=u5>.1?'visible':'hidden';
+  txt(title,u5,.1,.45);txt(line,u5,.2,.55);
+  [[dl,.35],[screens,.4]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
+  const r5=seg(u5,.05,.7);
+  if(r5>0){const s=spring(r5),z=S.at(-1);D={x:lerp(z.x,M.cper.x,s),y:lerp(z.y,M.cper.y,s),w:lerp(z.d,M.cd,ease(r5))};D.h=D.w}
+  const bg=mix(PAPER,INK,dk); // html/body track it too: Safari tints its bars from the page background
+  stage.style.background=document.documentElement.style.background=document.body.style.background=bars[0].style.background=bars[1].style.background=nav.style.background=bg;nav.style.color=dk>.5?PAPER:INK;theme.content=dk>.5?INK:PAPER;nav.style.setProperty('--nb',bg);
+  Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
 }
-
-function readout(){
-  const avg=P.reduce((s,p)=>s+p.v,0)/4;
-  const lead=P.reduce((a,b)=>a.v>b.v?a:b);
-  poly.style.stroke=lead.c; poly.style.fill=lead.c;
-  document.getElementById('today').textContent='Average '+avg.toFixed(1);
-}
-
-P.forEach((p,i)=>{
-  const r=document.getElementById('r'+i), v=document.getElementById('v'+i);
-  r.addEventListener('input',()=>{
-    p.v=+r.value; v.textContent=p.v; r.style.setProperty('--f',(p.v-1)/9*100+'%');
-    v.classList.add('kick'); setTimeout(()=>v.classList.remove('kick'),200);
-    readout(); settle();
-  });
-});
-render(); readout();
-
-/* save → confetti + toast */
-const toast=document.getElementById('toast'), tmsg=document.getElementById('tmsg');
-let saves=0;
-document.getElementById('save').addEventListener('click',e=>{
-  saves++;
-  const msgs=['That took about twenty seconds.','Check-in saved.',
-    'Ring closed. Streak: 1 week 🔥','See you next time.'];
-  tmsg.textContent=document.getElementById('note').value.trim()
-    ? 'Check-in saved: "'+document.getElementById('note').value.trim().slice(0,34)+'"'
-    : msgs[Math.min(saves-1,msgs.length-1)];
-  toast.classList.add('on'); clearTimeout(toast._t);
-  toast._t=setTimeout(()=>toast.classList.remove('on'),3200);
-  const r=e.currentTarget.getBoundingClientRect();
-  burst(r.left+r.width/2, r.top+r.height/2);
-});
-
-/* ── streak calendar ── */
-const cal=document.getElementById('cal');
-cal.innerHTML=Array.from({length:52},(_,i)=>{
-  const filled=!(i>14&&i<20);
-  return `<i class="${filled?'f':''}" style="transition-delay:${i*.016}s"></i>`;
-}).join('');
-
-/* reveal */
-const io=new IntersectionObserver(es=>es.forEach(e=>{
-  if(e.isIntersecting){
-    const el=e.target;el.classList.add('on');io.unobserve(el);
-    /* drop the stagger delay once revealed, or it also delays :hover */
-    setTimeout(()=>{el.style.transitionDelay=''},1400);
-  }
-}),{threshold:.15});
-document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4)*.08+'s';io.observe(el)});
-revealArmed=true;
-new IntersectionObserver(es=>{if(es[0].isIntersecting){cal.classList.add('on')}},{threshold:.2}).observe(cal);
-
-/* confetti */
-const cv=document.querySelector('canvas.conf'), cx=cv.getContext('2d');
-let ps=[],raf=null,last=0;
-function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;
-  cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
-size(); addEventListener('resize',size);
-function burst(ox,oy){
-  if(RM) return;
-  const pal=swatches();
-  for(let i=0;i<80;i++) ps.push({
-    x:ox+(Math.random()-.5)*40, y:oy,
-    vx:(Math.random()-.5)*460, vy:-300-Math.random()*380,
-    w:7+Math.random()*5, h:3.5+Math.random()*3,
-    r:Math.random()*6.28, vr:(Math.random()-.5)*17,
-    c:pal[i%pal.length], t:0, life:2.3+Math.random()*.6});
-  if(!raf){last=performance.now();raf=requestAnimationFrame(step)}
-}
-function step(t){
-  const dt=Math.min(.05,(t-last)/1000)||.016; last=t;
-  cx.clearRect(0,0,cv.width,cv.height);
-  ps=ps.filter(p=>{
-    p.t+=dt; p.vy+=980*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.r+=p.vr*dt;
-    if(p.t>p.life) return false;
-    cx.save(); cx.globalAlpha=Math.max(0,1-Math.max(0,p.t-p.life+.6)/.6);
-    cx.translate(p.x,p.y); cx.rotate(p.r); cx.fillStyle=p.c;
-    cx.beginPath(); cx.roundRect(-p.w/2,-p.h/2,p.w,p.h,2); cx.fill(); cx.restore();
-    return true;
-  });
-  if(ps.length) raf=requestAnimationFrame(step); else {raf=null;cx.clearRect(0,0,cv.width,cv.height)}
-}
+let raf=0,P=0;
+const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);if(P<1e-3)P=0;render(P)};
+const req=()=>raf||(raf=requestAnimationFrame(tick));
+const re=()=>{measure();req()};
+stage.onclick=e=>{if(e.target.closest('a,label'))return;const b=B.find(b=>b>P+.005);
+  scrollTo({top:b==null?document.body.scrollHeight:run.offsetTop+b*(run.offsetHeight-innerHeight),behavior:reduce.matches?'auto':'smooth'})};
+inputs.forEach((n,k)=>{n.oninput=()=>{n.nextElementSibling.value=words[k].lastChild.textContent=n.value;req()};n.oninput()});
+addEventListener('scroll',req,{passive:true});addEventListener('scrollend',req);addEventListener('resize',re);reduce.addEventListener('change',req);
+document.fonts.ready.then(re);re();
 </script>
 </body>
 </html>
