@@ -227,8 +227,9 @@ function render(p){
   const S=M.S,po=ease(seg(u5,0,.2));
   PN.forEach((l,k)=>txt(l,u4,...IN[k],u5,0,.2));
   PD.forEach((e,k)=>T(e,0,0,1,0,(k<PD.length-1&&u4>=ST[k+1]-.06)*(1-po)));
-  if(u4>0){const a=seg(u4,.08,ST[0]),s0=spring(a);let x=lerp(x1,S[0].x,s0),y=lerp(ye,S[0].y,s0),w=lerp(18,S[0].d,ease(a));
-    for(let k=1;k<S.length;k++){const s=spring(seg(u4,ST[k]-.06,ST[k]));x=lerp(x,S[k].x,s);y=lerp(y,S[k].y,s);w=lerp(w,S[k].d,s)}
+  const land=t=>lerp(spring(t),1,ease(seg(t,.6,1))); // spring that has settled on arrival, so the dot sits on each full stop
+  if(u4>0){const a=seg(u4,.08,ST[0]),s0=land(a);let x=lerp(x1,S[0].x,s0),y=lerp(ye,S[0].y,s0),w=lerp(18,S[0].d,ease(a));
+    for(let k=1;k<S.length;k++){const s=land(seg(u4,ST[k]-.06,ST[k]));x=lerp(x,S[k].x,s);y=lerp(y,S[k].y,s);w=lerp(w,S[k].d,s)}
     D={x,y,w}}
   // 5. end card; the dot springs back to the period of "Pulse."
   css(card,'visibility',u5>.1?'visible':'hidden');
