@@ -18,7 +18,7 @@ a{color:inherit}
 nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,40px);font-weight:800}
 nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
 nav .get{border:1.5px solid}
-#run{height:550vh}
+#run{height:520vh}
 #stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--paper);cursor:pointer}
 #stage>*{position:absolute;left:0;top:0}
 #stage>[aria-hidden]{pointer-events:none}
@@ -39,19 +39,26 @@ input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radiu
 #sliders.go label:first-of-type input::-webkit-slider-thumb{background:transparent}
 #sliders.go label:first-of-type input::-moz-range-thumb{background:transparent}
 #hero{font-size:min(10vw,15vh)}
-#note{font-size:min(11vw,110px)}
 #dot{background:var(--hot);z-index:5;pointer-events:none}
 #graph{width:100%;height:100%}
+.ln{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;opacity:.3}
+.ln.lo{stroke:var(--hot);stroke-width:4;opacity:1}
+#lbl{font-size:clamp(18px,2.2vw,28px);font-weight:800;fill:var(--hot)}
 #cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
 .word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--paper)}
 .word b{color:var(--hot);font-size:1.3em}
+#priv{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.5em;color:var(--paper);font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
+#priv p:first-child{font-size:min(11vw,110px)}
+#priv p:last-child{font-size:min(6.2vw,60px)}
+#priv .dot{color:var(--hot)}
 #card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--paper);text-align:center}
 #card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh)}
 #card p{font-size:clamp(18px,2.2vw,28px)}
 #card .dl{background:var(--hot);color:var(--ink);text-decoration:none;font-weight:800;padding:14px 24px;border-radius:99px}
 .screens{display:flex;gap:12px}
 .screens img{height:min(36vh,calc((100vw - 56px)/3/.46));border-radius:14px}
-footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;gap:24px;justify-content:center;font-size:14px}
+footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;flex-wrap:wrap;gap:24px;justify-content:center;font-size:14px}
+footer small{font-size:12px;opacity:.7}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
@@ -60,7 +67,7 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
 <main id="run">
   <div id="stage">
     <h1 class="sr">Weekly Pulse, a private weekly check-in</h1>
-    <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Add a note. See how they change.</p>
+    <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Spot what's slipping. Yours, on device. No account. No ads. No server.</p>
     <form id="sliders" onsubmit="return false">
       <h2>How's your week really going?</h2>
       <label><span>Work</span><input type="range" min="1" max="10" value="6" aria-label="Work"><output>6</output></label>
@@ -71,43 +78,46 @@ footer{background:var(--ink);color:var(--paper);padding:32px 16px;display:flex;g
     <svg id="cue" viewBox="0 0 24 14" aria-hidden="true"><path d="M2 2l10 10L22 2" stroke="#111" stroke-width="2.5" fill="none"/></svg>
     <div class="row" id="hero" aria-hidden="true"><span><span class="split">Track Your Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
     <div class="word" aria-hidden="true">WORK<b>6</b></div><div class="word" aria-hidden="true">PLAY<b>5</b></div><div class="word" aria-hidden="true">LOVE<b>7</b></div><div class="word" aria-hidden="true">HEALTH<b>6</b></div>
-    <div class="row" id="note" aria-hidden="true"><span class="split">Add a note.</span></div>
-    <svg id="graph" aria-hidden="true"><path id="base" stroke="#111" stroke-width="2" fill="none"/><path id="target" stroke="#111" stroke-width="1.5" stroke-dasharray="6 6" fill="none"/><path id="curve" stroke="#FF5B1F" stroke-width="4" stroke-linecap="round" fill="none"/></svg>
-    <p id="cap" class="split" aria-hidden="true">See how they change.</p>
+    <svg id="graph" aria-hidden="true"><path id="base" stroke="#111" stroke-width="2" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
+    <p id="cap" class="split" aria-hidden="true">Spot what's slipping.</p>
+    <div id="priv" aria-hidden="true"><p class="split">Yours. On device.</p><p class="split">No account. No ads. No server.</p></div>
     <section id="card">
       <h2><span class="split">Weekly Pulse</span><span id="period" style="display:inline-block;width:.2em"></span></h2>
-      <p class="split">Four scores. One minute a week.</p>
+      <p class="split">Four scores. Twenty seconds. Never graded.</p>
       <a class="dl" href="https://apps.apple.com/app/id6761065411">Download on the App Store</a>
       <div class="screens"><img src="../weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen"><img src="../weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen"><img src="../weeklypulse/assets/screens/trends.png" alt="Weekly Pulse trends screen"></div>
     </section>
     <div id="dot"></div>
   </div>
 </main>
-<footer><a href="../weeklypulse/privacy/">Privacy</a><a href="../weeklypulse/support/">Support</a></footer>
+<footer><a href="../weeklypulse/privacy/">Privacy</a><a href="../weeklypulse/support/">Support</a><small>Not a medical app.</small></footer>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
 const theme=$('meta[name=theme-color]'),stage=$('#stage'),hero=$('#hero'),dot=$('#dot'),form=$('#sliders'),cue=$('#cue'),card=$('#card'),nav=$('#nav'),run=$('#run');
-const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),N=A('#note .split'),cap=A('#cap'),words=$$('.word');
+const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),cap=A('#cap'),lns=$$('.ln'),lbl=$('#lbl'),words=$$('.word');
+const PL=A('#priv .split'),PD=PL.filter(e=>e.textContent=='.'),P1=A('#priv p:first-child').filter(e=>!PD.includes(e)),P2=A('#priv p:last-child').filter(e=>!PD.includes(e));
+PD.forEach(e=>e.className='dot');
 const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
 const Z=.35,W0=12,WD=W0*Math.sqrt(1-Z*Z);
 const spring=t=>t<=0?0:t>=1?1:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>`rgb(${rgb(a).map((v,i)=>Math.round(lerp(v,rgb(b)[i],t)))})`;
-const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.16,.36,.57,.78,1];
+const PAPER='#F3EFE7',INK='#111111',HOT='#FF5B1F',B=[0,.17,.39,.63,.82,1],ST=[.3,.38,.62,.72,.82];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let M={};
 const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.width/2,y:r.top-o.top+r.height/2,w:r.width,h:r.height}};
 function measure(){
   $$('#stage span,#sliders>*,.word,#card *').forEach(e=>e.style.transform='');
   const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
-  const hf=fs($('#hero')),nf=fs($('#note')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o),n=N.map(e=>box(e,o)),z=n.at(-1);
-  const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.38;
+  const hf=fs($('#hero')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o);
+  const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.2; // chart: score 1 at y0, 10 at yT
   M={W,H,hf,wk:box(inputs[0],o),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
-    N:n,nf,cE:{x:z.x+z.w/2+nf*.04,y:n[0].y},cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
-    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight}))};
+    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
+    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),
+    S:PD.map(e=>{const b=box(e,o),i=document.createElement('i'),f=fs(e);i.style.display='inline-block';e.append(i);const y=i.getBoundingClientRect().top-o.top;i.remove();return{x:b.x,y:y-f*.09,d:f*.17}})}; // privacy full stops, on the baseline
   $('#graph').setAttribute('viewBox',`0 0 ${W} ${H}`);
-  $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);$('#target').setAttribute('d',`M${x0} ${yT}H${W}`);
+  $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);
   $('#cap').style.top=H*.8+'px';
 }
 const T=(el,x,y,s=1,r=0,o=1)=>{o=o>.01?o:0;el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;el.style.opacity=o;el.style.visibility=o?'':'hidden'};
@@ -119,7 +129,7 @@ function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out o
 function render(p){
   const {W,H,x0,x1,y0,yT}=M;
   const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?Math.round(seg(p,b,B[k+1])):seg(p,b,B[k+1]));
-  const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u5,0,.2));
+  const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u4,0,.2));
   // 1. sliders fly out, "Track Your Pulse." flies in, the Work handle becomes its full stop
   const tx=M.wk.x-M.wk.w/2+14+(inputs[0].value-1)/9*(M.wk.w-28);
   rows.forEach((r,k)=>{const q=ease(seg(u1,k*.05,.3+k*.05)),d=k%2?1:-1;T(r,d*q*W*.06,-q*H*.12,1,d*q*6,1-q)});
@@ -134,25 +144,30 @@ function render(p){
   words.forEach((w,k)=>{const ki=ease(seg(u2,.2+k*.08,.6+k*.08)),ko=ease(seg(u3,k*.03,.25+k*.03)),mw=M.words[k];
     const th=(k-1)*Math.PI/2-(1-ease(seg(u2,.2,1)))*Math.PI+ko*Math.PI/2,r=R*lerp(.3,1,ki)*(1-ko);
     T(w,W/2+r*Math.cos(th)-mw.w/2,H/2+r*Math.sin(th)-mw.h/2,lerp(.5,1,ki)*(1-ko*.6),0,ki*(1-ko))});
-  // 3. the dot narrows to a caret and types the note
-  const n=Math.round(seg(u3,.35,.9)*N.length);
-  N.forEach((s,k)=>{const ko=ease(seg(u4,k*.02,.2+k*.02));T(s,0,-ko*M.nf*.5,1,0,(k<n)*(1-ko))});
-  if(u3>0){const c=ease(seg(u3,.1,.35)),s=spring(seg(u3,.05,.4)),e=M.N[n-1],cx=e?e.x+e.w/2+M.nf*.04:M.N[0].x-M.N[0].w/2-M.nf*.04;
-    D={x:lerp(W/2,cx,s),y:lerp(H/2,M.cE.y,s),w:lerp(18,M.nf*.07,c),h:lerp(18,M.nf*.85,c)}}
-  // 4. the caret drops to a dot that draws the trend line
-  const j2=seg(u4,0,.3),td=seg(u4,.3,.9);
-  if(u4>0){const e=ease(j2);D={x:lerp(M.cE.x,x0,e),y:lerp(M.cE.y,y0,e)-Math.sin(Math.PI*j2)*H*.15,w:lerp(M.nf*.07,18,e),h:lerp(M.nf*.85,18,e)}}
-  if(td>0){D.x=x0+td*(x1-x0);D.y=y0-spring(td)*(y0-yT)}
-  let d='';for(let k=0;k<=80;k++){const t=td*k/80;d+=(k?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+(y0-spring(t)*(y0-yT)).toFixed(1)}
-  $('#curve').setAttribute('d',td>0?d:'');
-  $('#graph').style.opacity=seg(u4,.1,.3)*(1-seg(u5,0,.15));
-  txt(cap,u4,.15,.45,u5,0,.2);
+  // 3. four pillar lines over the weeks: the visitor's lowest pillar slides while the others hold (illustrative)
+  const sc=inputs.map(n=>+n.value),lo=sc.indexOf(Math.min(...sc)),top=Math.min(sc[lo]+3,10);
+  const val=(k,t)=>k===lo?top-3*spring(seg(t,.35,1)):sc[k]+.3*Math.sin(t*9+k*2),Y=v=>lerp(y0,yT,(v-1)/9);
+  const j2=seg(u3,0,.3),td=seg(u3,.3,.9),ye=Y(val(lo,1));
+  if(u3>0){const e=ease(j2);D={x:lerp(W/2,x0,e),y:lerp(H/2,Y(val(lo,0)),e)-Math.sin(Math.PI*j2)*H*.15,w:18,h:18}}
+  if(td>0){D.x=x0+td*(x1-x0);D.y=Y(val(lo,td))}
+  lns.forEach((l,k)=>{let d='';for(let i=0;i<=80;i++){const t=td*i/80;d+=(i?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+Y(val(k,t)).toFixed(1)}
+    l.setAttribute('d',td>0?d:'');l.classList.toggle('lo',k===lo)});
+  lbl.textContent=rows[lo+1].firstChild.textContent;lbl.setAttribute('x',x1);lbl.setAttribute('y',ye+(ye>H*.6?-18:36));lbl.style.opacity=seg(u3,.8,.95);
+  $('#graph').style.opacity=seg(u3,.1,.3)*(1-seg(u4,0,.15));
+  txt(cap,u3,.15,.45,u4,0,.2);
+  // 4. privacy: the dot is each full stop in turn, leaving a period behind as it moves on
+  const S=M.S,po=ease(seg(u5,0,.2));
+  txt(P1,u4,.1,.3,u5,0,.2);txt(P2,u4,.4,.6,u5,0,.2);
+  PD.forEach((e,k)=>T(e,0,0,1,0,(k<4&&u4>=ST[k+1]-.08)*(1-po)));
+  if(u4>0){const a=seg(u4,.1,ST[0]),s0=spring(a);let x=lerp(x1,S[0].x,s0),y=lerp(ye,S[0].y,s0),w=lerp(18,S[0].d,ease(a));
+    for(let k=1;k<5;k++){const s=spring(seg(u4,ST[k]-.08,ST[k]));x=lerp(x,S[k].x,s);y=lerp(y,S[k].y,s);w=lerp(w,S[k].d,s)}
+    D={x,y,w,h:w}}
   // 5. end card; the dot springs back to the period of "Pulse."
   card.style.visibility=u5>.1?'visible':'hidden';
   txt(title,u5,.1,.45);txt(line,u5,.2,.55);
   [[dl,.35],[screens,.4]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
   const r5=seg(u5,.05,.7);
-  if(r5>0){const s=spring(r5);D={x:lerp(x1,M.cper.x,s),y:lerp(yT,M.cper.y,s),w:lerp(18,M.cd,ease(r5))};D.h=D.w}
+  if(r5>0){const s=spring(r5),z=S[4];D={x:lerp(z.x,M.cper.x,s),y:lerp(z.y,M.cper.y,s),w:lerp(z.d,M.cd,ease(r5))};D.h=D.w}
   const bg=mix(PAPER,INK,dk); // html/body track it too: Safari tints its bars from the page background
   stage.style.background=document.documentElement.style.background=document.body.style.background=bg;nav.style.color=dk>.5?PAPER:INK;theme.content=dk>.5?INK:PAPER;nav.style.setProperty('--nb',bg);
   Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
