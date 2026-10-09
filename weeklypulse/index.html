@@ -84,7 +84,7 @@ input[type=range]::-moz-range-thumb{width:1em;height:1em;border:0;border-radius:
 @media (prefers-reduced-motion:reduce){#cue{animation:none}}
 #sliders.go label:first-of-type input::-webkit-slider-thumb{background:transparent}
 #sliders.go label:first-of-type input::-moz-range-thumb{background:transparent}
-#hero{font-size:calc(10*var(--u))}
+#hero{font-size:min(10*var(--u),96px)}
 #stage .split>span,.word,#sliders>*{will-change:transform,opacity} /* own layers: moving letters skip repaint and raster */
 #dot{width:100px;height:100px;border-radius:50%;background:var(--hot);z-index:5;pointer-events:none;will-change:transform}
 .bar{position:fixed;left:0;right:0;z-index:8;pointer-events:none;height:max(env(safe-area-inset-top),40px);top:0}
@@ -95,24 +95,25 @@ input[type=range]::-moz-range-thumb{width:1em;height:1em;border:0;border-radius:
 #lbl{font-size:max(18px,2.2*var(--u));font-weight:800;fill:var(--acc-base)}
 #base,#cue path{stroke:var(--inv)}
 #base{stroke-width:max(2px,.15*var(--u))}
-#cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:max(28px,4.5*var(--u))}
+#cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,3.2*var(--u),44px)}
+#why{font-size:clamp(16px,2*var(--u),20px)}
 .word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:max(20px,3.5*var(--u));letter-spacing:.02em;line-height:1.05;color:var(--base)}
 .word b{color:var(--acc-inv);font-size:1.3em}
 #priv{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.5em;color:var(--base);font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
-#priv p:first-child{font-size:calc(11*var(--u))}
-#priv p+p{font-size:calc(6.2*var(--u))}
+#priv p:first-child{font-size:min(11*var(--u),96px)}
+#priv p+p{font-size:min(6.2*var(--u),54px)}
 .small{width:100%;padding:0 16px;text-align:center;font-size:max(16px,2*var(--u))}
 #mine{color:var(--base)}
 #chips{display:flex;gap:.45em;font-weight:800;font-size:max(13px,1.4*var(--u))}
 #chips span{padding:.4em .8em;border:1.5px solid;border-radius:99px}
 #chips span:first-child{background:var(--inv);color:var(--base);border-color:var(--inv)}
 #priv .dot{color:var(--acc-inv)}
-#card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--base);text-align:center}
-#card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh)}
+#card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 56px;color:var(--base);text-align:center}
+#card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh,96px)}
 #card p{font-size:max(18px,2.2*var(--u))}
 #card .dl{background:var(--hot);color:#111;text-decoration:none;font-weight:800;font-size:max(16px,1.1*var(--u));padding:.875em 1.5em;border-radius:99px}
 .screens{display:flex;gap:12px}
-.screens img{height:min(42vh,calc((100vw - 56px)/3/.46));border-radius:14px}
+.screens img{height:min(var(--sh,42vh),calc((100vw - 56px)/3/.46));border-radius:14px}
 footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max(env(safe-area-inset-bottom),40px));display:flex;flex-direction:column;align-items:center;gap:20px;font-size:14px}
 footer .note{font-size:13px;opacity:.72;text-align:center} /* 6:1+ in both themes */
 footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;width:min(560px,100%);padding-top:20px;border-top:1px solid color-mix(in srgb,currentColor 20%,transparent)}
@@ -173,16 +174,21 @@ const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.w
 function measure(){
   C.clear();$$('#stage span,#sliders>*,.word,#card *').forEach(e=>e.style.transform='');
   const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
+  card.style.paddingTop=nav.offsetHeight+16+'px';screens.style.display='';
+  const sh=H-nav.offsetHeight-72-[$('#card h2'),$('#card p'),dl].reduce((a,e)=>a+e.offsetHeight,0)-3*parseFloat(getComputedStyle(card).rowGap); // height left for screenshots
+  sh<100?screens.style.display='none':screens.style.setProperty('--sh',Math.min(sh,H*.42)+'px');
   const hf=fs($('#hero')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o);
-  const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.2; // chart: score 1 at y0, 10 at yT
+  const nb=nav.getBoundingClientRect().bottom,cy=Math.max(H*.12,nb+16),capH=$('#cap').offsetHeight,whyH=$('#why').offsetHeight,cg=fs($('#cap'))*.6;
+  const cw=Math.min(W*.8,960),x0=(W-cw)/2,x1=x0+cw,yT=Math.max(cy+chips.offsetHeight+24,H*.18),y0=Math.min(H*.62,H-56-whyH-capH-cg); // chart: score 1 at y0, 10 at yT; caption stack clears the bottom bar
   const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(); // colour tokens, re-read on theme change
   M={W,H,hf,base:tok('--base'),inv:tok('--inv'),wk:box(inputs[0],o),th:fs(inputs[0]),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
-    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
+    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,cy,
     words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),F:new Map([mine,cap,why,...PN,title,line].map(a=>[a,fs(a[0])])),
     S:PD.map(e=>{const b=box(e,o),i=document.createElement('i'),f=fs(e);i.style.display='inline-block';e.append(i);const y=i.getBoundingClientRect().top-o.top;i.remove();return{x:b.x,y:y-f*.09,d:f*.17}})}; // privacy full stops, on the baseline
   graph.setAttribute('viewBox',`0 0 ${W} ${H}`);
   $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);
-  $('#cap').style.top=H*.8+'px';$('#why').style.top=H*.9+'px';$('#mine').style.top=H*.88+'px';
+  $('#cap').style.top=y0+cg+'px';$('#why').style.top=y0+cg+capH+'px';const mt=Math.min(H*.88,H-56-$('#mine').offsetHeight);$('#mine').style.top=mt+'px';
+  const wh=Math.max(...M.words.map(w=>w.h))/2;M.R=Math.min(W*.32,H*.3);M.Ry=Math.min(M.R,H/2-nb-wh,mt-H/2-wh-8); // pillar orbit squashes to clear the nav and "Make them yours."
 }
 const T=(el,x,y,s=1,r=0,o=1)=>{o=o>.01?o:0;css(el,'transform',`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`);css(el,'opacity',o);css(el,'visibility',o?'':'hidden')};
 function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out over [c,d] of uo, letters staggered
@@ -205,24 +211,23 @@ function render(p){
   let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:u1>0?lerp(M.th,M.hd,ease(tr)):0};
   // 2. four pillars orbit in around the dot, each with the visitor's score
   if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w}}
-  const R=Math.min(W*.32,H*.3);
   words.forEach((w,k)=>{const ki=ease(seg(u2,.2+k*.08,.6+k*.08)),ko=ease(seg(u3,k*.03,.25+k*.03)),mw=M.words[k];
-    const th=(k-1)*Math.PI/2-(1-ease(seg(u2,.2,1)))*Math.PI+ko*Math.PI/2,r=R*lerp(.3,1,ki)*(1-ko);
-    T(w,W/2+r*Math.cos(th)-mw.w/2,H/2+r*Math.sin(th)-mw.h/2,lerp(.5,1,ki)*(1-ko*.6),0,ki*(1-ko))});
+    const th=(k-1)*Math.PI/2-(1-ease(seg(u2,.2,1)))*Math.PI+ko*Math.PI/2,r=lerp(.3,1,ki)*(1-ko);
+    T(w,W/2+M.R*r*Math.cos(th)-mw.w/2,H/2+M.Ry*r*Math.sin(th)-mw.h/2,lerp(.5,1,ki)*(1-ko*.6),0,ki*(1-ko))});
   txt(mine,u2,.55,.85,u3,0,.2);
   // 3. four pillar lines over the weeks: the visitor's lowest pillar slides while the others hold (illustrative)
   const sc=inputs.map(n=>+n.value),lo=sc.indexOf(Math.min(...sc)),top=Math.min(sc[lo]+3,10);
   const ov=t=>{const s=spring(t);return s>1?1+(s-1)*.38:s}; // softened overshoot: dip stays under 4% of chart height
   const val=(k,t)=>k===lo?top-3*ov(seg(t,.35,1)):sc[k]+.3*Math.sin(t*9+k*2),Y=v=>lerp(y0,yT,(v-1)/9);
-  const j2=seg(u3,0,.3),td=seg(u3,.3,.9),ye=Y(val(lo,1));
+  const j2=seg(u3,0,.3),td=seg(u3,.3,.75),ye=Y(val(lo,1));
   if(u3>0){const e=ease(j2);D={x:lerp(W/2,x0,e),y:lerp(H/2,Y(val(lo,0)),e)-Math.sin(Math.PI*j2)*H*.15,w:18}}
   if(td>0){D.x=x0+td*(x1-x0);D.y=Y(val(lo,td))}
   if(!same(graph,'k',td+'|'+sc))lns.forEach((l,k)=>{let d='';for(let i=0;i<=80;i++){const t=td*i/80;d+=(i?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+Y(val(k,t)).toFixed(1)}
     l.setAttribute('d',td>0?d:'');l.classList.toggle('lo',k===lo)}); // rebuilt only while the lines are drawing or a score changed
-  const name=rows[lo+1].firstChild.textContent;same(lbl,'text',name)||(lbl.textContent=name);attr(lbl,'x',x1);attr(lbl,'y',ye+(ye>H*.6?-18:36));css(lbl,'opacity',seg(u3,.8,.95));
+  const name=rows[lo+1].firstChild.textContent;same(lbl,'text',name)||(lbl.textContent=name);attr(lbl,'x',x1);attr(lbl,'y',ye+(ye>(y0+yT)/2?-18:36));css(lbl,'opacity',seg(u3,.7,.8));
   css(graph,'opacity',seg(u3,.1,.3)*(1-seg(u4,0,.15)));
-  txt(cap,u3,.15,.45,u4,0,.2);txt(why,u3,.5,.75,u4,0,.2);
-  const ch=seg(u3,.2,.4)*(1-seg(u4,0,.15));T(chips,x0,H*.12,1,0,ch);
+  txt(cap,u3,.15,.45,u4,0,.2);txt(why,u3,.45,.7,u4,0,.2);
+  const ch=seg(u3,.2,.4)*(1-seg(u4,0,.15));T(chips,x0,M.cy,1,0,ch);
   // 4. privacy: the dot is each full stop in turn, leaving a period behind as it moves on
   const S=M.S,po=ease(seg(u5,0,.2));
   PN.forEach((l,k)=>txt(l,u4,...IN[k],u5,0,.2));
