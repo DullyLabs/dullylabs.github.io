@@ -40,12 +40,12 @@
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content=""Track Your Pulse." in large black type on a cream background, the full stop drawn as an orange dot, with the Weekly Pulse name above." />
+<meta property="og:image:alt" content="&quot;Track Your Pulse.&quot; in large black type on a cream background, the full stop drawn as an orange dot, with the Weekly Pulse name above." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Weekly Pulse | A private weekly check-in" />
 <meta name="twitter:description" content="Rate four parts of your life each week and spot what's slipping. Private, on your device." />
 <meta name="twitter:image" content="https://dullylabs.github.io/weeklypulse/assets/og.png?v=3" />
-<meta name="twitter:image:alt" content=""Track Your Pulse." in large black type on a cream background, the full stop drawn as an orange dot, with the Weekly Pulse name above." />
+<meta name="twitter:image:alt" content="&quot;Track Your Pulse.&quot; in large black type on a cream background, the full stop drawn as an orange dot, with the Weekly Pulse name above." />
 <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
 <link rel="apple-touch-icon" href="/weeklypulse/assets/app-icon.png" />
 <script src="/assets/theme.js"></script>
@@ -54,15 +54,15 @@
 <style>
 /* --base: background of the base beats (sliders, trends); --inv: background of the inverse beats (pillars, privacy, card).
    Each is also the text colour on the other. Dark mode swaps them. --acc-*: orange text on that background (4.5:1+). */
-:root{--base:#F3EFE7;--inv:#111111;--hot:#FF5B1F;--acc-base:#B83A0C;--acc-inv:#FF5B1F}
+:root{--u:min(1vw,1.5vh);--base:#F3EFE7;--inv:#111111;--hot:#FF5B1F;--acc-base:#B83A0C;--acc-inv:#FF5B1F}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--base:#151311;--inv:#F3EFE7;--acc-base:#FF5B1F;--acc-inv:#B83A0C}}
 :root[data-theme=dark]{--base:#151311;--inv:#F3EFE7;--acc-base:#FF5B1F;--acc-inv:#B83A0C}
 *{box-sizing:border-box;margin:0}
 body{background:var(--inv);color:var(--inv);font:500 16px/1.4 "Inter Tight",system-ui,sans-serif}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--hot);outline-offset:3px}
-nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:16px clamp(16px,4vw,40px);font-weight:800}
-nav a{text-decoration:none;padding:8px 14px;border-radius:99px;background:var(--nb)}
+nav{position:fixed;inset:0 0 auto;z-index:9;display:flex;justify-content:space-between;align-items:center;padding:max(16px,var(--u)) max(16px,2.5*var(--u));font-weight:800;font-size:max(16px,1.1*var(--u))}
+nav a{text-decoration:none;padding:.5em .875em;border-radius:99px;background:var(--nb)}
 nav .get{border:1.5px solid}
 #run{height:520vh}
 #stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--base);cursor:pointer}
@@ -70,47 +70,49 @@ nav .get{border:1.5px solid}
 #stage>[aria-hidden]{pointer-events:none}
 .row{inset:0;display:flex;justify-content:center;align-items:center;white-space:nowrap;font-weight:800;letter-spacing:-.045em;line-height:1}
 .row span,.split span{display:inline-block;white-space:pre}
-#sliders{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:clamp(4px,1.4vh,14px);padding:0 16px;cursor:auto}
-#sliders h2{font-weight:800;letter-spacing:-.04em;line-height:1.05;text-align:center;font-size:clamp(32px,5vw,64px);margin-bottom:clamp(12px,4vh,40px)}
-#sliders label{display:grid;grid-template-columns:4.4em 1fr 1.4em;align-items:center;gap:.6em;width:min(640px,100%);font-weight:800;font-size:clamp(20px,2.4vw,28px)}
+#sliders{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:max(4px,1.4vh);padding:0 16px;cursor:auto}
+#sliders h2{font-weight:800;letter-spacing:-.04em;line-height:1.05;text-align:center;font-size:max(32px,5*var(--u));margin-bottom:max(12px,4vh)}
+#sliders label{display:grid;grid-template-columns:4.4em 1fr 1.4em;align-items:center;gap:.6em;width:min(23em,100%);font-weight:800;font-size:max(20px,2.6*var(--u))}
 #sliders output{text-align:right;font-variant-numeric:tabular-nums}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:44px;background:none;cursor:grab;touch-action:pan-y}
-input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--inv)}
-input[type=range]::-moz-range-track{height:4px;background:var(--inv)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-12px;border:0;border-radius:50%;background:var(--hot)}
-input[type=range]::-moz-range-thumb{width:28px;height:28px;border:0;border-radius:50%;background:var(--hot)}
-#cue{top:auto;bottom:calc(100lvh - 100svh + 52px + env(safe-area-inset-bottom));left:calc(50% - 12px);width:24px;animation:bob 1.6s ease-in-out infinite}
+input[type=range]{--tr:max(4px,.14em);-webkit-appearance:none;appearance:none;width:100%;height:max(44px,1.5em);font-size:max(28px,1em);background:none;cursor:grab;touch-action:pan-y}
+input[type=range]::-webkit-slider-runnable-track{height:var(--tr);background:var(--inv)}
+input[type=range]::-moz-range-track{height:var(--tr);background:var(--inv)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:1em;height:1em;margin-top:calc(var(--tr)/2 - .5em);border:0;border-radius:50%;background:var(--hot)}
+input[type=range]::-moz-range-thumb{width:1em;height:1em;border:0;border-radius:50%;background:var(--hot)}
+#cue{top:auto;bottom:calc(100lvh - 100svh + 52px + env(safe-area-inset-bottom));left:calc(50% - var(--cw)/2);--cw:max(24px,1.5*var(--u));width:var(--cw);animation:bob 1.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(6px)}}
 @media (prefers-reduced-motion:reduce){#cue{animation:none}}
 #sliders.go label:first-of-type input::-webkit-slider-thumb{background:transparent}
 #sliders.go label:first-of-type input::-moz-range-thumb{background:transparent}
-#hero{font-size:min(10vw,15vh)}
-#dot{background:var(--hot);z-index:5;pointer-events:none}
+#hero{font-size:calc(10*var(--u))}
+#stage .split>span,.word,#sliders>*{will-change:transform,opacity} /* own layers: moving letters skip repaint and raster */
+#dot{width:100px;height:100px;border-radius:50%;background:var(--hot);z-index:5;pointer-events:none;will-change:transform}
 .bar{position:fixed;left:0;right:0;z-index:8;pointer-events:none;height:max(env(safe-area-inset-top),40px);top:0}
 .bar+.bar{top:auto;bottom:0;height:max(env(safe-area-inset-bottom),40px)}
 #graph{width:100%;height:100%}
-.ln{fill:none;stroke:var(--inv);stroke-width:2;stroke-linecap:round;opacity:.3}
-.ln.lo{stroke:var(--hot);stroke-width:4;opacity:1}
-#lbl{font-size:clamp(18px,2.2vw,28px);font-weight:800;fill:var(--acc-base)}
+.ln{fill:none;stroke:var(--inv);stroke-width:max(2px,.15*var(--u));stroke-linecap:round;opacity:.3}
+.ln.lo{stroke:var(--hot);stroke-width:max(4px,.3*var(--u));opacity:1}
+#lbl{font-size:max(18px,2.2*var(--u));font-weight:800;fill:var(--acc-base)}
 #base,#cue path{stroke:var(--inv)}
-#cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,6vw,72px)}
-.word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:clamp(20px,4.4vw,48px);letter-spacing:.02em;line-height:1.05;color:var(--base)}
+#base{stroke-width:max(2px,.15*var(--u))}
+#cap{width:100%;padding:0 16px;text-align:center;font-weight:800;letter-spacing:-.03em;font-size:max(28px,4.5*var(--u))}
+.word{display:flex;flex-direction:column;align-items:center;font-weight:800;font-size:max(20px,3.5*var(--u));letter-spacing:.02em;line-height:1.05;color:var(--base)}
 .word b{color:var(--acc-inv);font-size:1.3em}
 #priv{inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.5em;color:var(--base);font-weight:800;letter-spacing:-.04em;line-height:1;white-space:nowrap}
-#priv p:first-child{font-size:min(11vw,110px)}
-#priv p+p{font-size:min(6.2vw,60px)}
-.small{width:100%;padding:0 16px;text-align:center;font-size:clamp(16px,1.8vw,22px)}
+#priv p:first-child{font-size:calc(11*var(--u))}
+#priv p+p{font-size:calc(6.2*var(--u))}
+.small{width:100%;padding:0 16px;text-align:center;font-size:max(16px,2*var(--u))}
 #mine{color:var(--base)}
-#chips{display:flex;gap:6px;font-weight:800;font-size:13px}
-#chips span{padding:5px 10px;border:1.5px solid;border-radius:99px}
+#chips{display:flex;gap:.45em;font-weight:800;font-size:max(13px,1.4*var(--u))}
+#chips span{padding:.4em .8em;border:1.5px solid;border-radius:99px}
 #chips span:first-child{background:var(--inv);color:var(--base);border-color:var(--inv)}
 #priv .dot{color:var(--acc-inv)}
 #card{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,24px);padding:72px 16px 64px;color:var(--base);text-align:center}
 #card h2{font-weight:800;letter-spacing:-.045em;line-height:1;font-size:min(13vw,15vh)}
-#card p{font-size:clamp(18px,2.2vw,28px)}
-#card .dl{background:var(--hot);color:#111;text-decoration:none;font-weight:800;padding:14px 24px;border-radius:99px}
+#card p{font-size:max(18px,2.2*var(--u))}
+#card .dl{background:var(--hot);color:#111;text-decoration:none;font-weight:800;font-size:max(16px,1.1*var(--u));padding:.875em 1.5em;border-radius:99px}
 .screens{display:flex;gap:12px}
-.screens img{height:min(36vh,calc((100vw - 56px)/3/.46));border-radius:14px}
+.screens img{height:min(42vh,calc((100vw - 56px)/3/.46));border-radius:14px}
 footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max(env(safe-area-inset-bottom),40px));display:flex;flex-direction:column;align-items:center;gap:20px;font-size:14px}
 footer .note{font-size:13px;opacity:.72;text-align:center} /* 6:1+ in both themes */
 footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;width:min(560px,100%);padding-top:20px;border-top:1px solid color-mix(in srgb,currentColor 20%,transparent)}
@@ -123,7 +125,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;w
 <main id="run">
   <div id="stage">
     <h1 class="sr">Weekly Pulse, a private weekly check-in</h1>
-    <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Make them yours. Spot what's slipping. Read why it moved. Yours, on device. No account. No ads. No server. No AI. No feed. No sharing.</p>
+    <p class="sr">Rate Work, Play, Love, and Health from 1 to 10. Make them yours. Spot what's slipping. Read why it moved. Yours, on device. No account. No ads. No server.</p>
     <form id="sliders" onsubmit="return false">
       <h2>How's your week really going?</h2>
       <label><span>Work</span><input type="range" min="1" max="10" value="6" aria-label="Work"><output>6</output></label>
@@ -135,11 +137,11 @@ footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;w
     <div class="row" id="hero" aria-hidden="true"><span><span class="split">Track Your Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
     <div class="word" aria-hidden="true">WORK<b>6</b></div><div class="word" aria-hidden="true">PLAY<b>5</b></div><div class="word" aria-hidden="true">LOVE<b>7</b></div><div class="word" aria-hidden="true">HEALTH<b>6</b></div>
     <p id="mine" class="small split" aria-hidden="true">Make them yours.</p>
-    <svg id="graph" aria-hidden="true"><path id="base" stroke-width="2" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
+    <svg id="graph" aria-hidden="true"><path id="base" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
     <p id="cap" class="split" aria-hidden="true">Spot what's slipping.</p>
     <p id="why" class="small split" aria-hidden="true">Read why it moved.</p>
     <div id="chips" aria-hidden="true"><span>1M</span><span>3M</span><span>1Y</span></div>
-    <div id="priv" aria-hidden="true"><p class="split">Yours. On device.</p><p class="split">No account. No ads. No server.</p><p class="split">No AI. No feed. No sharing.</p></div>
+    <div id="priv" aria-hidden="true"><p class="split">Yours. On device.</p><p class="split">No account. No ads. No server.</p></div>
     <section id="card">
       <h2><span class="split">Weekly Pulse</span><span id="period" style="display:inline-block;width:.2em"></span></h2>
       <p class="split">Four scores. Twenty seconds.</p>
@@ -157,32 +159,34 @@ const bars=$$('.bar'),theme=$('meta[name=theme-color]'),stage=$('#stage'),hero=$
 const A=s=>$$(s+' [aria-hidden]'),inputs=$$('#sliders input'),rows=$$('#sliders>*'),Hs=A('#hero .split'),cap=A('#cap'),mine=A('#mine'),why=A('#why'),chips=$('#chips'),lns=$$('.ln'),lbl=$('#lbl'),words=$$('.word');
 const PD=A('#priv .split').filter(e=>e.textContent=='.'),PN=$$('#priv p').map(p=>A('#priv p:nth-child('+($$('#priv p').indexOf(p)+1)+')').filter(e=>!PD.includes(e)));
 PD.forEach(e=>e.className='dot');
-const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens');
+const title=A('#card h2'),line=A('#card p'),dl=$('#card .dl'),screens=$('.screens'),graph=$('#graph');
 const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),seg=(u,a,b)=>clamp((u-a)/(b-a)),ease=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t;
 const Z=.35,W0=12,WD=W0*Math.sqrt(1-Z*Z);
 const spring=t=>t<=0?0:t>=1?1:1-Math.exp(-Z*W0*t)*(Math.cos(WD*t)+Z*W0/WD*Math.sin(WD*t)); // damped oscillator, shared by dot and graph
 const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>`rgb(${rgb(a).map((v,i)=>Math.round(lerp(v,rgb(b)[i],t)))})`;
-const B=[0,.17,.39,.63,.82,1],ST=[.25,.32,.48,.55,.62,.79,.86,.93],IN=[[.08,.25],[.3,.45],[.6,.75]];
+const B=[0,.17,.39,.63,.82,1],ST=[.3,.4,.66,.78,.9],IN=[[.08,.3],[.4,.6]];
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 let M={};
+const C=new Map(),same=(el,k,v)=>{const m=C.get(el)||C.set(el,{}).get(el);return m[k]===v||(m[k]=v,false)}; // last value written per element: unchanged frames touch nothing
+const css=(el,k,v)=>same(el,k,v)||(el.style[k]=v),attr=(el,k,v)=>same(el,'@'+k,v)||el.setAttribute(k,v);
 const box=(el,o)=>{const r=el.getBoundingClientRect();return{x:r.left-o.left+r.width/2,y:r.top-o.top+r.height/2,w:r.width,h:r.height}};
 function measure(){
-  $$('#stage span,#sliders>*,.word,#card *').forEach(e=>e.style.transform='');
+  C.clear();$$('#stage span,#sliders>*,.word,#card *').forEach(e=>e.style.transform='');
   const o=stage.getBoundingClientRect(),W=o.width,H=o.height,fs=e=>parseFloat(getComputedStyle(e).fontSize);
   const hf=fs($('#hero')),cf=fs($('#card h2')),hp=box($('#hper'),o),per=box($('#period'),o);
   const x0=W*.1,x1=W*(W<600?.86:.7),y0=H*.7,yT=H*.2; // chart: score 1 at y0, 10 at yT
   const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(); // colour tokens, re-read on theme change
-  M={W,H,hf,base:tok('--base'),inv:tok('--inv'),wk:box(inputs[0],o),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
+  M={W,H,hf,base:tok('--base'),inv:tok('--inv'),wk:box(inputs[0],o),th:fs(inputs[0]),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
     cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,
-    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),
+    words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),F:new Map([mine,cap,why,...PN,title,line].map(a=>[a,fs(a[0])])),
     S:PD.map(e=>{const b=box(e,o),i=document.createElement('i'),f=fs(e);i.style.display='inline-block';e.append(i);const y=i.getBoundingClientRect().top-o.top;i.remove();return{x:b.x,y:y-f*.09,d:f*.17}})}; // privacy full stops, on the baseline
-  $('#graph').setAttribute('viewBox',`0 0 ${W} ${H}`);
+  graph.setAttribute('viewBox',`0 0 ${W} ${H}`);
   $('#base').setAttribute('d',`M${x0} ${y0}H${x1}`);
   $('#cap').style.top=H*.8+'px';$('#why').style.top=H*.9+'px';$('#mine').style.top=H*.88+'px';
 }
-const T=(el,x,y,s=1,r=0,o=1)=>{o=o>.01?o:0;el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;el.style.opacity=o;el.style.visibility=o?'':'hidden'};
+const T=(el,x,y,s=1,r=0,o=1)=>{o=o>.01?o:0;css(el,'transform',`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`);css(el,'opacity',o);css(el,'visibility',o?'':'hidden')};
 function txt(arr,ui,a,b,uo=0,c=0,d=1){ // per-letter: in over [a,b] of ui, out over [c,d] of uo, letters staggered
-  const n=arr.length,fs=parseFloat(getComputedStyle(arr[0]).fontSize);
+  const n=arr.length,fs=M.F.get(arr);
   arr.forEach((s,i)=>{const f=i/n*.5,ki=ease(seg(ui,a+(b-a)*f,a+(b-a)*(f+.5))),ko=ease(seg(uo,c+(d-c)*f,c+(d-c)*(f+.5)));
     T(s,0,(1-ki)*fs*.5-ko*fs*.5,1,(1-ki)*8,ki*(1-ko))});
 }
@@ -191,16 +195,16 @@ function render(p){
   const [u1,u2,u3,u4,u5]=B.slice(0,5).map((b,k)=>reduce.matches?Math.round(seg(p,b,B[k+1])):seg(p,b,B[k+1]));
   const dk=ease(seg(u2,.1,.35))-ease(seg(u3,0,.3))+ease(seg(u4,0,.2));
   // 1. sliders fly out, "Track Your Pulse." flies in, the Work handle becomes its full stop
-  const tx=M.wk.x-M.wk.w/2+14+(inputs[0].value-1)/9*(M.wk.w-28);
+  const tx=M.wk.x-M.wk.w/2+M.th/2+(inputs[0].value-1)/9*(M.wk.w-M.th);
   rows.forEach((r,k)=>{const q=ease(seg(u1,k*.03,.18+k*.03)),d=k%2?1:-1;T(r,d*q*W*.06,-q*H*.12,1,d*q*6,1-q)});
-  form.style.visibility=u1<.5?'visible':'hidden';form.classList.toggle('go',u1>0);hero.style.visibility=u1>0&&u2<.5?'':'hidden'; // the Work handle hands off to the dot
-  cue.style.opacity=1-seg(u1,0,.1);
+  css(form,'visibility',u1<.5?'visible':'hidden');form.classList.toggle('go',u1>0);css(hero,'visibility',u1>0&&u2<.5?'':'hidden'); // the Work handle hands off to the dot
+  css(cue,'opacity',1-seg(u1,0,.1));
   // sliders are gone by u1=.3; letters enter from .38 at full opacity (no grey frames), flying up from below the fold
   Hs.forEach((s,j)=>{const q=ease(seg(u1,.38+j*.02,.62+j*.02)),o2=ease(seg(u2,j*.015,.2+j*.015));T(s,0,(1-q)*H*.6-o2*H*.6,1,(1-q)*-20,+(q>0&&o2<1))});
   const tr=seg(u1,.15,1),sp=spring(tr);
-  let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:u1>0?lerp(28,M.hd,ease(tr)):0};D.h=D.w;
+  let D={x:lerp(tx,M.per.x,sp),y:lerp(M.wk.y,M.per.y,sp),w:u1>0?lerp(M.th,M.hd,ease(tr)):0};
   // 2. four pillars orbit in around the dot, each with the visitor's score
-  if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w,h:w}}
+  if(u2>0){const s=spring(seg(u2,0,.4)),w=lerp(M.hd,18,ease(seg(u2,0,.3)));D={x:lerp(M.per.x,W/2,s),y:lerp(M.per.y,H/2,s),w}}
   const R=Math.min(W*.32,H*.3);
   words.forEach((w,k)=>{const ki=ease(seg(u2,.2+k*.08,.6+k*.08)),ko=ease(seg(u3,k*.03,.25+k*.03)),mw=M.words[k];
     const th=(k-1)*Math.PI/2-(1-ease(seg(u2,.2,1)))*Math.PI+ko*Math.PI/2,r=R*lerp(.3,1,ki)*(1-ko);
@@ -211,30 +215,31 @@ function render(p){
   const ov=t=>{const s=spring(t);return s>1?1+(s-1)*.38:s}; // softened overshoot: dip stays under 4% of chart height
   const val=(k,t)=>k===lo?top-3*ov(seg(t,.35,1)):sc[k]+.3*Math.sin(t*9+k*2),Y=v=>lerp(y0,yT,(v-1)/9);
   const j2=seg(u3,0,.3),td=seg(u3,.3,.9),ye=Y(val(lo,1));
-  if(u3>0){const e=ease(j2);D={x:lerp(W/2,x0,e),y:lerp(H/2,Y(val(lo,0)),e)-Math.sin(Math.PI*j2)*H*.15,w:18,h:18}}
+  if(u3>0){const e=ease(j2);D={x:lerp(W/2,x0,e),y:lerp(H/2,Y(val(lo,0)),e)-Math.sin(Math.PI*j2)*H*.15,w:18}}
   if(td>0){D.x=x0+td*(x1-x0);D.y=Y(val(lo,td))}
-  lns.forEach((l,k)=>{let d='';for(let i=0;i<=80;i++){const t=td*i/80;d+=(i?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+Y(val(k,t)).toFixed(1)}
-    l.setAttribute('d',td>0?d:'');l.classList.toggle('lo',k===lo)});
-  lbl.textContent=rows[lo+1].firstChild.textContent;lbl.setAttribute('x',x1);lbl.setAttribute('y',ye+(ye>H*.6?-18:36));lbl.style.opacity=seg(u3,.8,.95);
-  $('#graph').style.opacity=seg(u3,.1,.3)*(1-seg(u4,0,.15));
+  if(!same(graph,'k',td+'|'+sc))lns.forEach((l,k)=>{let d='';for(let i=0;i<=80;i++){const t=td*i/80;d+=(i?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+Y(val(k,t)).toFixed(1)}
+    l.setAttribute('d',td>0?d:'');l.classList.toggle('lo',k===lo)}); // rebuilt only while the lines are drawing or a score changed
+  const name=rows[lo+1].firstChild.textContent;same(lbl,'text',name)||(lbl.textContent=name);attr(lbl,'x',x1);attr(lbl,'y',ye+(ye>H*.6?-18:36));css(lbl,'opacity',seg(u3,.8,.95));
+  css(graph,'opacity',seg(u3,.1,.3)*(1-seg(u4,0,.15)));
   txt(cap,u3,.15,.45,u4,0,.2);txt(why,u3,.5,.75,u4,0,.2);
   const ch=seg(u3,.2,.4)*(1-seg(u4,0,.15));T(chips,x0,H*.12,1,0,ch);
   // 4. privacy: the dot is each full stop in turn, leaving a period behind as it moves on
   const S=M.S,po=ease(seg(u5,0,.2));
   PN.forEach((l,k)=>txt(l,u4,...IN[k],u5,0,.2));
   PD.forEach((e,k)=>T(e,0,0,1,0,(k<PD.length-1&&u4>=ST[k+1]-.06)*(1-po)));
-  if(u4>0){const a=seg(u4,.08,ST[0]),s0=spring(a);let x=lerp(x1,S[0].x,s0),y=lerp(ye,S[0].y,s0),w=lerp(18,S[0].d,ease(a));
-    for(let k=1;k<S.length;k++){const s=spring(seg(u4,ST[k]-.06,ST[k]));x=lerp(x,S[k].x,s);y=lerp(y,S[k].y,s);w=lerp(w,S[k].d,s)}
-    D={x,y,w,h:w}}
+  const land=t=>lerp(spring(t),1,ease(seg(t,.6,1))); // spring that has settled on arrival, so the dot sits on each full stop
+  if(u4>0){const a=seg(u4,.08,ST[0]),s0=land(a);let x=lerp(x1,S[0].x,s0),y=lerp(ye,S[0].y,s0),w=lerp(18,S[0].d,ease(a));
+    for(let k=1;k<S.length;k++){const s=land(seg(u4,ST[k]-.06,ST[k]));x=lerp(x,S[k].x,s);y=lerp(y,S[k].y,s);w=lerp(w,S[k].d,s)}
+    D={x,y,w}}
   // 5. end card; the dot springs back to the period of "Pulse."
-  card.style.visibility=u5>.1?'visible':'hidden';
+  css(card,'visibility',u5>.1?'visible':'hidden');
   txt(title,u5,.1,.45);txt(line,u5,.2,.55);
   [[dl,.35],[screens,.4]].forEach(([e,a])=>{const k=ease(seg(u5,a,a+.2));T(e,0,(1-k)*30,1,0,k)});
   const r5=seg(u5,.05,.7);
-  if(r5>0){const s=spring(r5),z=S.at(-1);D={x:lerp(z.x,M.cper.x,s),y:lerp(z.y,M.cper.y,s),w:lerp(z.d,M.cd,ease(r5))};D.h=D.w}
+  if(r5>0){const s=spring(r5),z=S.at(-1);D={x:lerp(z.x,M.cper.x,s),y:lerp(z.y,M.cper.y,s),w:lerp(z.d,M.cd,ease(r5))}}
   const {base,inv}=M,bg=mix(base,inv,dk); // html/body track it too: Safari tints its bars from the page background
-  stage.style.background=document.documentElement.style.background=document.body.style.background=bars[0].style.background=bars[1].style.background=nav.style.background=bg;nav.style.color=dk>.5?base:inv;theme.content=dk>.5?inv:base;nav.style.setProperty('--nb',bg);
-  Object.assign(dot.style,{width:D.w+'px',height:D.h+'px',borderRadius:Math.min(D.w,D.h)/2+'px',transform:`translate(${D.x-D.w/2}px,${D.y-D.h/2}px)`});
+  [stage,document.documentElement,document.body,...bars,nav].forEach(e=>css(e,'background',bg));css(nav,'color',dk>.5?base:inv);same(theme,'c',dk>.5?inv:base)||(theme.content=dk>.5?inv:base);same(nav,'--nb',bg)||nav.style.setProperty('--nb',bg);
+  css(dot,'transform',`translate(${D.x-50}px,${D.y-50}px) scale(${D.w/100})`); // fixed 100px circle, scaled: no layout or repaint
 }
 let raf=0,P=0;
 const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);if(P<1e-3)P=0;render(P)};
