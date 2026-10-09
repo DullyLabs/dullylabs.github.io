@@ -138,7 +138,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;w
     <div class="row" id="hero" aria-hidden="true"><span><span class="split">Track Your Pulse</span><span id="hper" style="display:inline-block;width:.24em"></span></span></div>
     <div class="word" aria-hidden="true">WORK<b>6</b></div><div class="word" aria-hidden="true">PLAY<b>5</b></div><div class="word" aria-hidden="true">LOVE<b>7</b></div><div class="word" aria-hidden="true">HEALTH<b>6</b></div>
     <p id="mine" class="small split" aria-hidden="true">Make them yours.</p>
-    <svg id="graph" aria-hidden="true"><path id="base" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl" text-anchor="end"></text></svg>
+    <svg id="graph" aria-hidden="true"><path id="base" fill="none"/><path class="ln"/><path class="ln"/><path class="ln"/><path class="ln"/><text id="lbl"></text></svg>
     <p id="cap" class="split" aria-hidden="true">Spot what's slipping.</p>
     <p id="why" class="small split" aria-hidden="true">Read why it moved.</p>
     <div id="chips" aria-hidden="true"><span>1M</span><span>3M</span><span>1Y</span></div>
@@ -182,7 +182,7 @@ function measure(){
   const cw=Math.min(W*.8,960),x0=(W-cw)/2,x1=x0+cw,yT=Math.max(cy+chips.offsetHeight+24,H*.18),y0=Math.min(H*.62,H-56-whyH-capH-cg); // chart: score 1 at y0, 10 at yT; caption stack clears the bottom bar
   const tok=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(); // colour tokens, re-read on theme change
   M={W,H,hf,base:tok('--base'),inv:tok('--inv'),wk:box(inputs[0],o),th:fs(inputs[0]),Hs:Hs.map(e=>box(e,o)),per:{x:hp.x,y:hp.y-hf*.09},hd:hf*.17,
-    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,cy,
+    cper:{x:per.x,y:per.y-cf*.09},cd:cf*.17,x0,x1,y0,yT,cy,lf:fs(lbl),
     words:words.map(w=>({w:w.offsetWidth,h:w.offsetHeight})),F:new Map([mine,cap,why,...PN,title,line].map(a=>[a,fs(a[0])])),
     S:PD.map(e=>{const b=box(e,o),i=document.createElement('i'),f=fs(e);i.style.display='inline-block';e.append(i);const y=i.getBoundingClientRect().top-o.top;i.remove();return{x:b.x,y:y-f*.09,d:f*.17}})}; // privacy full stops, on the baseline
   graph.setAttribute('viewBox',`0 0 ${W} ${H}`);
@@ -224,7 +224,9 @@ function render(p){
   if(td>0){D.x=x0+td*(x1-x0);D.y=Y(val(lo,td))}
   if(!same(graph,'k',td+'|'+sc))lns.forEach((l,k)=>{let d='';for(let i=0;i<=80;i++){const t=td*i/80;d+=(i?'L':'M')+(x0+t*(x1-x0)).toFixed(1)+' '+Y(val(k,t)).toFixed(1)}
     l.setAttribute('d',td>0?d:'');l.classList.toggle('lo',k===lo)}); // rebuilt only while the lines are drawing or a score changed
-  const name=rows[lo+1].firstChild.textContent;same(lbl,'text',name)||(lbl.textContent=name);attr(lbl,'x',x1);attr(lbl,'y',ye+(ye>(y0+yT)/2?-18:36));css(lbl,'opacity',seg(u3,.7,.8));
+  const name=rows[lo+1].firstChild.textContent;same(lbl,'text',name)||(lbl.textContent=name,M.lw=lbl.getComputedTextLength());
+  const lf=M.lf,lw=M.lw,rt=W-x1>lw+32,ts=[...Array(21)].map((_,i)=>1-i/20*Math.min(1,(lw+8)/(x1-x0))),ys=sc.flatMap((_,k)=>ts.map(t=>Y(val(k,t)))),yb=Math.max(...ys)+10+lf*.75;
+  attr(lbl,'text-anchor',rt?'start':'end');attr(lbl,'x',rt?x1+16:x1);attr(lbl,'y',rt?ye+lf*.35:yb+lf*.2<y0-4?yb:Math.min(...ys)-10-lf*.2); // right of the line end, else clear of every line beneath or above itcss(lbl,'opacity',seg(u3,.7,.8));
   css(graph,'opacity',seg(u3,.1,.3)*(1-seg(u4,0,.15)));
   txt(cap,u3,.15,.45,u4,0,.2);txt(why,u3,.45,.7,u4,0,.2);
   const ch=seg(u3,.2,.4)*(1-seg(u4,0,.15));T(chips,x0,M.cy,1,0,ch);
