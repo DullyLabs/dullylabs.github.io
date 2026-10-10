@@ -78,7 +78,7 @@ body { background: var(--paper); color: var(--ink); font-family: var(--sans); -w
 /* Same construction as the header wordmark on the homepage (.wordmark,
    .studio-mark, .wordmark-dot), scaled up. */
 .wordmark { display: flex; align-items: center; font-size: 76px; font-weight: 700; letter-spacing: -4.5px; line-height: 1; }
-.studio-mark { width: 70px; height: 70px; margin-right: 24px; color: var(--accent); flex-shrink: 0; }
+.studio-mark { width: 70px; height: 70px; margin-right: 24px; flex-shrink: 0; }
 .wordmark-dot { color: var(--accent); }
 .rule { width: 100%; margin: 44px 0 38px; border-top: 1px solid var(--rule); }
 /* The homepage h1, fixed at one size. */
@@ -149,7 +149,7 @@ h1 em { font-style: normal; color: var(--accent); }
 <div class="canvas">
   <div>
     <div class="wordmark">
-      <svg class="studio-mark" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M16 2v28M2 16h28M6.1 6.1l19.8 19.8M6.1 25.9 25.9 6.1" stroke="currentColor" stroke-width="3.5"/></svg>
+      <img class="studio-mark" src="favicon.svg" alt="" />
       dully labs<span class="wordmark-dot">.</span>
     </div>
     <div class="rule"></div>
