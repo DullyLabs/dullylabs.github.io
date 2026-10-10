@@ -249,7 +249,8 @@ function render(p){
   css(dot,'transform',`translate(${D.x-50}px,${D.y-50}px) scale(${D.w/100})`); // fixed 100px circle, scaled: no layout or repaint
 }
 let raf=0,P=0;
-const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);if(P<1e-3)P=0;render(P)};
+const tick=()=>{raf=0;const r=run.getBoundingClientRect();P=clamp(-r.top/(r.height-innerHeight),0,.9999);if(P<1e-3)P=0;render(P);
+  css(nav,'transform',`translateY(${Math.min(0,stage.getBoundingClientRect().top)}px)`)}; // nav scrolls off with the stage as the footer comes in, so it never covers the end card
 const req=()=>raf||(raf=requestAnimationFrame(tick));
 const re=()=>{measure();req()};
 stage.onclick=e=>{if(e.target.closest('a,label'))return;const b=B.find(b=>b>P+.005);
