@@ -40,7 +40,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline
 .page-shell { max-width: 1400px; margin: auto; padding: 0 clamp(22px, 5.2vw, 80px); }
 .site-header { min-height: 98px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--rule); }
 .wordmark { display: flex; align-items: center; font-size: 25px; font-weight: 700; letter-spacing: -1.5px; line-height: 1; }
-.studio-mark { width: 29px; height: 29px; margin-right: 11px; color: var(--accent); }
+.studio-mark { width: 29px; height: 29px; margin-right: 11px; }
 .wordmark-dot { color: var(--accent); }
 .header-links { display: flex; align-items: center; gap: 24px; }
 .maker-link { font-size: 12px; }
