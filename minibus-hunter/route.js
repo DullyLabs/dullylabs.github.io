@@ -46,7 +46,7 @@ let ferryExitPosition = wanChaiIndex, ferryTravel = 0;
 places.forEach((stop, index) => {
   const button = document.createElement('button');
   button.type = 'button';
-  const name = stop.querySelector('.stop-sign').lastChild.textContent;
+  const name = stop.dataset.name;
   button.setAttribute('aria-label', name);
   button.innerHTML = `<i></i><span>${name}</span>`;
   button.addEventListener('click', () => driveTo(index));
@@ -127,7 +127,7 @@ function render() {
   const index = Math.round(x / stopWidth);
   if (index === current) return;
   current = index;
-  const name = `${places[index].querySelector('.stop-sign b').textContent} · ${buttons[index].textContent}`;
+  const name = `${places[index].dataset.zhName} · ${buttons[index].textContent}`;
   locationLabel.textContent = index < stops.length ? `${String(index + 1).padStart(2, '0')} / ${String(stops.length).padStart(2, '0')} · ${name}` : `${name} · ${zh() ? '暫停服務' : 'Not in service'}`;
   buttons.forEach((button, i) => button.setAttribute('aria-current', i === index ? 'step' : 'false'));
   places.forEach((place, i) => place.classList.toggle('active', i === index));
