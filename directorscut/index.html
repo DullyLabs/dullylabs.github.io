@@ -43,7 +43,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--disp);-web
 button{font:inherit;color:inherit;cursor:pointer}
 svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.hero{height:100vh;height:100dvh;min-height:640px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);padding:18px 32px 20px;max-width:1440px;margin:0 auto;gap:12px}
+.hero{height:100vh;height:100dvh;min-height:640px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);padding:18px 32px 20px;max-width:2400px;margin:0 auto;gap:12px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .wm{font-weight:700;font-size:20px;letter-spacing:-.01em;color:inherit;text-decoration:none}
 .top>div,.top nav{display:flex;gap:8px;align-items:center}
@@ -57,10 +57,11 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .key:hover{border-color:var(--ink)}
 .top>div>div{display:flex;gap:8px}
 #theme{width:44px;padding:0;justify-content:center}
-.sw{position:relative;min-height:0;display:flex;align-items:center;justify-content:center}
+.sw{position:relative;min-height:0;display:flex;align-items:flex-end;justify-content:center}
 .sb{position:relative}
 #stage{display:block;width:100%;height:100%;outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 12%,transparent);cursor:pointer;touch-action:manipulation}
-.hint{position:absolute;left:10px;bottom:10px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:6px 10px;pointer-events:none;transition:opacity .4s var(--ease)}
+@media (pointer:coarse){#stage{touch-action:none}.tg{height:48px}#theme{width:48px}}
+.hint{position:absolute;left:10px;top:10px;font-size:12px;color:var(--muted);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:6px 10px;pointer-events:none;transition:opacity .4s var(--ease)}
 .hint.off{opacity:0}
 .hint .p{display:none}
 .rig{display:flex;gap:24px;justify-content:center;align-items:flex-end}
@@ -68,7 +69,7 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .pad button{width:56px;height:56px;border:0;background:var(--ink);color:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:500 11px var(--mono);transition:transform 120ms ease-out;touch-action:none;user-select:none;-webkit-user-select:none}
 .pad button:active,.pad button.on{transform:scale(.94)}
 .ph{position:relative;z-index:2;margin-top:-40px;display:flex;flex-direction:column;align-items:center}
-.body{width:360px;height:180px;background:#1c1c1e;border-radius:28px;padding:10px;position:relative}
+.body{width:360px;height:180px;background:#1c1c1e;border-radius:28px;padding:10px;position:relative;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 22%,transparent)}
 .tl{position:absolute;top:2px;left:50%;width:6px;height:6px;margin-left:-3px;background:var(--tally)}
 .scr{width:100%;height:100%;background:#000;display:flex;justify-content:center;position:relative;overflow:hidden}
 .vfw{position:relative;height:100%;aspect-ratio:16/9;max-width:100%}
@@ -97,8 +98,11 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .lc.f{background:var(--tally)}
 .dp{font-size:9px;color:var(--key);margin-top:2px}
 @media (max-height:699px) and (min-width:1101px){.body{width:300px;height:150px}}
-@media (max-width:1100px){.hero{height:auto;grid-template-rows:auto auto 1fr;min-height:100vh;min-height:100dvh}.sw{aspect-ratio:16/9}.rig{flex-wrap:wrap;align-items:flex-start;align-content:flex-start;row-gap:16px}.ph{order:-1;width:100%;margin-top:-40px}.pad,.strip{width:calc(50% - 12px)}.pad{justify-content:flex-end}}
-@media (max-width:760px){.hero{display:flex;flex-direction:column;padding:0 0 16px;gap:12px;min-height:0}.top{padding:10px 16px}.top nav{display:none}.sw{margin:0 16px;aspect-ratio:16/10}#stage{touch-action:none}.hint .d{display:none}.hint .p{display:inline}.rig{padding:0 16px;gap:12px;flex-direction:column;align-items:stretch}.ph{margin-top:0;order:0}.body{width:100%;height:calc(50vw - 16px);padding:8px}.tri{height:36px}.pad{width:100%;gap:12px;order:1}.strip{order:2}.pad button{flex:1;height:52px}.strip{width:100%}}
+@media (min-width:1800px) and (min-height:1000px){.body{width:22vw;height:11vw;border-radius:2vw;padding:.7vw}.ph{margin-top:-3vw}.tri{width:7vw;height:3.5vw}.strip{width:20vw}.pad button{width:72px;height:72px}}
+@media (max-width:1100px){.hero{height:auto;grid-template-rows:auto auto auto;min-height:0}.sw{aspect-ratio:16/9}.rig{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:16px;align-items:stretch}.ph{grid-column:1/-1;margin-top:-40px}.strip{width:auto;grid-column:1;grid-row:2}.pad{grid-column:2;grid-row:2;flex-direction:column}.pad button{width:100%;height:auto;flex:1;min-height:56px}}
+@media (max-width:760px){.hero{display:flex;flex-direction:column;padding:0 0 16px;gap:12px;min-height:0}.top{padding:10px 16px}.top nav{display:none}.sw{margin:0 16px;aspect-ratio:16/10}#stage{touch-action:none}.rig{display:flex;padding:0 16px;gap:12px;flex-direction:column;align-items:stretch}.ph{margin-top:0;order:0}.body{width:100%;height:calc(50vw - 16px);padding:8px}.tri{height:36px}.pad{width:100%;gap:12px;order:1;flex-direction:row}.strip{order:2}.pad button{flex:1;height:52px;min-height:0}.strip{width:100%}}
+@media (orientation:landscape) and (max-height:500px){.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh;min-height:0;padding:6px 16px 12px;gap:8px 16px}.top{grid-column:1/-1;padding:0}.sw{grid-column:1;grid-row:2;margin:0;aspect-ratio:auto;align-items:center}.rig{grid-column:2;grid-row:2;display:flex;flex-direction:column;justify-content:center;align-items:stretch;padding:0;gap:12px}.ph{margin:0;order:0}.body{width:min(34vw,280px);height:calc(min(34vw,280px)/2);padding:8px}.tri{display:none}.strip{display:none}.pad{order:1;width:auto;flex-direction:row;gap:8px}.pad button{flex:1;height:48px;min-height:0}}
+@media (hover:none) and (pointer:coarse){.hint .d,.tg kbd{display:none}.hint .p{display:inline}}
 main{max-width:960px;margin:0 auto;padding:96px 24px 72px}
 h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px}
 .sub{font-size:18px;color:var(--muted);max-width:34em;margin:0 0 56px;line-height:1.45}
@@ -137,8 +141,8 @@ h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacin
 <symbol id="face" viewBox="0 0 24 24"><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5"/><circle cx="12" cy="12" r="4"/></symbol>
 </svg>
 <div class="hero" id="hero">
-<header class="top"><a class="wm" href="/" aria-label="Director's Cut, a Dully Labs app. Dully Labs home">Director's Cut</a><div><nav aria-label="Site"><a class="tg key" href="/directorscut/support/"><i></i>SUPPORT</a><a class="tg key" href="/directorscut/privacy/"><i></i>PRIVACY</a><a class="tg key" href="/"><i></i>DULLY LABS</a></nav><div><button class="tg" id="trk" aria-pressed="true">Show tracker <kbd>T</kbd></button><button class="tg" id="theme" aria-label="Switch theme"><svg class="i"><use href="#moon"/></svg></button></div></div></header>
-<div class="sw" id="sw"><div class="sb" id="sb"><canvas id="stage" tabindex="0" role="application" aria-label="Stage. Arrow keys or tap to walk, Space to jump, C to crouch."></canvas><div class="hint" id="hint"><span class="d">Tap to walk · Space to jump · C to crouch</span><span class="p">Tap to walk</span></div></div></div>
+<header class="top"><a class="wm" href="/" aria-label="Director's Cut, a Dully Labs app. Dully Labs home">Director's Cut</a><div><nav aria-label="Site"><a class="tg key" href="/directorscut/support/"><i></i>SUPPORT</a><a class="tg key" href="/directorscut/privacy/"><i></i>PRIVACY</a><a class="tg key" href="/"><i></i>DULLY LABS</a></nav><div><button class="tg" id="trk" aria-pressed="true" aria-keyshortcuts="T">Tracker <kbd>T</kbd></button><button class="tg" id="theme" aria-label="Switch theme" aria-keyshortcuts="L" title="Switch theme (L)"><svg class="i"><use href="#moon"/></svg></button></div></div></header>
+<div class="sw" id="sw"><div class="sb" id="sb"><canvas id="stage" tabindex="0" role="application" aria-label="Stage. Arrow keys or tap to walk, Space to jump, C to crouch."></canvas><div class="hint" id="hint"><span class="d">Click to walk · Space to jump · C to crouch</span><span class="p">Tap or drag to walk</span></div></div></div>
 <div class="rig">
 <div class="pad"><button id="jump" aria-label="Jump"><svg class="i"><use href="#up"/></svg>Jump</button><button id="crouch" aria-label="Crouch (hold)"><svg class="i"><use href="#down"/></svg>Crouch</button></div>
 <div class="ph"><div class="body" id="body"><i class="tl"></i><div class="scr"><div class="vfw"><canvas id="vf" role="img" aria-label="Phone viewfinder showing the live edit"></canvas><span class="pgm" id="pgm">PGM · WIDE</span><span class="rec"><i></i>REC</span></div></div></div>
@@ -178,7 +182,7 @@ h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacin
 const W=1600,H=900,PI=Math.PI,$=s=>document.getElementById(s),R=(a,b)=>a+Math.random()*(b-a),cl=(v,a,b)=>v<a?a:v>b?b:v,root=document.documentElement;
 const RMQ=matchMedia('(prefers-reduced-motion: reduce)'),DKQ=matchMedia('(prefers-color-scheme: dark)');
 let rm=RMQ.matches;RMQ.onchange=e=>rm=e.matches;
-const phone=()=>innerWidth<=760;
+const SL=matchMedia('(orientation:landscape) and (max-height:500px)'),phone=()=>innerWidth<=760&&!SL.matches;
 const FD='"Bricolage Grotesque",system-ui,sans-serif',FM='"JetBrains Mono",ui-monospace,Menlo,monospace';
 const DECK={W:['#2f4858','#5c8cae'],T:['#8a2018','#d6392a'],P:['#7a5c1e','#d19a2e']};
 let C={},bgc=null;
@@ -229,9 +233,9 @@ let sw=0,sh=0,viewH=H;
 function toWorld(e){const r=stage.getBoundingClientRect();return[(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*viewH]}
 function tapTo(e){let[x,y]=toWorld(e);if(y<640&&(x<64||x>1536))x=x<800?-140:1740;setTarget(x,y)}
 let drag=false;
-stage.addEventListener('pointerdown',e=>{touch();tapTo(e);drag=e.pointerType=='mouse'&&!phone();});
+stage.addEventListener('pointerdown',e=>{touch();tapTo(e);drag=true;});
 addEventListener('pointermove',e=>{if(drag)tapTo(e)});
-addEventListener('pointerup',()=>drag=false);
+addEventListener('pointerup',()=>drag=false);addEventListener('pointercancel',()=>drag=false);
 const KM={ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0],ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1]};
 addEventListener('keydown',e=>{const a=document.activeElement,k=e.key.length==1?e.key.toLowerCase():e.key;if(e.metaKey||e.ctrlKey||e.altKey)return;
 if(k=='Escape'&&a==stage){stage.blur();return}
@@ -239,7 +243,8 @@ if(a&&a!=stage&&a!=document.body)return;if(!heroOn)return;
 if(KM[k]){keys[k]=1;sp.go=null;sp.sit=false;touch();e.preventDefault()}
 else if(k==' '){if(!e.repeat){touch();jump()}e.preventDefault()}
 else if(k=='c'){if(!e.repeat){touch();crouch(true)}}
-else if(k=='t'){toggleTrk()}});
+else if(k=='t'){toggleTrk()}
+else if(k=='l'){$('theme').click()}});
 addEventListener('keyup',e=>{const k=e.key.length==1?e.key.toLowerCase():e.key;delete keys[k];if(k=='c')crouch(false)});
 addEventListener('blur',()=>{keys={};crouch(false)});
 $('jump').onclick=()=>{touch();jump()};
@@ -468,7 +473,7 @@ const LOCK=()=>st.lost?['NO SUBJECT',C.tally]:st.inZ?['HEAD · IN ZONE',C.ok]:hi
 const vf=$('vf'),vctx=vf.getContext('2d'),tiles={W:$('tW'),T:$('tT'),P:$('tP')},rib=$('rib');
 const dpr=()=>Math.min(devicePixelRatio||1,2);
 function size(c){const d=dpr(),w=Math.round(c.clientWidth*d),h=Math.round(c.clientHeight*d);if(c.width!=w||c.height!=h){c.width=w;c.height=h}}
-function layout(){const r=$('sw').getBoundingClientRect(),ar=phone()?1.6:16/9;let w=r.width,h=w/ar;if(h>r.height&&!phone()&&innerWidth>1100){h=r.height;w=h*ar}
+function layout(){const r=$('sw').getBoundingClientRect(),ar=phone()?1.6:16/9;let w=r.width,h=w/ar;if(h>r.height&&!phone()){h=r.height;w=h*ar}
  const sb=$('sb');sb.style.width=w+'px';sb.style.height=h+'px';sw=w;sh=h;viewH=W/ar;size(stage);size(vf);size(rib);for(const k in tiles)size(tiles[k].querySelector('canvas'));bgc=null}
 new ResizeObserver(layout).observe($('sw'));new ResizeObserver(layout).observe($('body'));
 function renderCrop(x,c,r){const sx=c.width/(r.w*W),sy=c.height/(r.h*H);x.setTransform(sx,0,0,sy,-r.x*W*sx,-r.y*H*sy);drawScene(x,false)}
