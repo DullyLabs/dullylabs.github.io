@@ -23,8 +23,10 @@ existing exhibit. Give its title, hook, and description unique IDs and update th
 link's `aria-labelledby` and `aria-describedby` references. Keep the app name,
 platform, description, and destination visible; mark decorative artwork
 `aria-hidden="true"`. Add any project-specific artwork styles in `assets/home.css`.
-The grid adds rows automatically and stacks on mobile. Keep hover effects optional
-and provide the equivalent keyboard-focus treatment and reduced-motion rules.
+The grid adds rows automatically and stacks on mobile. Put exhibit effects under both
+`.project-link:is(:focus-visible, .is-active)` (keyboard focus and mobile scroll via
+`assets/exhibits.js`) and `.project-link:hover` in `@media (hover: hover)`, and add
+reduced-motion rules.
 
 The share card (`assets/img/og.png`) is rendered from `og.html`; the comment at the top of that file has the headless Chrome command to regenerate it.
 
