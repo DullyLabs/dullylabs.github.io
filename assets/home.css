@@ -131,9 +131,6 @@ h1 em { font-style: normal; color: var(--accent); }
 .neverpressstart-dome::before { content: ""; position: absolute; left: 22px; top: 32px; width: 20px; height: 76px; border-left: 5px solid #fffdf599; border-radius: 50%; transform: rotate(15deg); }
 .neverpressstart-label { position: absolute; top: 215px; width: 100%; text-align: center; font-size: 9px; font-weight: 600; letter-spacing: 1.3px; }
 .neverpressstart-label span { display: block; margin-top: 3px; font: 500 12px var(--serif); letter-spacing: 0; }
-.project-link:focus-visible .neverpressstart-dome { transform: translateY(-7px); }
-.project-neverpressstart .project-link:focus-visible .project-cta > span { transform: translate(3px, -3px); }
-.project-neverpressstart .project-link:focus-visible .exhibit { box-shadow: 0 8px 25px #2527200d; }
 .project-body { padding: 24px 1px 0; }
 .project-identity, .project-identity > div { display: flex; align-items: center; }
 .project-identity { justify-content: space-between; gap: 12px; }
@@ -145,11 +142,15 @@ h1 em { font-style: normal; color: var(--accent); }
 .project-description { max-width: 43ch; color: var(--muted); font-size: 13px; line-height: 1.8; }
 .project-cta { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); font-size: 12px; font-weight: 500; }
 .project-cta > span { font-size: 22px; transition: transform .25s ease; }
-.project-link:focus-visible .gmb-bus { transform: translateX(14px); }
-.project-link:focus-visible .wheel { transform: rotate(60deg); }
-.project-link:focus-visible .slip-front { transform: rotate(0deg) translateY(-6px); }
-.project-link:focus-visible .chart-shape { transform: scale(.86, 1.1); }
-.project-link:focus-visible .lifted-text { transform: translate(7px, -12px) rotate(-1deg); }
+/* Exhibit animations play on keyboard focus and mobile scroll (exhibits.js); keep hover in sync below. */
+.project-link:is(:focus-visible, .is-active) .exhibit { box-shadow: 0 8px 25px #2527200d; }
+.project-link:is(:focus-visible, .is-active) .gmb-bus { transform: translateX(14px); }
+.project-link:is(:focus-visible, .is-active) .wheel { transform: rotate(60deg); }
+.project-link:is(:focus-visible, .is-active) .neverpressstart-dome { transform: translateY(-7px); }
+.project-link:is(:focus-visible, .is-active) .slip-front { transform: rotate(0deg) translateY(-6px); }
+.project-link:is(:focus-visible, .is-active) .chart-shape { transform: scale(.86, 1.1); }
+.project-link:is(:focus-visible, .is-active) .lifted-text { transform: translate(7px, -12px) rotate(-1deg); box-shadow: 0 12px 0 #776b1812, 0 20px 26px #64571820; }
+.project-link:is(:focus-visible, .is-active) .project-cta > span { transform: translate(3px, -3px); }
 @media (hover: hover) {
   .project-link:hover .neverpressstart-dome { transform: translateY(-7px); }
   .project-link:hover .gmb-bus { transform: translateX(14px); }
