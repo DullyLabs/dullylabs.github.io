@@ -45,12 +45,18 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .hero{height:100vh;height:100dvh;min-height:640px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);padding:18px 32px 20px;max-width:1440px;margin:0 auto;gap:12px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.wm{font-weight:700;font-size:20px;letter-spacing:-.01em}
-.top div{display:flex;gap:8px;align-items:center}
-.tg{font:500 12px var(--mono);height:36px;padding:0 12px;border:1px solid color-mix(in srgb,var(--ink) 25%,transparent);background:none;display:flex;align-items:center;gap:8px}
+.wm{font-weight:700;font-size:20px;letter-spacing:-.01em;color:inherit;text-decoration:none}
+.top>div,.top nav{display:flex;gap:8px;align-items:center}
+.top>div{gap:24px}
+.tg{font:500 12px var(--mono);height:44px;color:inherit;text-decoration:none;padding:0 12px;border:1px solid color-mix(in srgb,var(--ink) 25%,transparent);background:none;display:flex;align-items:center;gap:8px}
 .tg[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .tg kbd{font:inherit;opacity:.7}
-#theme{width:36px;padding:0;justify-content:center}
+.key{letter-spacing:1.4px}
+.key i{width:7px;height:7px;background:var(--key);transition:background 120ms ease-out}
+.key:hover i,.key:focus-visible i{background:var(--tally)}
+.key:hover{border-color:var(--ink)}
+.top>div>div{display:flex;gap:8px}
+#theme{width:44px;padding:0;justify-content:center}
 .sw{position:relative;min-height:0;display:flex;align-items:center;justify-content:center}
 .sb{position:relative}
 #stage{display:block;width:100%;height:100%;outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 12%,transparent);cursor:pointer;touch-action:manipulation}
@@ -92,7 +98,7 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .dp{font-size:9px;color:var(--key);margin-top:2px}
 @media (max-height:699px) and (min-width:1101px){.body{width:300px;height:150px}}
 @media (max-width:1100px){.hero{height:auto;grid-template-rows:auto auto 1fr;min-height:100vh;min-height:100dvh}.sw{aspect-ratio:16/9}.rig{flex-wrap:wrap;align-items:flex-start;align-content:flex-start;row-gap:16px}.ph{order:-1;width:100%;margin-top:-40px}.pad,.strip{width:calc(50% - 12px)}.pad{justify-content:flex-end}}
-@media (max-width:760px){.hero{display:flex;flex-direction:column;padding:0 0 16px;gap:12px;min-height:0}.top{padding:10px 16px}.sw{margin:0 16px;aspect-ratio:16/10}#stage{touch-action:none}.hint .d{display:none}.hint .p{display:inline}.rig{padding:0 16px;gap:12px;flex-direction:column;align-items:stretch}.ph{margin-top:0;order:0}.body{width:100%;height:calc(50vw - 16px);padding:8px}.tri{height:36px}.pad{width:100%;gap:12px;order:1}.strip{order:2}.pad button{flex:1;height:52px}.strip{width:100%}}
+@media (max-width:760px){.hero{display:flex;flex-direction:column;padding:0 0 16px;gap:12px;min-height:0}.top{padding:10px 16px}.top nav{display:none}.sw{margin:0 16px;aspect-ratio:16/10}#stage{touch-action:none}.hint .d{display:none}.hint .p{display:inline}.rig{padding:0 16px;gap:12px;flex-direction:column;align-items:stretch}.ph{margin-top:0;order:0}.body{width:100%;height:calc(50vw - 16px);padding:8px}.tri{height:36px}.pad{width:100%;gap:12px;order:1}.strip{order:2}.pad button{flex:1;height:52px}.strip{width:100%}}
 main{max-width:960px;margin:0 auto;padding:96px 24px 72px}
 h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px}
 .sub{font-size:18px;color:var(--muted);max-width:34em;margin:0 0 56px;line-height:1.45}
@@ -103,7 +109,18 @@ h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacin
 .also{font-size:14px;color:var(--muted);margin:40px 0 32px}
 .cta{display:inline-flex;align-items:center;gap:10px;background:var(--cta);color:var(--cta-ink);padding:12px 20px;font-size:16px;font-weight:700;text-decoration:none;border-radius:0;transition:transform 120ms ease-out}
 .cta:hover{transform:translateY(-1px)}
-footer{font-size:13px;color:var(--muted);padding:32px 24px;border-top:1px solid color-mix(in srgb,var(--ink) 12%,transparent);text-align:center}
+.credits{background:var(--plate);color:var(--value);font-family:var(--mono);padding:40px 24px 32px}
+.credits>*{max-width:560px;margin:0 auto}
+.credits p{font-size:11px;font-weight:700;letter-spacing:2.4px;text-align:center;color:var(--key);padding-bottom:16px}
+.credits p b{display:inline-block;width:7px;height:7px;margin-right:10px;background:var(--tally);vertical-align:1px}
+.credits dl{margin:0 auto;border-top:1px solid var(--hairline)}
+.credits dl div{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;border-bottom:1px solid var(--hairline)}
+.credits dt{font-size:10px;font-weight:600;letter-spacing:1.4px;color:var(--key);text-align:right}
+.credits dd{margin:0}
+.credits a{display:inline-flex;align-items:center;min-height:44px;color:var(--value);font-size:13px;font-weight:500;text-underline-offset:4px}
+.credits a:hover{color:#fff}
+.credits a:focus-visible{outline-color:var(--value)}
+.credits small{display:block;font-size:10px;color:var(--key);text-align:center;padding-top:20px}
 @media (max-width:760px){main{padding:56px 16px}.ft{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style>
@@ -120,7 +137,7 @@ footer{font-size:13px;color:var(--muted);padding:32px 24px;border-top:1px solid 
 <symbol id="face" viewBox="0 0 24 24"><path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5"/><circle cx="12" cy="12" r="4"/></symbol>
 </svg>
 <div class="hero" id="hero">
-<header class="top"><span class="wm">Director's Cut</span><div><button class="tg" id="trk" aria-pressed="true">Show tracker <kbd>T</kbd></button><button class="tg" id="theme" aria-label="Switch theme"><svg class="i"><use href="#moon"/></svg></button></div></header>
+<header class="top"><a class="wm" href="/" aria-label="Director's Cut, a Dully Labs app. Dully Labs home">Director's Cut</a><div><nav aria-label="Site"><a class="tg key" href="/directorscut/support/"><i></i>SUPPORT</a><a class="tg key" href="/directorscut/privacy/"><i></i>PRIVACY</a><a class="tg key" href="/"><i></i>DULLY LABS</a></nav><div><button class="tg" id="trk" aria-pressed="true">Show tracker <kbd>T</kbd></button><button class="tg" id="theme" aria-label="Switch theme"><svg class="i"><use href="#moon"/></svg></button></div></div></header>
 <div class="sw" id="sw"><div class="sb" id="sb"><canvas id="stage" tabindex="0" role="application" aria-label="Stage. Arrow keys or tap to walk, Space to jump, C to crouch."></canvas><div class="hint" id="hint"><span class="d">Tap to walk · Space to jump · C to crouch</span><span class="p">Tap to walk</span></div></div></div>
 <div class="rig">
 <div class="pad"><button id="jump" aria-label="Jump"><svg class="i"><use href="#up"/></svg>Jump</button><button id="crouch" aria-label="Crouch (hold)"><svg class="i"><use href="#down"/></svg>Crouch</button></div>
@@ -147,7 +164,15 @@ footer{font-size:13px;color:var(--muted);padding:32px 24px;border-top:1px solid 
 <p class="also">Also saves the best stills from the talk, picked for you.</p>
 <a class="cta" href="#"><svg class="i"><use href="#phone"/></svg>Download on the App Store</a>
 </main>
-<footer>Director's Cut · iPhone app</footer>
+<footer class="credits">
+<p><b></b>END OF PROGRAMME</p>
+<dl>
+<div><dt>SUPPORT DESK</dt><dd><a href="/directorscut/support/">Support</a></dd></div>
+<div><dt>PRIVACY</dt><dd><a href="/directorscut/privacy/">Privacy policy</a></dd></div>
+<div><dt>A DULLY LABS PRODUCTION</dt><dd><a href="/">Dully Labs</a></dd></div>
+</dl>
+<small>Director's Cut · iPhone app · © 2026 Dully Labs</small>
+</footer>
 <script>
 (()=>{
 const W=1600,H=900,PI=Math.PI,$=s=>document.getElementById(s),R=(a,b)=>a+Math.random()*(b-a),cl=(v,a,b)=>v<a?a:v>b?b:v,root=document.documentElement;
@@ -161,8 +186,8 @@ function tokens(){const cs=getComputedStyle(root);for(const k of 'bg ink muted c
 // theme
 const dark=()=>root.dataset.theme?root.dataset.theme=='dark':DKQ.matches;
 function themeIcon(){$('theme').querySelector('use').setAttribute('href',dark()?'#sun':'#moon')}
-try{const t=localStorage.getItem('theme');if(t)root.dataset.theme=t}catch(e){}
-$('theme').onclick=()=>{const t=dark()?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('theme',t)}catch(e){}tokens();themeIcon()};
+try{const t=localStorage.getItem('dully-theme');if(t)root.dataset.theme=t}catch(e){}
+$('theme').onclick=()=>{const t=dark()?'light':'dark';root.dataset.theme=t;try{localStorage.setItem('dully-theme',t)}catch(e){}tokens();themeIcon()};
 DKQ.onchange=()=>{tokens();themeIcon()};
 tokens();themeIcon();
 document.fonts&&document.fonts.ready.then(()=>bgc=null);
