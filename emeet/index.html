@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Calling Singapore From Bed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one big 3D stage of the bedroom, a chapter selector under it. Each chapter replays one version of the build. Single dark look, like a room at night. */
+:root{
+  --ground:#15110e; --panel:#1e1814; --line:#3b3029; --ink:#f4ede5; --muted:#b8aa9b;
+  --signal:#9fd8ff; --ring:#ffb15c; --fail:#ff7a6b; --shade:#0b0806;
+  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  color-scheme:dark;
+}
+html,body{background:var(--ground);color:var(--ink)}
+body{font-family:var(--body);font-size:16px;line-height:1.5;padding-inline:16px;padding-block:16px 24px}
+.wrap{max-width:1280px;margin:0 auto;display:grid;gap:14px}
+.stage{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);aspect-ratio:16/9;width:100%;max-width:100%;background:var(--shade);touch-action:none}
+.stage canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;inset:0;pointer-events:none}
+.title{position:absolute;left:clamp(12px,2.2vw,28px);top:clamp(10px,2vw,24px);display:grid;gap:2px}
+.title small{font-family:var(--mono);font-size:clamp(.62rem,1.1vw,.8rem);letter-spacing:.12em;color:var(--signal);text-transform:uppercase}
+.title h1{font-family:var(--display);font-weight:700;font-size:clamp(1.3rem,3.6vw,2.9rem);line-height:1;margin:0;letter-spacing:-.015em;text-shadow:0 2px 18px rgba(0,0,0,.6)}
+.verdict{position:absolute;right:clamp(12px,2.2vw,28px);text-align:right;bottom:clamp(10px,2vw,22px);max-width:min(70%,560px);font-family:var(--display);font-weight:600;font-size:clamp(.85rem,2vw,1.45rem);line-height:1.2;padding:.45em .75em;border-radius:10px;background:rgba(11,8,6,.78);border:1px solid var(--line);opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s}
+.verdict.show{opacity:1;transform:none}
+.verdict.bad{border-color:var(--fail)} .verdict.good{border-color:var(--signal)}
+.clock{position:absolute;right:clamp(12px,2.2vw,28px);top:clamp(10px,2vw,24px);text-align:right;font-family:var(--mono);opacity:0;transition:opacity .4s}
+.clock.show{opacity:1}
+.clock b{display:block;font-weight:500;font-size:clamp(1.1rem,3.2vw,2.4rem);line-height:1;color:var(--ring)}
+.clock span{font-size:clamp(.58rem,1vw,.75rem);letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.l3{position:absolute;left:0;top:0;white-space:nowrap;transform:translate(-50%,-100%);padding:3px 8px 4px;border-radius:7px;background:rgba(11,8,6,.72);border:1px solid rgba(244,237,229,.14);line-height:1.2;transition:opacity .35s,border-color .3s}
+.l3 b{display:block;font-size:clamp(.62rem,1.25vw,.85rem)}
+.l3 i{display:block;font-style:normal;font-size:clamp(.56rem,1.05vw,.72rem);color:var(--muted)}
+.l3.on{border-color:var(--signal)}
+.l3.hide,.l3[data-off]{opacity:0}
+.bub{position:absolute;left:0;top:0;transform:translate(-50%,-100%);max-width:15em;white-space:normal;text-align:center;font-weight:700;font-size:clamp(.66rem,1.35vw,.98rem);line-height:1.25;color:#1a1410;background:#f4ede5;padding:.45em .7em;border-radius:12px;opacity:0;transition:opacity .3s}
+.bub::after{content:"";position:absolute;left:50%;bottom:-7px;margin-left:-7px;border:7px solid transparent;border-bottom:0;border-top-color:#f4ede5}
+.bub.show{opacity:1}
+.bub.fail{background:#ffe2dd;color:#5a1a12} .bub.fail::after{border-top-color:#ffe2dd}
+.bub.sfx{font-family:var(--mono);font-weight:500;background:var(--signal);color:var(--shade)} .bub.sfx::after{border-top-color:var(--signal)}
+.auth{position:absolute;left:0;top:0;transform:translate(-50%,-100%);display:flex;gap:.55em;align-items:center;white-space:nowrap;font-family:var(--mono);font-size:clamp(.7rem,1.5vw,1.05rem);color:var(--ring);background:rgba(11,8,6,.85);border:1px solid var(--ring);border-radius:10px;padding:.5em .8em;opacity:0;transition:opacity .3s}
+.auth.show{opacity:1}
+.auth svg{width:1.3em;height:1.3em;animation:flip 1.4s ease-in-out infinite}
+@keyframes flip{0%,40%{transform:rotate(0)}60%,100%{transform:rotate(180deg)}}
+@media (prefers-reduced-motion:reduce){.auth svg{animation:none}}
+.nogl{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chap{font:700 .92rem var(--body);color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:.5rem .95rem;cursor:pointer;display:inline-flex;gap:.5em;align-items:baseline}
+.chap span{font-family:var(--mono);font-weight:500;font-size:.75rem;opacity:.8}
+.chap:hover{color:var(--ink);border-color:var(--muted)}
+.chap[aria-pressed="true"]{background:var(--signal);border-color:var(--signal);color:var(--shade)}
+.chap:focus-visible,#play:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+#play{margin-left:auto;font:700 .92rem var(--body);color:var(--shade);background:var(--ring);border:1px solid var(--ring);border-radius:999px;padding:.5rem .95rem;cursor:pointer}
+#play:hover{filter:brightness(1.08)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="stage" id="stage" role="img" aria-label="3D model of the bedroom, replaying one version of the bedside calling setup per chapter">
+    <div class="hud" id="hud">
+      <div class="l3" id="L-btn"><b>IKEA remote</b></div>
+      <div class="l3" id="L-pi"><b>Raspberry Pi</b><i>Home Assistant</i></div>
+      <div class="l3" id="L-mac"><b>Mac mini + eMeet</b></div>
+      <div class="l3" id="L-echo"><b>Alexa</b></div>
+      <div class="l3" id="L-phone"><b>Her phone</b><i>Singapore</i></div>
+      <div class="bub" id="B-me"></div>
+      <div class="bub" id="B-dev"></div>
+      <div class="bub sfx" id="B-sfx"></div>
+      <div class="auth" id="A-mac"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12M6 22h12M7 2c0 6 10 6 10 10S7 16 7 22M17 2c0 6-10 6-10 10s10 4 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="authText"></span></div>
+      <div class="title"><small id="eyebrow"></small><h1 id="ctitle"></h1></div>
+      <div class="clock" id="clock"><b id="clockv">0.0 s</b><span id="clockl">press to ring</span></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+  </div>
+  <nav id="nav" aria-label="Chapters"></nav>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const host=$('stage');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+
+  let renderer;
+  try{ renderer=new THREE.WebGLRenderer({antialias:true}); }
+  catch(e){ const d=document.createElement('div');d.className='nogl';d.textContent='This browser could not start 3D graphics.';host.appendChild(d);return; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.82;
+  host.insertBefore(renderer.domElement,host.firstChild);
+
+  const scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x120d0a);
+  scene.fog=new THREE.Fog(0x120d0a,7,13);
+  const camera=new THREE.PerspectiveCamera(42,16/9,0.05,50);
+  const controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.enablePan=false;
+  controls.minDistance=1.1; controls.maxDistance=5.5; controls.maxPolarAngle=Math.PI*0.48;
+
+  const mat=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85,metalness:0},o));
+  function add(m,parent=scene){m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
+  function box(w,h,d,m,x,y,z,parent){const g=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);g.position.set(x,y,z);return add(g,parent);}
+  function blob(r,m,x,y,z,sx=1,sy=1,sz=1,parent){const g=new THREE.Mesh(new THREE.SphereGeometry(r,32,20),m);g.position.set(x,y,z);g.scale.set(sx,sy,sz);return add(g,parent);}
+  function glowTex(rgb){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,`rgba(${rgb},1)`);g.addColorStop(.4,`rgba(${rgb},.35)`);g.addColorStop(1,`rgba(${rgb},0)`);x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);}
+  function glow(rgb,size,pos){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex(rgb),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0}));s.scale.set(size,size,1);s.position.copy(pos);scene.add(s);return s;}
+  function limbGeo(r){const g=new THREE.CylinderGeometry(r,r*.95,1,14);g.rotateX(Math.PI/2);g.translate(0,0,.5);return g;}
+
+  // ---- light
+  scene.add(new THREE.HemisphereLight(0x5a4434,0x120c08,.38));
+  const warm=new THREE.PointLight(0xffb37a,.55,9,1.6); warm.position.set(1.1,2.5,.6); warm.castShadow=true; warm.shadow.mapSize.set(1024,1024); warm.shadow.bias=-0.002; scene.add(warm);
+  const red=new THREE.PointLight(0xff2a14,2.4,3.2,1.3); red.position.set(0,1.15,-1.8); scene.add(red);
+  const fill=new THREE.DirectionalLight(0x8aa0c0,.18); fill.position.set(-2,3,3); scene.add(fill);
+
+  // ---- room
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(5,6),mat(0x5e4b3d)); floor.rotation.x=-Math.PI/2; floor.position.z=.4; floor.receiveShadow=true; scene.add(floor);
+  const wallM=mat(0xd8c6b3);
+  const back=new THREE.Mesh(new THREE.PlaneGeometry(5,3),wallM); back.position.set(0,1.5,-2); back.receiveShadow=true; scene.add(back);
+  const lw=new THREE.Mesh(new THREE.PlaneGeometry(6,3),wallM); lw.rotation.y=Math.PI/2; lw.position.set(-2,1.5,.4); lw.receiveShadow=true; scene.add(lw);
+  const cg=new THREE.PlaneGeometry(2.8,2.7,80,1); const cp=cg.attributes.position;
+  for(let i=0;i<cp.count;i++){const u=cp.getX(i); cp.setZ(i,Math.sin(u*14)*.06+Math.sin(u*5.3)*.03);} cg.computeVertexNormals();
+  const curtain=new THREE.Mesh(cg,mat(0x6c7f75,{side:THREE.DoubleSide,roughness:.95})); curtain.rotation.y=-Math.PI/2; curtain.position.set(1.55,1.35,-.65); curtain.receiveShadow=true; scene.add(curtain);
+  const wood=mat(0x9b7a57);
+  box(.04,1.9,.04,wood,-1.85,.95,-1.75); box(.04,1.9,.04,wood,-1.85,.95,-1.35);
+  [.45,.95,1.45].forEach(y=>box(.3,.03,.42,wood,-1.82,y,-1.55));
+  box(.16,.1,.12,mat(0xeae4da),-1.82,.52,-1.6);
+
+  // Alexa on the shelf
+  const ECHO=V(-1.8,.99,-1.5);
+  const echo=new THREE.Mesh(new THREE.CylinderGeometry(.055,.058,.05,36),mat(0x3a3b3f,{roughness:.9})); echo.position.copy(ECHO); add(echo);
+  const echoRingM=new THREE.MeshBasicMaterial({color:0x22272c}); const echoRing=new THREE.Mesh(new THREE.TorusGeometry(.048,.006,8,40),echoRingM); echoRing.rotation.x=Math.PI/2; echoRing.position.set(ECHO.x,ECHO.y+.026,ECHO.z); scene.add(echoRing);
+  const echoGlow=glow('80,170,255',.35,V(ECHO.x,ECHO.y+.04,ECHO.z));
+
+  // ---- bed
+  box(1.7,.3,2.1,mat(0xc4b9ab),0,.15,-.95);
+  box(1.62,.2,2.0,mat(0xefe8dd),0,.4,-.95);
+  box(1.78,.78,.12,mat(0xe3dbcf),0,.69,-1.94);
+  box(1.78,.025,.03,new THREE.MeshBasicMaterial({color:0xff3a22}),0,1.085,-1.9);
+  const wallGlow=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.1),new THREE.MeshBasicMaterial({map:glowTex('255,50,25'),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9}));
+  wallGlow.position.set(0,1.12,-1.995); scene.add(wallGlow);
+  const linen=mat(0xece3d6), duvetM=mat(0xe6dccd);
+  blob(.5,linen,-.4,.6,-1.62,.62,.18,.36); blob(.5,linen,.38,.6,-1.6,.6,.19,.36);
+  box(1.64,.1,1.35,duvetM,0,.55,-.5);
+  blob(.5,duvetM,.45,.6,-.95,.45,.22,.6);
+
+  // ---- me, lying down
+  const skin=mat(0xc58b64,{roughness:.6}), shirt=mat(0x55626e), hairM=mat(0x1b1511), pants=mat(0x2f3540);
+  const lying=new THREE.Group(); scene.add(lying);
+  blob(.5,duvetM,-.4,.58,-.75,.5,.2,1.05,lying);
+  blob(.5,shirt,-.42,.63,-1.3,.46,.2,.26,lying);
+  blob(.11,skin,-.42,.77,-1.55,1,1,1.05,lying);
+  blob(.118,hairM,-.42,.75,-1.59,1.02,.92,1,lying);
+  blob(.04,skin,-.42,.68,-1.43,1,1,1.2,lying);
+  const LHEAD=V(-.42,.92,-1.55);
+  const shoulder=V(-.6,.68,-1.33);
+  const arm=new THREE.Group(); arm.position.copy(shoulder); lying.add(arm);
+  const sleeve=add(new THREE.Mesh(limbGeo(.052),shirt),arm), fore=add(new THREE.Mesh(limbGeo(.047),skin),arm);
+  const hand=add(new THREE.Mesh(new THREE.SphereGeometry(.045,20,14),skin),lying); hand.scale.set(1,.8,1.25);
+  const watch=new THREE.Group(); lying.add(watch);
+  add(new THREE.Mesh(new THREE.BoxGeometry(.05,.016,.058),mat(0x1d1d20,{roughness:.4})),watch);
+  const watchScrM=new THREE.MeshBasicMaterial({color:0x1a2026}); const watchScr=new THREE.Mesh(new THREE.PlaneGeometry(.042,.05),watchScrM); watchScr.rotation.x=-Math.PI/2; watchScr.position.y=.0085; watch.add(watchScr);
+
+  // ---- me, standing
+  const stand=new THREE.Group(); scene.add(stand); stand.visible=false;
+  const legs=[-.09,.09].map(x=>{const g=new THREE.Group();g.position.set(x,.84,0);stand.add(g);const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,.055,.84,14),pants);m.position.y=-.42;add(m,g);return g;});
+  box(.38,.56,.22,shirt,0,1.12,0,stand);
+  blob(.05,skin,0,1.44,0,1,1,1,stand);
+  blob(.11,skin,0,1.57,.01,1,1.08,1,stand);
+  blob(.116,hairM,0,1.61,-.015,1,.9,1,stand);
+  const lArm=new THREE.Group(); lArm.position.set(.23,1.36,0); stand.add(lArm);
+  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.048,.044,.62,14),shirt),lArm); la.position.y=-.31;
+  const arm2=new THREE.Group(); scene.add(arm2);
+  const sleeve2=add(new THREE.Mesh(limbGeo(.048),shirt),arm2), fore2=add(new THREE.Mesh(limbGeo(.044),skin),arm2);
+  const hand2=add(new THREE.Mesh(new THREE.SphereGeometry(.045,20,14),skin)); hand2.scale.set(1,.8,1.25);
+  arm2.visible=hand2.visible=false;
+
+  // ---- IKEA remote on the wall
+  const BTN=V(-1.08,.8,-1.985);
+  box(.075,.115,.022,mat(0xf3f1ec,{roughness:.5}),BTN.x,BTN.y,BTN.z);
+  const rocker=box(.06,.1,.014,mat(0xf7f6f2,{roughness:.4}),BTN.x,BTN.y,BTN.z+.016);
+  const btnGlow=glow('159,216,255',.35,V(BTN.x,BTN.y,BTN.z+.04));
+  const ripples=[0,1].map(()=>{const r=new THREE.Mesh(new THREE.RingGeometry(.06,.075,40),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:0,depthWrite:false}));r.position.set(BTN.x,BTN.y,BTN.z+.03);scene.add(r);return r;});
+
+  // ---- desk, Mac mini + eMeet, Pi underneath
+  const deskM=mat(0x7d5f45,{roughness:.7});
+  box(1.5,.04,.65,deskM,.15,.74,1.45);
+  [[-.55,1.18],[.85,1.18],[-.55,1.72],[.85,1.72]].forEach(([x,z])=>box(.04,.72,.04,deskM,x,.36,z));
+  const MAC=V(.12,.8,1.38);
+  box(.2,.036,.2,mat(0xc3c6ca,{roughness:.35,metalness:.55}),MAC.x,.778,MAC.z);
+  const emeet=new THREE.Mesh(new THREE.CylinderGeometry(.075,.08,.03,40),mat(0x2a2a2d,{roughness:.6})); emeet.position.set(MAC.x,.811,MAC.z); add(emeet);
+  const ringM=new THREE.MeshBasicMaterial({color:0x3a4650}); const eRing=new THREE.Mesh(new THREE.TorusGeometry(.05,.006,8,48),ringM); eRing.rotation.x=Math.PI/2; eRing.position.set(MAC.x,.827,MAC.z); scene.add(eRing);
+  const macGlow=glow('159,216,255',.5,V(MAC.x,.85,MAC.z));
+  const waves=[0,1,2].map(()=>{const w=new THREE.Mesh(new THREE.TorusGeometry(.1,.004,6,60),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:0,depthWrite:false}));w.rotation.x=Math.PI/2;w.position.set(MAC.x,.84,MAC.z);scene.add(w);return w;});
+  const PI=V(-.3,.05,1.5);
+  box(.11,.03,.08,mat(0xc8343c,{roughness:.5}),PI.x,.028,PI.z);
+  box(.11,.012,.08,mat(0xf2efe9,{roughness:.5}),PI.x,.049,PI.z);
+  const piLedM=new THREE.MeshBasicMaterial({color:0x223322}); const piLed=new THREE.Mesh(new THREE.SphereGeometry(.007,10,8),piLedM); piLed.position.set(PI.x+.045,.05,PI.z+.041); scene.add(piLed);
+  const piGlow=glow('159,216,255',.4,V(PI.x,.08,PI.z));
+
+  // ---- her phone, in Singapore
+  const PHONE=V(1.05,1.72,-.55);
+  const phone=new THREE.Group(); phone.position.copy(PHONE); phone.rotation.y=-.5; scene.add(phone);
+  phone.add(new THREE.Mesh(new THREE.BoxGeometry(.085,.17,.012),mat(0x1d1d20,{roughness:.4})));
+  const pScrM=new THREE.MeshBasicMaterial({color:0x26303a}); const pScr=new THREE.Mesh(new THREE.PlaneGeometry(.074,.155),pScrM); pScr.position.z=.0065; phone.add(pScr);
+  const phoneGlow=glow('255,177,92',.6,PHONE);
+
+  // ---- cartoon explosion
+  const boomCols=[0xffb15c,0xff7a3a,0xffe08a,0xff5a3a,0x8a8580,0xb8aa9b];
+  const bits=[...Array(60)].map((_,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.02+Math.random()*.035,10,8),new THREE.MeshBasicMaterial({color:boomCols[i%boomCols.length],transparent:true}));m.visible=false;scene.add(m);return m;});
+  const flash=glow('255,170,80',1.4,V(0,0,0));
+  function explode(c){
+    S.boom=performance.now(); flash.position.copy(c);
+    bits.forEach(m=>{m.visible=true;m.position.copy(c).add(V((Math.random()-.5)*.2,(Math.random()-.5)*.4,(Math.random()-.5)*.2));
+      m.userData.p0=m.position.clone();m.userData.v=V((Math.random()-.5)*2.4,Math.random()*2.2+.4,(Math.random()-.5)*2.4);});
+  }
+
+  // ---- signal paths
+  const WRIST=V(-.5,1.0,-1.36);
+  const curve=pts=>new THREE.CatmullRomCurve3(pts.map(p=>V(...p)),false,'catmullrom',.4);
+  const paths={
+    A:curve([[BTN.x,BTN.y,BTN.z+.03],[-1.35,.65,-1.4],[-1.3,.3,-.2],[-1,.12,.9],[PI.x,.07,PI.z]]),
+    B:curve([[PI.x,.07,PI.z],[-.2,.3,1.68],[0,.62,1.62],[MAC.x,.83,MAC.z]]),
+    C:curve([[MAC.x,.83,MAC.z],[.45,1.25,1.0],[.9,1.62,.25],[PHONE.x,PHONE.y,PHONE.z]]),
+    D:curve([[WRIST.x,WRIST.y,WRIST.z],[-.35,1.25,-.4],[-.05,1.15,.6],[MAC.x,.83,MAC.z]]),
+    E:curve([[WRIST.x,WRIST.y,WRIST.z],[-.75,1.0,-.6],[-.95,.4,.5],[-.6,.12,1.25],[PI.x,.07,PI.z]])
+  };
+  const wires={};
+  for(const k in paths){
+    const g=new THREE.TubeGeometry(paths[k],160,.011,8,false);
+    const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:.95}));
+    m.userData.count=g.index.count; g.setDrawRange(0,0); scene.add(m); wires[k]=m;
+  }
+  function setWire(k,f){const m=wires[k];m.geometry.setDrawRange(0,Math.floor(m.userData.count*f/48)*48);}
+  const pulse=new THREE.Mesh(new THREE.SphereGeometry(.03,16,12),new THREE.MeshBasicMaterial({color:0xffffff})); pulse.visible=false; scene.add(pulse);
+
+  // ---- state
+  const S={lyingTip:V(-.82,.64,-.98),standTip:null,press:0,ripple:-1,speaking:false,ringing:false,walk:0,watch:false,standing:false};
+  const REST=V(-.82,.64,-.98), PRESS=V(BTN.x,BTN.y,BTN.z+.07);
+  const DESK_SPOT=V(.27,0,.95), BED_SPOT=V(1.12,0,.05);
+  const walkCurve=new THREE.CatmullRomCurve3([BED_SPOT,V(1.05,0,.5),V(.6,0,.88),DESK_SPOT]);
+
+  // ---- HTML anchors
+  const anchors={
+    'L-btn':()=>V(BTN.x,BTN.y+.12,BTN.z+.02), 'L-pi':()=>V(PI.x,.14,PI.z), 'L-mac':()=>V(MAC.x,.98,MAC.z),
+    'L-echo':()=>V(ECHO.x,ECHO.y+.12,ECHO.z), 'L-phone':()=>V(PHONE.x,PHONE.y+.14,PHONE.z),
+    'B-me':()=>S.standing?stand.localToWorld(V(0,1.86,0)):LHEAD.clone().add(V(0,.08,0)),
+    'A-mac':()=>V(MAC.x,1.12,MAC.z), 'B-dev':()=>S.devAt.clone(), 'B-sfx':()=>S.sfxAt.clone()
+  };
+  S.devAt=V(0,0,0); S.sfxAt=V(0,0,0);
+  const tmp=new THREE.Vector3();
+  function placeHud(w,h){
+    for(const id in anchors){
+      const el=$(id); tmp.copy(anchors[id]()).project(camera);
+      if(tmp.z>1||Math.abs(tmp.x)>1.15||Math.abs(tmp.y)>1.15){el.setAttribute('data-off','');continue;}
+      el.removeAttribute('data-off');
+      el.style.transform=`translate(${(tmp.x+1)/2*w}px,${(1-tmp.y)/2*h}px) translate(-50%,-100%)`;
+    }
+  }
+
+  // ---- camera
+  const shots={
+    wide:{p:V(1.05,2.05,3.75),t:V(-.2,.6,.05)},
+    bed:{p:V(.35,1.55,.35),t:V(-.75,.72,-1.55)},
+    shelf:{p:V(.25,1.6,.6),t:V(-1.25,.85,-1.45)},
+    walk:{p:V(2.0,1.9,2.4),t:V(.3,.7,.2)},
+    desk:{p:V(1.35,1.95,3.0),t:V(.1,1.0,1.0)},
+    run:{p:V(1.1,1.6,2.9),t:V(-.45,.35,.35)},
+    sky:{p:V(.9,1.7,2.7),t:V(.45,1.15,.4)}
+  };
+
+  // ---- tiny timeline engine: everything awaits, a new chapter cancels the old one
+  let runId=0, tweens=[];
+  const ease=f=>f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2;
+  function anim(ms,fn,fast){return new Promise(res=>{ if(fast||reduce||ms===0){fn(1);res();return;} tweens.push({t0:performance.now(),ms,fn,res}); });}
+  function fly(name,fast){const s=shots[name],p0=camera.position.clone(),t0=controls.target.clone();return anim(1200,f=>{const e=ease(f);camera.position.lerpVectors(p0,s.p,e);controls.target.lerpVectors(t0,s.t,e);},fast);}
+  const lerpTo=(vec,to,ms,fast)=>{const from=vec.clone();return anim(ms,f=>vec.lerpVectors(from,to,ease(f)),fast);};
+
+  function setOn(which,on){
+    if(which==='btn'){btnGlow.material.opacity=on?.9:0;$('L-btn').classList.toggle('on',on);}
+    if(which==='pi'){piLedM.color.set(on?0x9fd8ff:0x223322);piGlow.material.opacity=on?.9:0;$('L-pi').classList.toggle('on',on);}
+    if(which==='mac'){ringM.color.set(on?0x9fd8ff:0x3a4650);macGlow.material.opacity=on?.8:0;$('L-mac').classList.toggle('on',on);}
+    if(which==='phone'){pScrM.color.set(on?0xffb15c:0x26303a);phoneGlow.material.opacity=on?.9:0;$('L-phone').classList.toggle('on',on);S.ringing=on;}
+    if(which==='watch'){watchScrM.color.set(on?0x9fd8ff:0x1a2026);}
+  }
+  function echoState(s){echoRingM.color.set(s==='listen'?0x3aa0ff:s==='no'?0xff4a3a:0x22272c);echoGlow.material.opacity=s==='off'?0:.8;echoGlow.material.color.set(s==='no'?0xff6a5a:0xffffff);}
+  function travel(k,ms,fast){
+    pulse.visible=!(fast||reduce);
+    return anim(ms,f=>{const e=ease(f);setWire(k,e);pulse.position.copy(paths[k].getPointAt(Math.min(e,.999)));},fast).then(()=>{pulse.visible=false;});
+  }
+  function bubble(id,text,at,cls){const el=$(id);el.className='bub'+(cls?' '+cls:'')+(text?' show':'');if(text)el.textContent=text;if(at){if(id==='B-dev')S.devAt.copy(at);if(id==='B-sfx')S.sfxAt.copy(at);}}
+  function auth(t){const el=$('A-mac');el.classList.toggle('show',!!t);if(t)$('authText').textContent=t;}
+  function clock(label,show){$('clock').classList.toggle('show',!!show);if(label)$('clockl').textContent=label;}
+  function count(to,ms,fast,fmt){return anim(ms,f=>{$('clockv').textContent=fmt(to*f);},fast);}
+  function verdict(text,kind){const v=$('verdict');v.textContent=text||'';v.className='verdict'+(text?' show '+kind:'');}
+  function labels(list){['L-btn','L-pi','L-mac','L-echo','L-phone'].forEach(id=>$(id).classList.toggle('hide',!list.includes(id)));}
+
+  function resetScene(){
+    tweens=[]; pulse.visible=false;
+    S.boom=0; bits.forEach(m=>m.visible=false); flash.material.opacity=0; skin.color.set(0xc58b64); stand.scale.setScalar(1); stand.rotation.z=0;
+    Object.keys(wires).forEach(k=>setWire(k,0));
+    ['btn','pi','mac','phone','watch'].forEach(n=>setOn(n,false));
+    echoState('off'); S.speaking=false; S.press=0; S.ripple=-1; S.walk=0;
+    S.standing=false; stand.visible=false; lying.visible=true; arm2.visible=hand2.visible=false;
+    S.lyingTip.copy(REST); S.watch=false;
+    ['B-me','B-dev','B-sfx'].forEach(id=>bubble(id,''));
+    clock('',false); verdict(''); auth('');
+  }
+
+  // getting out of bed and over to the desk
+  async function walkToDesk(ok,fast){
+    lying.visible=false; S.standing=true; stand.visible=true;
+    stand.position.copy(BED_SPOT); fly('walk',fast);
+    await anim(2600,f=>{const e=ease(f);stand.position.copy(walkCurve.getPointAt(e));const t=walkCurve.getTangentAt(Math.min(e,.99));stand.rotation.y=Math.atan2(t.x,t.z);S.walk=f;},fast);
+    if(!ok())return; S.walk=0;
+    await anim(400,f=>{stand.rotation.y=stand.rotation.y*(1-f);},fast);
+    stand.rotation.y=0;
+  }
+  async function pressEmeet(ok,fast){
+    arm2.visible=hand2.visible=true;
+    const sh=stand.localToWorld(V(-.23,1.36,0));
+    S.standTip=sh.clone().add(V(0,-.6,.05));
+    await lerpTo(S.standTip,V(MAC.x,.86,MAC.z),700,fast); if(!ok())return;
+    ringM.color.set(0x9fd8ff); macGlow.material.opacity=.8;
+    bubble('B-sfx','ding',V(MAC.x+.22,.95,MAC.z),'sfx');
+    await lerpTo(S.standTip,sh.clone().add(V(0,-.6,.05)),600,fast);
+  }
+
+  // ---- chapters
+  const CH=[
+    {tag:'Story 1',name:'Alexa',devices:['L-echo','L-phone'],async run(ok,f){
+      await fly('shelf',f); if(!ok())return;
+      bubble('B-me','"Alexa, call her on FaceTime."'); await wait(1600,f); if(!ok())return;
+      bubble('B-me',''); echoState('listen'); await wait(1100,f); if(!ok())return;
+      echoState('no'); bubble('B-dev','"Sorry, I can\'t do that."',V(ECHO.x,ECHO.y+.12,ECHO.z),'fail'); await wait(1500,f); if(!ok())return;
+      verdict('Alexa only calls through Amazon.','bad');
+    }},
+    {tag:'Story 2',name:'Siri',devices:['L-mac'],async run(ok,f){
+      await fly('bed',f); if(!ok())return;
+      await walkToDesk(ok,f); if(!ok())return;
+      fly('desk',f);
+      await pressEmeet(ok,f); if(!ok())return;
+      bubble('B-me','"Call girlfriend."'); await wait(1400,f); if(!ok())return;
+      bubble('B-me',''); bubble('B-sfx','');
+      bubble('B-dev','"OK, calling Manager."',V(MAC.x,1.2,MAC.z),'fail'); setOn('mac',true); S.speaking=true; await wait(1400,f); if(!ok())return;
+      bubble('B-me','"BOSS?!"','','fail');
+      const base=new THREE.Color(0xc58b64), angry=new THREE.Color(0xe0402e);
+      await anim(1100,x=>{skin.color.copy(base).lerp(angry,x);stand.scale.setScalar(1+.14*x);stand.rotation.z=Math.sin(x*60)*.05*x;},f); if(!ok())return;
+      const c=stand.localToWorld(V(0,1.2,0));
+      stand.visible=false; arm2.visible=hand2.visible=false; S.standing=false; bubble('B-me','');
+      if(!(f||reduce)) explode(c);
+      bubble('B-sfx','KABOOM',c.clone().add(V(0,.55,0)),'sfx'); await wait(1600,f); if(!ok())return;
+      verdict('Siri kept calling the wrong person. And I had to get out of bed.','bad');
+    }},
+    {tag:'Story 3',name:'Watch app',devices:['L-mac','L-phone'],async run(ok,f){
+      await fly('bed',f); if(!ok())return;
+      S.watch=true; await lerpTo(S.lyingTip,V(WRIST.x+.02,WRIST.y+.02,WRIST.z+.08),900,f); if(!ok())return;
+      setOn('watch',true); bubble('B-sfx','tap',V(WRIST.x,WRIST.y+.1,WRIST.z),'sfx');
+      clock('press to ring',true); $('clockv').textContent='0 s'; fly('wide',f);
+      const steps=['Decrypting...','Verifying identity...','Loading contacts...'];
+      const total=1900+steps.length*1400;
+      const c=count(15,total,f,v=>Math.round(v)+' s');
+      await travel('D',1900,f); if(!ok())return;
+      bubble('B-sfx',''); fly('desk',f);
+      for(const t of steps){ auth(t); await wait(1400,f); if(!ok())return; }
+      auth(''); await c; if(!ok())return;
+      setOn('mac',true); S.speaking=true; fly('sky',f);
+      await travel('C',900,f); if(!ok())return;
+      setOn('phone',true); $('clockv').textContent='10 to 20 s'; await wait(600,f); if(!ok())return;
+      verdict('No walking. But 10 to 20 seconds to start a call.','bad');
+    }},
+    {tag:'Story 4',name:'IKEA button',devices:['L-btn','L-pi','L-mac','L-phone'],async run(ok,f){
+      await fly('bed',f); if(!ok())return;
+      await lerpTo(S.lyingTip,PRESS,1000,f); if(!ok())return;
+      S.ripple=performance.now(); setOn('btn',true);
+      await anim(700,x=>{S.press=Math.max(0,Math.sin(x*Math.PI*2));},f); S.press=0; if(!ok())return;
+      clock('press to ring',true); $('clockv').textContent='0.0 s'; fly('run',f);
+      const c=count(.5,3400,f,v=>v.toFixed(1)+' s');
+      await travel('A',1300,f); if(!ok())return; setOn('pi',true);
+      await travel('B',800,f); if(!ok())return; setOn('mac',true); S.speaking=true; fly('sky',f);
+      await travel('C',1200,f); await c; if(!ok())return;
+      setOn('phone',true); await wait(500,f); if(!ok())return;
+      verdict('No screen. No walking. Singapore in half a second.','good');
+    }}
+  ];
+  function wait(ms,fast){return (fast||reduce)?Promise.resolve():new Promise(r=>setTimeout(r,ms));}
+
+  let cur=0;
+  const OPEN=['shelf','bed','bed','bed'];
+  // load a chapter: set the scene and wait for Play
+  function go(i){
+    cur=i; ++runId; resetScene();
+    const c=CH[i]; $('eyebrow').textContent=c.tag; $('ctitle').textContent=c.name; labels(c.devices);
+    [...nav.querySelectorAll('.chap')].forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i)));
+    fly(OPEN[i]); $('play').textContent='Play';
+  }
+  // play the loaded chapter from its start
+  async function play(){
+    const id=++runId; const ok=()=>id===runId;
+    resetScene(); $('play').textContent='Playing';
+    await CH[cur].run(ok,false);
+    if(ok()) $('play').textContent='Replay';
+  }
+
+  // ---- selector
+  const nav=$('nav');
+  CH.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.className='chap';b.setAttribute('aria-pressed','false');b.innerHTML=`<span>${c.tag.replace('Story ','')}</span>${c.name}`;b.onclick=()=>go(i);nav.appendChild(b);});
+  const pl=document.createElement('button');pl.id='play';pl.type='button';pl.textContent='Play';pl.onclick=play;nav.appendChild(pl);
+  addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'){e.preventDefault();go(Math.min(CH.length-1,cur+1));}
+    else if(e.key==='ArrowLeft'){e.preventDefault();go(Math.max(0,cur-1));}
+    else if(e.key===' '||e.key==='Enter'){ if(e.target instanceof HTMLButtonElement&&e.key==='Enter')return; e.preventDefault(); play(); }
+  });
+
+  // ---- render loop
+  const dir=new THREE.Vector3();
+  function size(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+  new ResizeObserver(size).observe(host); size();
+  function limb(group,sl,fo,hd,from,to){
+    dir.subVectors(to,from); const len=Math.max(.05,dir.length());
+    group.position.copy(from); group.lookAt(to);
+    sl.scale.set(1,1,len*.45); fo.position.z=len*.45; fo.scale.set(.9,.9,len*.55);
+    hd.position.copy(to); hd.quaternion.copy(group.quaternion);
+  }
+  const tipNow=new THREE.Vector3();
+  function frame(now){
+    tweens=tweens.filter(t=>{const f=Math.min(1,(now-t.t0)/t.ms);t.fn(f);if(f>=1){t.res();return false;}return true;});
+    // lying arm
+    tipNow.copy(S.lyingTip); tipNow.z-=.012*S.press;
+    rocker.position.z=BTN.z+.016-.006*S.press;
+    arm.position.copy(shoulder); arm.lookAt(tipNow); dir.subVectors(tipNow,shoulder); const len=dir.length();
+    sleeve.scale.set(1,1,len*.45); fore.position.z=len*.45; fore.scale.set(.9,.9,len*.55);
+    hand.position.copy(tipNow); hand.quaternion.copy(arm.quaternion);
+    watch.visible=S.watch; if(S.watch){watch.position.lerpVectors(shoulder,tipNow,.86); watch.quaternion.copy(arm.quaternion); watch.rotateX(-Math.PI/2); watch.translateY(.04);}
+    // standing body
+    if(S.standing){
+      const sw=Math.sin(now/140)*.45*(S.walk>0&&S.walk<1?1:0);
+      legs[0].rotation.x=sw; legs[1].rotation.x=-sw; lArm.rotation.x=-sw*.6;
+      if(arm2.visible&&S.standTip) limb(arm2,sleeve2,fore2,hand2,stand.localToWorld(V(-.23,1.36,0)),S.standTip);
+    }
+    // explosion
+    if(S.boom){const t=(now-S.boom)/1000;
+      flash.material.opacity=Math.max(0,1-t*2.2); flash.scale.setScalar(1.2+t*2);
+      bits.forEach(m=>{const u=m.userData;m.position.set(u.p0.x+u.v.x*t,Math.max(.03,u.p0.y+u.v.y*t-4.9*t*t),u.p0.z+u.v.z*t);m.material.opacity=Math.max(0,1-Math.max(0,t-.7)*1.4);});}
+    // ripples, sound, phone
+    ripples.forEach((r,i)=>{ if(S.ripple<0||reduce){r.material.opacity=0;return;} const f=((now-S.ripple)/900-i*.25); if(f<0||f>1.6){r.material.opacity=0;return;} const g=f%1; r.scale.setScalar(1+g*3.5); r.material.opacity=(1-g)*.9; });
+    waves.forEach((w,i)=>{ if(!S.speaking){w.material.opacity=0;return;} const g=reduce?.4+i*.2:((now/1300)+i/3)%1; w.scale.setScalar(.6+g*1.4); w.position.y=.84+g*.05; w.material.opacity=(1-g)*.8; });
+    phone.rotation.z=(S.ringing&&!reduce)?Math.sin(now/55)*.18:0;
+    phone.position.y=PHONE.y+(reduce?0:Math.sin(now/900)*.02);
+    if(echoGlow.material.opacity>0&&!reduce) echoRing.rotation.z=now/400;
+    controls.update(); renderer.render(scene,camera);
+    placeHud(host.clientWidth,host.clientHeight);
+    requestAnimationFrame(frame);
+  }
+
+  // opening frame: chapter 0 loaded, waiting for Play
+  camera.position.copy(shots.shelf.p); controls.target.copy(shots.shelf.t);
+  go(0);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
