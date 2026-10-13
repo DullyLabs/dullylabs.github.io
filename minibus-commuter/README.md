@@ -1,6 +1,6 @@
-# Minibus Hunter
+# Minibus Commuter
 
-Marketing site for the Minibus Hunter iPhone and Apple Watch app.
+Marketing site for the Minibus Commuter iPhone and Apple Watch app.
 
 From the repository root:
 
