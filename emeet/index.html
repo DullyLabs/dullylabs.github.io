@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
 <title>Calling Singapore From Bed</title>
 <style>
 /* Quiet architectural palette, with warm light inside a cool frame. */
@@ -210,10 +211,10 @@ nav::before{content:"";flex:0 0 122px}
   function curl(r,x,y,z,head){const c=new THREE.Mesh(curlGeo,hairM);c.scale.setScalar(r);c.position.set(x,y,z);return add(c,head);}
   function portrait(parent,x,y,z,tilt=0){
     const head=new THREE.Group();head.position.set(x,y,z);head.rotation.x=tilt;parent.add(head);
-    blob(.11,skin,0,0,0,.88,1.1,.93,head);
-    blob(.07,skin,0,-.05,.03,.95,.75,.95,head);
+    blob(.11,skin,0,0,0,.82,1.1,.93,head);
+    blob(.07,skin,0,-.05,.03,.85,.75,.95,head);
     [-1,1].forEach(k=>{
-      blob(.024,skin,k*.096,-.008,-.004,.55,1,.7,head);
+      blob(.024,skin,k*.09,-.008,-.004,.55,1,.7,head);
       blob(.02,white,k*.037,.014,.083,1.25,.8,.45,head);
       blob(.016,iris,k*.037,.014,.089,.72,.72,.4,head);
       blob(.0035,white,k*.033,.019,.095,1,1,.5,head);
@@ -243,23 +244,23 @@ nav::before{content:"";flex:0 0 122px}
   }
   // sleeves end in a white shirt cuff and a relaxed hand; elbows are spheres so joints never step
   // mitten hands: a flattened palm with a small thumb (child scale undoes the palm's squash)
-  function handMesh(){const h=add(new THREE.Mesh(new THREE.SphereGeometry(.038,24,16),skin));h.scale.set(1.05,.5,1.4);
-    const t=add(new THREE.Mesh(new THREE.SphereGeometry(.014,16,12),skin),h);t.position.set(.033/1.05,.004/.5,-.012/1.4);t.scale.set(1/1.05,.8/.5,1.4/1.4);return h;}
-  function cuffMesh(){return add(new THREE.Mesh(new THREE.CylinderGeometry(.054,.054,.03,24).rotateX(Math.PI/2),white));}
-  function elbowMesh(){return add(new THREE.Mesh(new THREE.SphereGeometry(.057,24,16),blazer));}
+  function handMesh(){const h=add(new THREE.Mesh(new THREE.SphereGeometry(.034,24,16),skin));h.scale.set(1.05,.5,1.4);
+    const t=add(new THREE.Mesh(new THREE.SphereGeometry(.014,16,12),skin),h);t.position.set(.03/1.05,.004/.5,-.011/1.4);t.scale.set(1/1.05,.8/.5,1.4/1.4);return h;}
+  function cuffMesh(){return add(new THREE.Mesh(new THREE.CylinderGeometry(.043,.043,.03,24).rotateX(Math.PI/2),white));}
+  function elbowMesh(){return add(new THREE.Mesh(new THREE.SphereGeometry(.044,24,16),blazer));}
   const lying=new THREE.Group(); scene.add(lying);
   blob(.5,duvetM,-.4,.58,-.75,.5,.2,1.05,lying);
-  blob(.5,blazer,-.42,.64,-1.3,.46,.2,.27,lying);
-  blob(.06,white,-.42,.73,-1.33,.9,.25,1.4,lying);
-  [-1,1].forEach(k=>{const l=blob(.045,blazer,-.42+k*.06,.745,-1.28,.45,.18,1.8,lying);l.rotation.y=k*.35;blob(.065,blazer,-.42+k*.19,.68,-1.36,1,.8,1,lying);});
+  blob(.5,blazer,-.42,.63,-1.3,.33,.15,.25,lying);
+  blob(.06,white,-.42,.7,-1.35,.7,.25,1.3,lying);
+  [-1,1].forEach(k=>{const l=blob(.04,blazer,-.42+k*.045,.71,-1.29,.45,.18,1.8,lying);l.rotation.y=k*.35;blob(.05,blazer,-.42+k*.14,.66,-1.37,1,.8,1,lying);});
   portrait(lying,-.42,.8,-1.52,-Math.PI/2+.5);
   const LHEAD=V(-.42,.95,-1.52);
   // left arm rests across the duvet, watch up; the right arm does the reaching
-  const WRIST=V(-.34,.74,-1.0);
-  const lShoulder=V(-.24,.69,-1.33), lElbow=V(-.15,.71,-1.1);
-  const lUpper=new THREE.Group();lying.add(lUpper);add(new THREE.Mesh(limbGeo(.06),blazer),lUpper);
+  const WRIST=V(-.34,.715,-1.0);
+  const lShoulder=V(-.28,.67,-1.35), lElbow=V(-.19,.69,-1.1);
+  const lUpper=new THREE.Group();lying.add(lUpper);add(new THREE.Mesh(limbGeo(.045),blazer),lUpper);
   lUpper.position.copy(lShoulder);lUpper.lookAt(lElbow);lUpper.children[0].scale.z=lShoulder.distanceTo(lElbow);
-  const lFore=new THREE.Group();lying.add(lFore);add(new THREE.Mesh(limbGeo(.052),blazer),lFore);
+  const lFore=new THREE.Group();lying.add(lFore);add(new THREE.Mesh(limbGeo(.04),blazer),lFore);
   lFore.position.copy(lElbow);lFore.lookAt(WRIST);lFore.children[0].scale.z=lElbow.distanceTo(WRIST)-.02;
   const lElb=elbowMesh();lying.add(lElb);lElb.position.copy(lElbow);
   const lCuff=cuffMesh();lying.add(lCuff);lCuff.position.copy(WRIST);lCuff.quaternion.copy(lFore.quaternion);lCuff.translateZ(-.015);
@@ -267,37 +268,37 @@ nav::before{content:"";flex:0 0 122px}
   const watch=timepiece(lying);watch.position.copy(WRIST);watch.quaternion.copy(lFore.quaternion);watch.rotateX(-Math.PI/2);watch.translateY(.045);watch.translateZ(.005);
   const watchScrM=new THREE.MeshBasicMaterial({color:0x1a2026}); const watchScr=new THREE.Mesh(new THREE.PlaneGeometry(.03,.038),watchScrM); watchScr.rotation.x=-Math.PI/2; watchScr.position.y=.0145; watch.add(watchScr);
   const watchGlow=glow('159,216,255',.22,watch.localToWorld(V(0,.03,0)));
-  const shoulder=V(-.6,.68,-1.33);
+  const shoulder=V(-.56,.67,-1.35);
   const arm=new THREE.Group(); arm.position.copy(shoulder); lying.add(arm);
-  const sleeve=add(new THREE.Mesh(limbGeo(.06),blazer),arm), fore=add(new THREE.Mesh(limbGeo(.052),blazer),arm);
+  const sleeve=add(new THREE.Mesh(limbGeo(.045),blazer),arm), fore=add(new THREE.Mesh(limbGeo(.04),blazer),arm);
   const cuff=cuffMesh(); arm.add(cuff); const elbow=elbowMesh(); arm.add(elbow);
   const hand=handMesh(); lying.add(hand);
 
   // ---- me, standing
   const stand=new THREE.Group(); scene.add(stand); stand.visible=false;
-  const legs=[-.085,.085].map(x=>{const g=new THREE.Group();g.position.set(x,.84,0);stand.add(g);const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,.052,.8,20),pants);m.position.y=-.4;add(m,g);blob(.06,dark,0,-.81,.04,.85,.5,1.5,g);return g;});
-  // tailored torso: a lathed profile, flattened front to back
-  const torsoG=new THREE.LatheGeometry([[0,.82],[.15,.83],[.175,.9],[.165,1.05],[.18,1.25],[.175,1.36],[.12,1.41],[.04,1.43],[0,1.43]].map(([r,y])=>new THREE.Vector2(r,y)),40);
-  const torso=add(new THREE.Mesh(torsoG,blazer),stand);torso.scale.z=.6;
+  const legs=[-.065,.065].map(x=>{const g=new THREE.Group();g.position.set(x,.84,0);stand.add(g);const m=new THREE.Mesh(new THREE.CylinderGeometry(.046,.04,.8,20),pants);m.position.y=-.4;add(m,g);blob(.05,dark,0,-.81,.035,.85,.5,1.5,g);return g;});
+  // slim tailored torso: a lathed profile, chest wider than the waist, flattened front to back
+  const torsoG=new THREE.LatheGeometry([[0,.82],[.11,.83],[.122,.9],[.112,1.05],[.135,1.25],[.132,1.36],[.105,1.41],[.03,1.43],[0,1.43]].map(([r,y])=>new THREE.Vector2(r,y)),40);
+  const torso=add(new THREE.Mesh(torsoG,blazer),stand);torso.scale.z=.56;
   // flat extruded pieces: the shirt V, pointed collar tips and peaked lapels
   const flat=(pts,m,z,depth=.006)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([x,y])=>new THREE.Vector2(x,y))),{depth,bevelEnabled:true,bevelThickness:.002,bevelSize:.002,bevelSegments:2});const o=new THREE.Mesh(g,m);o.position.z=z;return add(o,stand);};
   const shirtM=mat(0xf6f3ee,{roughness:.5,side:THREE.DoubleSide}), lapelM=mat(0xbfa98a,{roughness:.8,side:THREE.DoubleSide});
-  flat([[-.06,1.41],[.06,1.41],[0,1.03]],shirtM,.098,.004);
+  flat([[-.045,1.41],[.045,1.41],[0,1.03]],shirtM,.07,.004);
   [-1,1].forEach(k=>{
-    flat([[.052,1.41],[0,1.02],[.03,1.02],[.115,1.22],[.135,1.3],[.1,1.29],[.11,1.36],[.09,1.42]].map(([x,y])=>[k*x,y]),lapelM,.103);
-    flat([[k*.012,1.43],[k*.06,1.425],[k*.022,1.36]],shirtM,.1,.005);
-    blob(.065,blazer,k*.175,1.35,0,1.1,.7,1,stand);
+    flat([[.04,1.41],[0,1.02],[.022,1.02],[.085,1.22],[.1,1.3],[.074,1.29],[.082,1.36],[.068,1.42]].map(([x,y])=>[k*x,y]),lapelM,.074);
+    flat([[k*.01,1.43],[k*.045,1.425],[k*.017,1.36]],shirtM,.072,.005);
+    blob(.05,blazer,k*.13,1.35,0,1.1,.7,1,stand);
   });
-  blob(.009,mat(0xb39a74,{metalness:.5,roughness:.4}),.045,1.0,.104,1,1,.4,stand);
-  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.038,.042,.09,20),skin);neck.position.y=1.45;add(neck,stand);
+  blob(.008,mat(0xb39a74,{metalness:.5,roughness:.4}),.03,1.0,.07,1,1,.4,stand);
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.03,.034,.09,20),skin);neck.position.y=1.45;add(neck,stand);
   portrait(stand,0,1.58,.01);
-  const lArm=new THREE.Group(); lArm.position.set(.215,1.36,0); stand.add(lArm);
-  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.058,.05,.56,20),blazer),lArm); la.position.y=-.27;
-  const lc=add(new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,.03,20),white),lArm); lc.position.y=-.56;
-  blob(.04,skin,0,-.625,0,.55,1.45,1.0,lArm); blob(.014,skin,0,-.6,.034,1,1.4,1,lArm);
-  const standingWatch=timepiece(lArm);standingWatch.position.set(0,-.52,.04);standingWatch.rotation.x=Math.PI/2;
+  const lArm=new THREE.Group(); lArm.position.set(.165,1.36,0); stand.add(lArm);
+  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.045,.04,.56,20),blazer),lArm); la.position.y=-.27;
+  const lc=add(new THREE.Mesh(new THREE.CylinderGeometry(.042,.042,.03,20),white),lArm); lc.position.y=-.56;
+  blob(.036,skin,0,-.62,0,.55,1.45,1.0,lArm); blob(.012,skin,0,-.6,.03,1,1.4,1,lArm);
+  const standingWatch=timepiece(lArm);standingWatch.position.set(0,-.52,.032);standingWatch.rotation.x=Math.PI/2;
   const arm2=new THREE.Group(); scene.add(arm2);
-  const sleeve2=add(new THREE.Mesh(limbGeo(.06),blazer),arm2), fore2=add(new THREE.Mesh(limbGeo(.052),blazer),arm2);
+  const sleeve2=add(new THREE.Mesh(limbGeo(.045),blazer),arm2), fore2=add(new THREE.Mesh(limbGeo(.04),blazer),arm2);
   const cuff2=cuffMesh(); arm2.add(cuff2); const elbow2=elbowMesh(); arm2.add(elbow2);
   const hand2=handMesh(); arm2.visible=hand2.visible=false;
 
@@ -446,7 +447,7 @@ nav::before{content:"";flex:0 0 122px}
   }
   async function pressEmeet(ok,fast){
     arm2.visible=hand2.visible=true;
-    const sh=stand.localToWorld(V(-.23,1.36,0));
+    const sh=stand.localToWorld(V(-.165,1.36,0));
     S.standTip=sh.clone().add(V(0,-.6,.05));
     await lerpTo(S.standTip,V(MAC.x,.86,MAC.z),700,fast); if(!ok())return;
     ringM.color.set(0x9fd8ff); macGlow.material.opacity=.8;
@@ -563,7 +564,7 @@ nav::before{content:"";flex:0 0 122px}
     if(S.standing){
       const sw=Math.sin(now/140)*.45*(S.walk>0&&S.walk<1?1:0);
       legs[0].rotation.x=sw; legs[1].rotation.x=-sw; lArm.rotation.x=-sw*.6;
-      if(arm2.visible&&S.standTip) limb(arm2,sleeve2,fore2,hand2,stand.localToWorld(V(-.23,1.36,0)),S.standTip);
+      if(arm2.visible&&S.standTip) limb(arm2,sleeve2,fore2,hand2,stand.localToWorld(V(-.165,1.36,0)),S.standTip);
     }
     // explosion
     if(S.boom){const t=(now-S.boom)/1000;
