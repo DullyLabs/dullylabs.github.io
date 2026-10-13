@@ -4,16 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Calling Singapore From Bed</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: one big 3D stage of the bedroom, a chapter selector under it. Each chapter replays one version of the build. Single dark look, like a room at night. */
+/* Quiet architectural palette, with warm light inside a cool frame. */
+*{box-sizing:border-box}
 :root{
-  --ground:#15110e; --panel:#1e1814; --line:#3b3029; --ink:#f4ede5; --muted:#b8aa9b;
-  --signal:#9fd8ff; --ring:#ffb15c; --fail:#ff7a6b; --shade:#0b0806;
-  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
-  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
-  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  --ground:#10171c; --panel:#182127; --line:#354148; --ink:#f1efe8; --muted:#a9b7bd;
+  --signal:#b7ddd9; --ring:#e1c39a; --fail:#e6a294; --shade:#11191e;
+  --display:"Avenir Next", "Segoe UI", sans-serif;
+  --body:"Avenir Next", "Segoe UI", sans-serif;
+  --mono:ui-monospace, "SFMono-Regular", Menlo, monospace;
   color-scheme:dark;
 }
 html,body{background:var(--ground);color:var(--ink)}
@@ -56,6 +55,35 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chap:focus-visible,#play:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
 #play{margin-left:auto;font:700 .92rem var(--body);color:var(--shade);background:var(--ring);border:1px solid var(--ring);border-radius:999px;padding:.5rem .95rem;cursor:pointer}
 #play:hover{filter:brightness(1.08)}
+
+/* Editorial frame and a numbered chapter rail. */
+body{margin:0;min-height:100vh;padding:clamp(12px,3vw,44px);background:radial-gradient(ellipse at 50% 0,#27343d 0,#10171c 72%)}
+.wrap{max-width:1440px;gap:0;border:1px solid #47535b;border-radius:20px;overflow:hidden;box-shadow:0 28px 80px #0005}
+.stage{border:0;border-radius:0;aspect-ratio:16/10;background:#26343d}
+.hud::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#111b2580,transparent 28%,transparent 80%,#111b2533)}
+.title{left:32px;top:28px;gap:10px}
+.title small{color:#d2e2e3;font-size:.65rem;letter-spacing:.22em}
+.title h1{font-weight:500;letter-spacing:-.055em;font-size:clamp(1.8rem,4vw,3.5rem);text-shadow:0 2px 20px #12202a66}
+.clock{top:30px;right:32px;padding-left:20px;border-left:1px solid #ffffff40}
+.clock b{color:#f0dfc5;font-weight:400;letter-spacing:-.07em}
+.clock span{font-size:.6rem;letter-spacing:.12em}
+.l3{padding:7px 10px;background:#16232de6;border:1px solid #8aabb34d;border-radius:4px;box-shadow:0 4px 14px #07121b26;backdrop-filter:blur(12px)}
+.l3 b{font-weight:500;letter-spacing:.015em}
+.l3 i{margin-top:3px;color:#b3c4cc}
+.l3.on{border-color:#b7ddd9;box-shadow:0 0 0 3px #b7ddd917}
+.bub{font-weight:500;padding:.65em .85em;border-radius:12px 12px 12px 3px;background:#f2eee4;color:#24313a;box-shadow:0 8px 24px #07121b30}
+.bub::after{border-top-color:#f2eee4}
+.bub.fail{background:#f3dcd4;color:#633e36}.bub.fail::after{border-top-color:#f3dcd4}
+.auth{background:#17232eee;border-color:#bfa887;border-radius:5px;font-size:clamp(.65rem,1.2vw,.9rem);box-shadow:0 8px 24px #07121b30}
+.verdict{right:28px;bottom:24px;padding:14px 18px;max-width:72%;font-weight:500;font-size:clamp(.85rem,1.65vw,1.25rem);border:0;border-left:3px solid;border-radius:3px;background:#14212eee;box-shadow:0 8px 30px #0002;text-align:left}
+nav{padding:14px;gap:6px;background:#182127;border-top:1px solid #47535b;flex-wrap:nowrap}
+.chap{position:relative;flex:1;border:1px solid transparent;border-radius:6px;padding:16px 14px;background:transparent;font-weight:500;font-size:.9rem;gap:12px;transition:background .2s,color .2s}
+.chap span{font-size:.65rem;color:#8ca5ad;opacity:1}
+.chap:hover{background:#253239;border-color:transparent}
+.chap[aria-pressed="true"]{background:#303e44;color:#f6f1e7;border-color:#56686e}
+.chap[aria-pressed="true"] span{color:#d8e9e5}
+#play{flex:0 0 112px;margin-left:10px;border-radius:5px;padding:16px 18px;background:#ded8c9;border-color:#ded8c9;color:#253239;font-weight:600}
+@media(max-width:680px){body{padding:10px}.wrap{border-radius:12px}.stage{aspect-ratio:4/5}.title{left:18px;top:18px}.title h1{font-size:1.8rem}.clock{top:20px;right:18px;padding-left:10px}.clock b{font-size:1.5rem}nav{flex-wrap:wrap;padding:8px;gap:5px}.chap{flex:1 1 44%;padding:11px 10px;font-size:.8rem}#play{flex:1 1 100%;margin:2px 0 0;padding:12px}.verdict{right:14px;bottom:16px;max-width:90%}.l3{padding:5px 7px}.bub{font-size:.74rem;max-width:13em}}
 </style>
 </head>
 <body>
@@ -92,43 +120,51 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   let renderer;
   try{ renderer=new THREE.WebGLRenderer({antialias:true}); }
   catch(e){ const d=document.createElement('div');d.className='nogl';d.textContent='This browser could not start 3D graphics.';host.appendChild(d);return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio,1.5),2.5));
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.outputEncoding=THREE.sRGBEncoding;
-  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.82;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.12;
   host.insertBefore(renderer.domElement,host.firstChild);
 
   const scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x120d0a);
-  scene.fog=new THREE.Fog(0x120d0a,7,13);
+  scene.background=new THREE.Color(0x293943);
+  scene.fog=new THREE.Fog(0x293943,9,18);
   const camera=new THREE.PerspectiveCamera(42,16/9,0.05,50);
   const controls=new THREE.OrbitControls(camera,renderer.domElement);
   controls.enableDamping=true; controls.enablePan=false;
   controls.minDistance=1.1; controls.maxDistance=5.5; controls.maxPolarAngle=Math.PI*0.48;
 
-  const mat=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85,metalness:0},o));
+  const mat=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.72,metalness:0},o));
   function add(m,parent=scene){m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
-  function box(w,h,d,m,x,y,z,parent){const g=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);g.position.set(x,y,z);return add(g,parent);}
+  // Rounded boxes without another dependency. Project a subdivided cube onto a fillet.
+  function rounded(w,h,d){
+    const r=Math.min(w,h,d)*.18,g=new THREE.BoxGeometry(w,h,d,6,6,6),p=g.attributes.position;
+    const inner=V(w/2-r,h/2-r,d/2-r),lower=inner.clone().negate(),q=new THREE.Vector3(),n=new THREE.Vector3();
+    for(let i=0;i<p.count;i++){q.set(p.getX(i),p.getY(i),p.getZ(i));n.copy(q);q.clamp(lower,inner);n.sub(q).normalize().multiplyScalar(r);q.add(n);p.setXYZ(i,q.x,q.y,q.z);}
+    g.computeVertexNormals();return g;
+  }
+  function box(w,h,d,m,x,y,z,parent){const g=new THREE.Mesh(rounded(w,h,d),m);g.position.set(x,y,z);return add(g,parent);}
   function blob(r,m,x,y,z,sx=1,sy=1,sz=1,parent){const g=new THREE.Mesh(new THREE.SphereGeometry(r,32,20),m);g.position.set(x,y,z);g.scale.set(sx,sy,sz);return add(g,parent);}
   function glowTex(rgb){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,`rgba(${rgb},1)`);g.addColorStop(.4,`rgba(${rgb},.35)`);g.addColorStop(1,`rgba(${rgb},0)`);x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);}
   function glow(rgb,size,pos){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex(rgb),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0}));s.scale.set(size,size,1);s.position.copy(pos);scene.add(s);return s;}
   function limbGeo(r){const g=new THREE.CylinderGeometry(r,r*.95,1,14);g.rotateX(Math.PI/2);g.translate(0,0,.5);return g;}
 
   // ---- light
-  scene.add(new THREE.HemisphereLight(0x5a4434,0x120c08,.38));
-  const warm=new THREE.PointLight(0xffb37a,.55,9,1.6); warm.position.set(1.1,2.5,.6); warm.castShadow=true; warm.shadow.mapSize.set(1024,1024); warm.shadow.bias=-0.002; scene.add(warm);
-  const red=new THREE.PointLight(0xff2a14,2.4,3.2,1.3); red.position.set(0,1.15,-1.8); scene.add(red);
-  const fill=new THREE.DirectionalLight(0x8aa0c0,.18); fill.position.set(-2,3,3); scene.add(fill);
+  scene.add(new THREE.HemisphereLight(0xd3e8ff,0x615a50,.78));
+  const warm=new THREE.PointLight(0xffdab0,.8,9,1.6); warm.position.set(-1.2,2.5,-.6); scene.add(warm);
+  const red=new THREE.PointLight(0xffc58d,.65,3.2,1.3); red.position.set(0,1.15,-1.8); scene.add(red);
+  const fill=new THREE.DirectionalLight(0xe0eeff,1.3); fill.position.set(2.5,5,3); fill.castShadow=true;
+  fill.shadow.mapSize.set(2048,2048);fill.shadow.camera.left=-3;fill.shadow.camera.right=3;fill.shadow.camera.top=3;fill.shadow.camera.bottom=-3;fill.shadow.camera.near=.5;fill.shadow.camera.far=12;fill.shadow.normalBias=.025;fill.shadow.bias=-.0002;fill.shadow.radius=4;scene.add(fill);
 
   // ---- room
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(5,6),mat(0x5e4b3d)); floor.rotation.x=-Math.PI/2; floor.position.z=.4; floor.receiveShadow=true; scene.add(floor);
-  const wallM=mat(0xd8c6b3);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(5,6),mat(0x79807e)); floor.rotation.x=-Math.PI/2; floor.position.z=.4; floor.receiveShadow=true; scene.add(floor);
+  const wallM=mat(0xb1bdbd);
   const back=new THREE.Mesh(new THREE.PlaneGeometry(5,3),wallM); back.position.set(0,1.5,-2); back.receiveShadow=true; scene.add(back);
   const lw=new THREE.Mesh(new THREE.PlaneGeometry(6,3),wallM); lw.rotation.y=Math.PI/2; lw.position.set(-2,1.5,.4); lw.receiveShadow=true; scene.add(lw);
   const cg=new THREE.PlaneGeometry(2.8,2.7,80,1); const cp=cg.attributes.position;
   for(let i=0;i<cp.count;i++){const u=cp.getX(i); cp.setZ(i,Math.sin(u*14)*.06+Math.sin(u*5.3)*.03);} cg.computeVertexNormals();
-  const curtain=new THREE.Mesh(cg,mat(0x6c7f75,{side:THREE.DoubleSide,roughness:.95})); curtain.rotation.y=-Math.PI/2; curtain.position.set(1.55,1.35,-.65); curtain.receiveShadow=true; scene.add(curtain);
-  const wood=mat(0x9b7a57);
+  const curtain=new THREE.Mesh(cg,mat(0x516c78,{side:THREE.DoubleSide,roughness:.95})); curtain.rotation.y=-Math.PI/2; curtain.position.set(1.55,1.35,-.65); curtain.receiveShadow=true; scene.add(curtain);
+  const wood=mat(0x806751);
   box(.04,1.9,.04,wood,-1.85,.95,-1.75); box(.04,1.9,.04,wood,-1.85,.95,-1.35);
   [.45,.95,1.45].forEach(y=>box(.3,.03,.42,wood,-1.82,y,-1.55));
   box(.16,.1,.12,mat(0xeae4da),-1.82,.52,-1.6);
@@ -140,43 +176,72 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   const echoGlow=glow('80,170,255',.35,V(ECHO.x,ECHO.y+.04,ECHO.z));
 
   // ---- bed
-  box(1.7,.3,2.1,mat(0xc4b9ab),0,.15,-.95);
+  box(1.7,.3,2.1,mat(0x727d7f),0,.15,-.95);
   box(1.62,.2,2.0,mat(0xefe8dd),0,.4,-.95);
-  box(1.78,.78,.12,mat(0xe3dbcf),0,.69,-1.94);
-  box(1.78,.025,.03,new THREE.MeshBasicMaterial({color:0xff3a22}),0,1.085,-1.9);
-  const wallGlow=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.1),new THREE.MeshBasicMaterial({map:glowTex('255,50,25'),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9}));
+  box(1.78,.78,.12,mat(0x9aabaa),0,.69,-1.94);
+  box(1.78,.025,.03,new THREE.MeshBasicMaterial({color:0xffd1a0}),0,1.085,-1.9);
+  const wallGlow=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.1),new THREE.MeshBasicMaterial({map:glowTex('255,199,144'),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.4}));
   wallGlow.position.set(0,1.12,-1.995); scene.add(wallGlow);
-  const linen=mat(0xece3d6), duvetM=mat(0xe6dccd);
+  const linen=mat(0xece3d6), duvetM=mat(0xc7d1ce);
   blob(.5,linen,-.4,.6,-1.62,.62,.18,.36); blob(.5,linen,.38,.6,-1.6,.6,.19,.36);
   box(1.64,.1,1.35,duvetM,0,.55,-.5);
   blob(.5,duvetM,.45,.6,-.95,.45,.22,.6);
 
+  // Upholstery channels, a woven rug, and low joinery details.
+  for(let i=0;i<8;i++)box(.19,.68,.028,mat(0xa0afac),-.735+i*.21,.7,-1.864);
+  box(2.65,.018,3.1,mat(0x657676,{roughness:1}),0,.012,-.3);
+  const weave=[mat(0x788786,{roughness:1}),mat(0x71817f,{roughness:1})];
+  for(let i=0;i<52;i++)box(2.55,.002,.009,weave[i%2],0,.023,-1.8+i*.058);
+  box(4,.055,.035,wood,0,.035,-1.97);
+  box(.035,.055,4.8,wood,-1.97,.035,.4);
+  for(let i=0;i<7;i++)box(.009,.002,1.24,linen,-.7+i*.23,.602,-.49);
+
   // ---- me, lying down
-  const skin=mat(0xc58b64,{roughness:.6}), shirt=mat(0x55626e), hairM=mat(0x1b1511), pants=mat(0x2f3540);
+  const skin=mat(0xa86c49,{roughness:.6}), shirt=mat(0xd5c4a7,{roughness:.9}), hairM=mat(0x171719,{roughness:.88}), pants=mat(0x39434b);
+  const white=mat(0xf5f1e9), silver=mat(0xbac4cc,{metalness:.85,roughness:.24});
+  function portrait(parent,x,y,z,recline=false){
+    const head=new THREE.Group();head.position.set(x,y,z);if(recline)head.rotation.x=-Math.PI/2;parent.add(head);
+    blob(.112,skin,0,0,0,.91,1.17,.9,head);
+    [-1,1].forEach(k=>{blob(.023,skin,k*.103,-.01,0,.6,1,.65,head);blob(.013,hairM,k*.041,.012,.091,1,.65,.4,head);blob(.004,white,k*.038,.016,.096,1,1,.5,head);
+      const brow=blob(.024,hairM,k*.041,.037,.085,1,.2,.3,head);brow.rotation.z=k*.08;});
+    blob(.021,skin,0,-.012,.102,.7,.85,.65,head);
+    const smile=new THREE.Mesh(new THREE.TorusGeometry(.039,.007,8,24,Math.PI*.78),white);smile.rotation.z=Math.PI*1.11;smile.position.set(0,-.021,.087);head.add(smile);
+    blob(.104,hairM,0,.087,-.024,1.13,.95,.95,head);
+    for(let i=0;i<45;i++){const phi=i*2.39996,yy=.02+.13*(i/44),rr=.113*Math.sqrt(1-Math.pow((yy-.055)/.15,2));blob(.029+(i%4)*.003,hairM,Math.cos(phi)*rr,yy,Math.sin(phi)*rr-.018,1,1.04,1,head);}
+    return head;
+  }
+  function timepiece(parent){
+    const g=new THREE.Group();parent.add(g);
+    box(.056,.018,.064,silver,0,0,0,g);
+    box(.045,.003,.051,mat(0x17232b,{roughness:.22}),0,.011,0,g);
+    box(.043,.012,.11,silver,0,-.012,0,g);
+    box(.004,.01,.013,silver,.03,0,0,g);return g;
+  }
   const lying=new THREE.Group(); scene.add(lying);
   blob(.5,duvetM,-.4,.58,-.75,.5,.2,1.05,lying);
   blob(.5,shirt,-.42,.63,-1.3,.46,.2,.26,lying);
-  blob(.11,skin,-.42,.77,-1.55,1,1,1.05,lying);
-  blob(.118,hairM,-.42,.75,-1.59,1.02,.92,1,lying);
-  blob(.04,skin,-.42,.68,-1.43,1,1,1.2,lying);
+  portrait(lying,-.42,.77,-1.55,true);
+  box(.09,.012,.12,white,-.42,.734,-1.3,lying);
   const LHEAD=V(-.42,.92,-1.55);
   const shoulder=V(-.6,.68,-1.33);
   const arm=new THREE.Group(); arm.position.copy(shoulder); lying.add(arm);
   const sleeve=add(new THREE.Mesh(limbGeo(.052),shirt),arm), fore=add(new THREE.Mesh(limbGeo(.047),skin),arm);
   const hand=add(new THREE.Mesh(new THREE.SphereGeometry(.045,20,14),skin),lying); hand.scale.set(1,.8,1.25);
-  const watch=new THREE.Group(); lying.add(watch);
-  add(new THREE.Mesh(new THREE.BoxGeometry(.05,.016,.058),mat(0x1d1d20,{roughness:.4})),watch);
-  const watchScrM=new THREE.MeshBasicMaterial({color:0x1a2026}); const watchScr=new THREE.Mesh(new THREE.PlaneGeometry(.042,.05),watchScrM); watchScr.rotation.x=-Math.PI/2; watchScr.position.y=.0085; watch.add(watchScr);
+  const watch=timepiece(lying);
+  const watchScrM=new THREE.MeshBasicMaterial({color:0x1a2026}); const watchScr=new THREE.Mesh(new THREE.PlaneGeometry(.042,.05),watchScrM); watchScr.rotation.x=-Math.PI/2; watchScr.position.y=.013; watch.add(watchScr);
 
   // ---- me, standing
   const stand=new THREE.Group(); scene.add(stand); stand.visible=false;
   const legs=[-.09,.09].map(x=>{const g=new THREE.Group();g.position.set(x,.84,0);stand.add(g);const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,.055,.84,14),pants);m.position.y=-.42;add(m,g);return g;});
-  box(.38,.56,.22,shirt,0,1.12,0,stand);
-  blob(.05,skin,0,1.44,0,1,1,1,stand);
-  blob(.11,skin,0,1.57,.01,1,1.08,1,stand);
-  blob(.116,hairM,0,1.61,-.015,1,.9,1,stand);
+  box(.37,.54,.19,shirt,0,1.12,0,stand);
+  box(.12,.43,.018,white,0,1.17,.103,stand);
+  [-1,1].forEach(k=>{const lapel=box(.075,.3,.026,shirt,k*.086,1.24,.12,stand);lapel.rotation.z=k*-.24;blob(.008,silver,k*.055,.96,.112,1,1,.4,stand);});
+  blob(.045,skin,0,1.43,0,1,1,1,stand);
+  portrait(stand,0,1.57,.01);
   const lArm=new THREE.Group(); lArm.position.set(.23,1.36,0); stand.add(lArm);
-  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.048,.044,.62,14),shirt),lArm); la.position.y=-.31;
+  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.048,.044,.62,14),shirt),lArm); la.position.y=-.27;
+  blob(.038,skin,0,-.59,0,1,1.2,1,lArm);
+  const standingWatch=timepiece(lArm);standingWatch.position.set(0,-.54,.04);standingWatch.rotation.x=Math.PI/2;
   const arm2=new THREE.Group(); scene.add(arm2);
   const sleeve2=add(new THREE.Mesh(limbGeo(.048),shirt),arm2), fore2=add(new THREE.Mesh(limbGeo(.044),skin),arm2);
   const hand2=add(new THREE.Mesh(new THREE.SphereGeometry(.045,20,14),skin)); hand2.scale.set(1,.8,1.25);
@@ -190,7 +255,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   const ripples=[0,1].map(()=>{const r=new THREE.Mesh(new THREE.RingGeometry(.06,.075,40),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:0,depthWrite:false}));r.position.set(BTN.x,BTN.y,BTN.z+.03);scene.add(r);return r;});
 
   // ---- desk, Mac mini + eMeet, Pi underneath
-  const deskM=mat(0x7d5f45,{roughness:.7});
+  const deskM=mat(0x8b725a,{roughness:.7});
   box(1.5,.04,.65,deskM,.15,.74,1.45);
   [[-.55,1.18],[.85,1.18],[-.55,1.72],[.85,1.72]].forEach(([x,z])=>box(.04,.72,.04,deskM,x,.36,z));
   const MAC=V(.12,.8,1.38);
@@ -208,7 +273,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   // ---- her phone, in Singapore
   const PHONE=V(1.05,1.72,-.55);
   const phone=new THREE.Group(); phone.position.copy(PHONE); phone.rotation.y=-.5; scene.add(phone);
-  phone.add(new THREE.Mesh(new THREE.BoxGeometry(.085,.17,.012),mat(0x1d1d20,{roughness:.4})));
+  phone.add(new THREE.Mesh(rounded(.085,.17,.012),mat(0x1d1d20,{roughness:.4})));
   const pScrM=new THREE.MeshBasicMaterial({color:0x26303a}); const pScr=new THREE.Mesh(new THREE.PlaneGeometry(.074,.155),pScrM); pScr.position.z=.0065; phone.add(pScr);
   const phoneGlow=glow('255,177,92',.6,PHONE);
 
@@ -304,7 +369,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
   function resetScene(){
     tweens=[]; pulse.visible=false;
-    S.boom=0; bits.forEach(m=>m.visible=false); flash.material.opacity=0; skin.color.set(0xc58b64); stand.scale.setScalar(1); stand.rotation.z=0;
+    S.boom=0; bits.forEach(m=>m.visible=false); flash.material.opacity=0; skin.color.set(0xa86c49); stand.scale.setScalar(1); stand.rotation.z=0;
     Object.keys(wires).forEach(k=>setWire(k,0));
     ['btn','pi','mac','phone','watch'].forEach(n=>setOn(n,false));
     echoState('off'); S.speaking=false; S.press=0; S.ripple=-1; S.walk=0;
@@ -351,7 +416,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
       bubble('B-me',''); bubble('B-sfx','');
       bubble('B-dev','"OK, calling Manager."',V(MAC.x,1.2,MAC.z),'fail'); setOn('mac',true); S.speaking=true; await wait(1400,f); if(!ok())return;
       bubble('B-me','"BOSS?!"','','fail');
-      const base=new THREE.Color(0xc58b64), angry=new THREE.Color(0xe0402e);
+      const base=new THREE.Color(0xa86c49), angry=new THREE.Color(0xe0402e);
       await anim(1100,x=>{skin.color.copy(base).lerp(angry,x);stand.scale.setScalar(1+.14*x);stand.rotation.z=Math.sin(x*60)*.05*x;},f); if(!ok())return;
       const c=stand.localToWorld(V(0,1.2,0));
       stand.visible=false; arm2.visible=hand2.visible=false; S.standing=false; bubble('B-me','');
@@ -438,7 +503,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     arm.position.copy(shoulder); arm.lookAt(tipNow); dir.subVectors(tipNow,shoulder); const len=dir.length();
     sleeve.scale.set(1,1,len*.45); fore.position.z=len*.45; fore.scale.set(.9,.9,len*.55);
     hand.position.copy(tipNow); hand.quaternion.copy(arm.quaternion);
-    watch.visible=S.watch; if(S.watch){watch.position.lerpVectors(shoulder,tipNow,.86); watch.quaternion.copy(arm.quaternion); watch.rotateX(-Math.PI/2); watch.translateY(.04);}
+    watch.visible=true; {watch.position.lerpVectors(shoulder,tipNow,.86); watch.quaternion.copy(arm.quaternion); watch.rotateX(-Math.PI/2); watch.translateY(.04);}
     // standing body
     if(S.standing){
       const sw=Math.sin(now/140)*.45*(S.walk>0&&S.walk<1?1:0);
