@@ -12,6 +12,7 @@ document.querySelectorAll('dialog').forEach(modal => {
   });
 });
 const zh = () => document.documentElement.lang.startsWith('zh');
+const hans = () => document.documentElement.lang === 'zh-Hans';
 
 // Vertical scroll drives the bus horizontally along the route.
 const viewport = document.querySelector('.route-viewport');
@@ -132,7 +133,7 @@ function render() {
   if (index === current) return;
   current = index;
   const name = `${places[index].dataset.zhName} · ${buttons[index].textContent}`;
-  locationLabel.textContent = index < stops.length ? `${String(index + 1).padStart(2, '0')} / ${String(stops.length).padStart(2, '0')} · ${name}` : `${name} · ${zh() ? '暫停服務' : 'Not in service'}`;
+  locationLabel.textContent = index < stops.length ? `${String(index + 1).padStart(2, '0')} / ${String(stops.length).padStart(2, '0')} · ${name}` : `${name} · ${zh() ? hans() ? '暂停服务' : '暫停服務' : 'Not in service'}`;
   buttons.forEach((button, i) => button.setAttribute('aria-current', i === index ? 'step' : 'false'));
   places.forEach((place, i) => place.classList.toggle('active', i === index));
   stops.forEach((stop, i) => { stop.inert = i !== index; });
@@ -171,7 +172,7 @@ depot.addEventListener('focusin', () => { if (current !== last) driveTo(last); }
 function setDoor(open) {
   bus.classList.toggle('door-open', open);
   doorButton.setAttribute('aria-pressed', String(open));
-  doorButton.setAttribute('aria-label', zh() ? (open ? '關門' : '開門') : open ? 'Close the door' : 'Open the door');
+  doorButton.setAttribute('aria-label', zh() ? hans() ? (open ? '关门' : '开门') : (open ? '關門' : '開門') : open ? 'Close the door' : 'Open the door');
   doorButton.title = open ? 'Close the door · 唔該' : 'Open the door · 有落';
 }
 doorButton.addEventListener('click', () => setDoor(!bus.classList.contains('door-open')));
@@ -183,7 +184,7 @@ function hideSpeech() {
 }
 function showSpeech() {
   clearTimeout(speechTimer);
-  speech.textContent = zh() ? '有落，唔該' : 'next stop please';
+  speech.textContent = zh() ? hans() ? '有落，唔该' : '有落，唔該' : 'next stop please';
   speech.classList.add('is-visible');
   bus.classList.add('stop-requested');
   speechTimer = setTimeout(hideSpeech, 4000);
