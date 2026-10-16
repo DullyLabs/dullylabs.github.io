@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbf4ea">
 <meta name="theme-color" content="#141010" media="(prefers-color-scheme: dark)">
 <title>Director's Cut · Your iPhone runs the camera</title>
@@ -88,9 +88,7 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .scr{width:100%;height:100%;background:#000;display:flex;justify-content:center;position:relative;overflow:hidden;border-radius:calc(var(--r) - var(--p))}
 .vfw{position:relative;height:100%;aspect-ratio:16/9;max-width:100%}
 #vf{display:block;width:100%;height:100%}
-.zm{position:absolute;left:0;right:0;bottom:6px;width:max-content;margin:0 auto;display:flex;gap:4px;padding:3px;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:999px;transform-origin:50% 100%}
-.zm i{min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.14);font:normal 600 9.5px system-ui,sans-serif;color:#fff}
-.zm i.on{padding:0 8px;background:rgba(0,0,0,.6);color:#ffd60a}
+.zm{position:absolute;top:6px;left:6px;padding:2px 4px;background:rgba(0,0,0,.45);border-radius:2px;font:700 9px var(--mono);color:#fff;line-height:1}
 .rec{position:absolute;top:6px;right:6px;text-shadow:0 0 2px #000;display:flex;align-items:center;gap:4px;font:700 9px var(--mono);color:#fff}
 .rec i{width:7px;height:7px;background:var(--tally);animation:bl 1s steps(1) infinite}
 @keyframes bl{50%{opacity:0}}
@@ -113,16 +111,16 @@ svg.i{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.75;str
 .ab .k b,.ab .k.on b{width:60px;min-width:0;height:60px;padding:0;border:0;border-radius:50%;background:var(--ab);color:#fff;font:700 20px var(--disp);box-shadow:0 3px 0 var(--ab-edge)}
 .ab .k.on b{box-shadow:0 1px 0 var(--ab-edge)}
 .ab .k:first-child{margin-bottom:24px}}
-@media (max-width:760px){.hero{display:flex;flex-direction:column;min-height:0;padding:0 16px max(12px,env(safe-area-inset-bottom));gap:8px}
+@media (max-width:760px){.hero{--spare:clamp(0px,(100dvh - 700px)*.25,48px);display:flex;flex-direction:column;min-height:0;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) calc(max(24px,env(safe-area-inset-bottom) + 16px) + var(--spare)) max(16px,env(safe-area-inset-left));gap:8px}
 .top{display:grid;grid-template-columns:auto 1fr auto;margin:0 -16px;padding:4px 8px}.wm{text-align:center}.top nav,#trk{display:none}#menu{display:flex}.top .sheet:not([hidden]){display:block}
-.sw{flex:0 1 auto;height:calc((100vw - 32px)/1.6)}
+.sw{flex:0 1 auto;height:calc((100vw - 32px)/1.6);margin-top:var(--spare)}
 .rig{flex:1 0 auto;display:flex;flex-direction:column;align-items:center;gap:8px}
-.ph{margin:auto 0}.ph:before{inset:-16px -6vw -8px}.body{--r:28px;--p:7px;width:auto;height:clamp(84px,20dvh,42.5vw);aspect-ratio:2}.di{height:34px;margin-top:-17px}.zm{scale:.8}
+.ph{margin:auto 0}.ph:before{inset:-16px -6vw -8px}.body{--r:28px;--p:7px;width:auto;height:clamp(84px,20dvh,42.5vw);aspect-ratio:2}.di{height:34px;margin-top:-17px}
 .tri{width:auto;height:clamp(30px,7dvh,52px)}}
-@media (orientation:landscape) and (max-height:500px){.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh;min-height:0;padding:4px 16px 8px;gap:6px 16px}
+@media (orientation:landscape) and (max-height:500px){.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr);height:100vh;height:100dvh;min-height:0;padding:4px max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));gap:6px 16px}
 .top{grid-column:1/-1;margin:0;padding:0}.sw{grid-area:2/1;height:auto;align-items:center}
 .rig{grid-area:2/2;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
-.ph{margin:0}.body{--r:24px;--p:6px;width:auto;height:min(24dvh,100px);aspect-ratio:2}.di{height:30px;margin-top:-15px}.zm{scale:.8}.tri{display:none}.deck{margin:0}}
+.ph{margin:0}.body{--r:24px;--p:6px;width:auto;height:min(24dvh,100px);aspect-ratio:2}.di{height:30px;margin-top:-15px}.tri{display:none}.deck{margin:0}}
 @media (hover:none) and (pointer:coarse){.tg kbd{display:none}}
 main{max-width:960px;margin:0 auto;padding:96px 24px 72px}
 h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.03em;margin:0 0 20px}
@@ -164,7 +162,7 @@ h1{font-weight:700;font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacin
 <header class="top"><button class="tg" id="menu" aria-label="Menu" aria-expanded="false" aria-controls="sheet"><svg class="i"><use href="#bars"/></svg></button><a class="wm" href="/" aria-label="Director's Cut, a Dully Labs app. Dully Labs home">Director's Cut</a><div><nav aria-label="Site"><a class="tg key" href="/directorscut/support/"><i></i>SUPPORT</a><a class="tg key" href="/directorscut/privacy/"><i></i>PRIVACY</a><a class="tg key" href="/"><i></i>DULLY LABS</a></nav><div><button class="tg" id="trk" aria-pressed="true" aria-keyshortcuts="T">Tracker <kbd>T</kbd></button><button class="tg" id="theme" aria-label="Switch theme" aria-keyshortcuts="L" title="Switch theme (L)"><svg class="i"><use href="#moon"/></svg></button></div></div><nav class="sheet" id="sheet" aria-label="Site" hidden><a href="/directorscut/support/">Support</a><a href="/directorscut/privacy/">Privacy</a><a href="/">Dully Labs</a></nav></header>
 <div class="sw" id="sw"><div class="sb" id="sb"><canvas id="stage" tabindex="0" role="application" aria-label="Stage. Arrow keys or W A S D to walk, Space to jump, C to crouch."></canvas></div></div>
 <div class="rig">
-<div class="ph"><div class="body" id="body"><i class="tl"></i><i class="di"></i><div class="scr"><div class="vfw"><canvas id="vf" role="img" aria-label="Phone viewfinder showing the live edit"></canvas><span class="rec"><i></i>REC</span><span class="zm" id="zm" aria-hidden="true"><i>1</i><i>2</i><i>5</i></span></div></div></div>
+<div class="ph"><div class="body" id="body"><i class="tl"></i><i class="di"></i><div class="scr"><div class="vfw"><canvas id="vf" role="img" aria-label="Phone viewfinder showing the live edit"></canvas><span class="rec"><i></i>REC</span><span class="zm" id="zm" aria-hidden="true">1×</span></div></div></div>
 <svg class="tri" viewBox="0 0 120 72" aria-hidden="true"><g stroke="currentColor" stroke-width="3" fill="none"><path d="M60 16L10 72M60 16v56M60 16l50 56"/><path d="M60 10l38 12" stroke-linecap="round"/><path d="M35 44h50" stroke-width="2" opacity=".6"/></g><g fill="currentColor"><circle cx="60" cy="12" r="5"/><circle cx="98" cy="22" r="2"/><ellipse cx="10" cy="70" rx="5" ry="2"/><ellipse cx="60" cy="70" rx="5" ry="2"/><ellipse cx="110" cy="70" rx="5" ry="2"/></g><rect x="42" width="36" height="7" rx="2" fill="#5a5a5e"/></svg></div>
 <div class="deck" aria-hidden="true">
 <div class="mv"><div class="dpad m" id="dpad"><i data-b="u"></i><i data-b="l"></i><i data-b="r"></i><i data-b="d"></i></div><div class="wasd d"><button class="k" data-b="u" tabindex="-1"><b>W</b></button><button class="k" data-b="l" tabindex="-1"><b>A</b></button><button class="k" data-b="d" tabindex="-1"><b>S</b></button><button class="k" data-b="r" tabindex="-1"><b>D</b></button></div><small class="d">MOVE · ↑←↓→ TOO</small></div>
@@ -483,7 +481,7 @@ const hit=h=>h&&!(h.x>TZ.x+TZ.w||h.x+h.w<TZ.x||h.y>TZ.y+TZ.h||h.y+h.h<TZ.y);
 const LOCK=()=>st.lost?['NO SUBJECT',C.tally]:st.inZ?['HEAD · IN ZONE',C.ok]:hit(st.raw)?['HEAD · NEAR EDGE',C.caution]:['HEAD · OUT',C.caution];
 
 // ---------- canvases ----------
-const vf=$('vf'),vctx=vf.getContext('2d'),ZS=[...$('zm').children],ZL=[1,2,5];let zt='';
+const vf=$('vf'),vctx=vf.getContext('2d'),zm=$('zm');
 const dpr=()=>Math.min(devicePixelRatio||1,2);
 function size(c){const d=dpr(),w=Math.round(c.clientWidth*d),h=Math.round(c.clientHeight*d);if(c.width!=w||c.height!=h){c.width=w;c.height=h}}
 function layout(){const r=$('sw').getBoundingClientRect(),ar=phone()?1.6:16/9;let w=r.width,h=w/ar;if(h>r.height){h=r.height;w=h*ar}
@@ -500,8 +498,7 @@ function renderStage(){const k=stage.width/W,d=dpr();
   const[t]=LOCK();sctx.font='500 10px '+FM;const tw=sctx.measureText(t).width;sctx.fillStyle=col;sctx.fillRect(h.x,h.y-16,tw+8,14);sctx.fillStyle='#0b0d0e';sctx.textBaseline='middle';sctx.textAlign='left';sctx.fillText(t,h.x+4,h.y-9)}}
 function renderVF(){const r=crop(D.deck);renderCrop(vctx,vf,r);const d=dpr(),cw=vf.width/d,ch=vf.height/d;vctx.setTransform(d,0,0,d,0,0);vctx.globalAlpha=.6;
  overlay(vctx,q=>({x:(q.x-r.x)/r.w*cw,y:(q.y-r.y)/r.h*ch,w:q.w/r.w*cw,h:q.h/r.h*ch}),D.deck=='W');vctx.globalAlpha=1;
- // iOS Camera-style zoom pill: the active stop is the largest one at or below the live zoom, and shows that zoom
- const z=1/r.w,i=ZL.findLastIndex(s=>z>=s-.05),l=+z.toFixed(1)+'×';if(i+l!=zt){zt=i+l;ZS.forEach((e,j)=>{e.classList.toggle('on',i==j);e.textContent=i==j?l:ZL[j]})}}
+ const t=+(1/r.w).toFixed(1)+'×';if(zm.textContent!=t)zm.textContent=t}
 
 // ---------- loop ----------
 let last=0,raf=0,heroOn=true;
