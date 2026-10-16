@@ -211,8 +211,10 @@ nav::before{content:"";flex:0 0 122px}
   function curl(r,x,y,z,head){const c=new THREE.Mesh(curlGeo,hairM);c.scale.setScalar(r);c.position.set(x,y,z);return add(c,head);}
   function portrait(parent,x,y,z,tilt=0){
     const head=new THREE.Group();head.position.set(x,y,z);head.rotation.x=tilt;parent.add(head);
-    blob(.11,skin,0,0,0,.82,1.1,.93,head);
-    blob(.07,skin,0,-.05,.03,.85,.75,.95,head);
+    // one egg-shaped head: the lower face tapers in to a small rounded chin
+    const eg=new THREE.SphereGeometry(.11,48,32),ep=eg.attributes.position;
+    for(let i=0;i<ep.count;i++){const t=ep.getY(i)/.11,k=t<0?1-.24*t*t:1-.04*t*t;ep.setXYZ(i,ep.getX(i)*.8*k,ep.getY(i)*(t<0?1.04:1.12),ep.getZ(i)*.92*(t<0?1-.08*t*t:1));}
+    eg.computeVertexNormals();add(new THREE.Mesh(eg,skin),head);
     [-1,1].forEach(k=>{
       blob(.024,skin,k*.09,-.008,-.004,.55,1,.7,head);
       blob(.02,white,k*.037,.014,.083,1.25,.8,.45,head);
@@ -220,10 +222,10 @@ nav::before{content:"";flex:0 0 122px}
       blob(.0035,white,k*.033,.019,.095,1,1,.5,head);
       const brow=blob(.026,hairM,k*.04,.044,.087,1,.3,.4,head);brow.rotation.z=k*.12;
     });
-    blob(.019,skin,0,-.006,.1,.8,.9,.7,head);
+    blob(.016,skin,0,-.006,.099,.75,.95,.75,head);
     // broad grin: lips, open mouth, a row of teeth
-    const mouth=(r,m,zz,sy)=>{const g=new THREE.Mesh(new THREE.CircleGeometry(r,32,Math.PI,Math.PI),m);g.scale.y=sy;g.position.set(0,-.044,zz);g.rotation.x=-.32;head.add(g);return g;};
-    mouth(.046,lip,.098,.55); mouth(.042,dark,.099,.5); mouth(.04,white,.1,.4);
+    const mouth=(r,m,zz,sy)=>{const cg=new THREE.CircleGeometry(r,32,Math.PI,Math.PI),cp=cg.attributes.position;for(let i=0;i<cp.count;i++)cp.setZ(i,-6.5*cp.getX(i)**2);const g=new THREE.Mesh(cg,m);g.scale.y=sy;g.position.set(0,-.046,zz);g.rotation.x=-.32;head.add(g);return g;};
+    mouth(.042,lip,.089,.55); mouth(.038,dark,.09,.5); mouth(.036,white,.091,.4);
     // a tall curly mop: a cap, a cloud of curls that grows on top, and a fringe
     blob(.11,hairM,0,.07,-.045,1.05,1.18,1.18,head);
     for(let i=0;i<110;i++){
