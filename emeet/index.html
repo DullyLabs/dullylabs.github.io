@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
 <title>Calling Singapore From Bed</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-/* Layout: one big 3D stage of the bedroom, a chapter selector under it. Each chapter replays one version of the build. Single dark look, like a room at night. */
+/* Quiet architectural palette, with warm light inside a cool frame. */
+*{box-sizing:border-box}
 :root{
-  --ground:#15110e; --panel:#1e1814; --line:#3b3029; --ink:#f4ede5; --muted:#b8aa9b;
-  --signal:#9fd8ff; --ring:#ffb15c; --fail:#ff7a6b; --shade:#0b0806;
-  --display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
-  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
-  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+  --ground:#10171c; --panel:#182127; --line:#354148; --ink:#f1efe8; --muted:#a9b7bd;
+  --signal:#b7ddd9; --ring:#e1c39a; --fail:#e6a294; --shade:#11191e;
+  --display:"Avenir Next", "Segoe UI", sans-serif;
+  --body:"Avenir Next", "Segoe UI", sans-serif;
+  --mono:ui-monospace, "SFMono-Regular", Menlo, monospace;
   color-scheme:dark;
 }
 html,body{background:var(--ground);color:var(--ink)}
@@ -56,6 +56,37 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .chap:focus-visible,#play:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
 #play{margin-left:auto;font:700 .92rem var(--body);color:var(--shade);background:var(--ring);border:1px solid var(--ring);border-radius:999px;padding:.5rem .95rem;cursor:pointer}
 #play:hover{filter:brightness(1.08)}
+
+/* Editorial frame and a numbered chapter rail. */
+body{margin:0;min-height:100vh;padding:clamp(12px,3vw,44px);background:radial-gradient(ellipse at 50% 0,#27343d 0,#10171c 72%)}
+.wrap{max-width:1440px;gap:0;grid-template-columns:minmax(0,1fr);border:1px solid #47535b;border-radius:20px;overflow:hidden;box-shadow:0 28px 80px #0005}
+.stage{grid-area:1/1;border:0;border-radius:0;aspect-ratio:16/10;max-height:calc(100vh - 2*clamp(12px,3vw,44px) - 84px);max-height:calc(100svh - 2*clamp(12px,3vw,44px) - 84px);background:#26343d}
+.hud::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0a121a66,transparent 20%)}
+.title{left:32px;top:28px;gap:10px}
+.title small{color:#d2e2e3;font-size:.65rem;letter-spacing:.22em}
+.title h1{font-weight:500;letter-spacing:-.055em;font-size:clamp(1.8rem,4vw,3.5rem);text-shadow:0 2px 20px #12202a66}
+.clock{top:24px;right:24px;padding:10px 14px;border:1px solid #ffffff1f;border-radius:6px;background:#0f1a24cc;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.clock b{color:#f0dfc5;font-weight:400;letter-spacing:-.07em}
+.clock span{font-size:.6rem;letter-spacing:.12em;color:#f0dfc5}
+.l3{padding:7px 10px;background:#16232de6;border:1px solid #8aabb34d;border-radius:4px;box-shadow:0 4px 14px #07121b26;backdrop-filter:blur(12px)}
+.l3 b{font-weight:500;letter-spacing:.015em}
+.l3 i{margin-top:3px;color:#b3c4cc}
+.l3.on{border-color:#b7ddd9;box-shadow:0 0 0 3px #b7ddd917}
+.bub{font-weight:500;padding:.65em .85em;border-radius:12px 12px 12px 3px;background:#f2eee4;color:#24313a;box-shadow:0 8px 24px #07121b30}
+.bub::after{border-top-color:#f2eee4}
+.bub.fail{background:#f3dcd4;color:#633e36}.bub.fail::after{border-top-color:#f3dcd4}
+.auth{background:#17232eee;border-color:#bfa887;border-radius:5px;font-size:clamp(.65rem,1.2vw,.9rem);box-shadow:0 8px 24px #07121b30}
+.verdict{grid-area:1/1;align-self:end;justify-self:end;position:relative;right:auto;bottom:auto;margin:0 28px 24px;z-index:1;pointer-events:none;padding:14px 18px;max-width:72%;font-weight:500;font-size:clamp(.85rem,1.65vw,1.25rem);border:0;border-left:3px solid;border-radius:3px;background:#14212eee;box-shadow:0 8px 30px #0002;text-align:left}
+nav{grid-area:2/1;padding:14px;gap:6px;background:#182127;border-top:1px solid #47535b;flex-wrap:nowrap}
+nav::before{content:"";flex:0 0 122px}
+.chap:first-child{margin-left:auto}.chap:nth-last-child(2){margin-right:auto}
+.chap{position:relative;flex:0 0 auto;border:1px solid transparent;border-radius:999px;padding:12px 20px;background:transparent;font-weight:500;font-size:.9rem;gap:12px;transition:background .2s,color .2s}
+.chap span{font-size:.65rem;color:#8ca5ad;opacity:1}
+.chap:hover{background:#253239;border-color:transparent}
+.chap[aria-pressed="true"]{background:#303e44;color:#f6f1e7;border-color:#56686e}
+.chap[aria-pressed="true"] span{color:#d8e9e5}
+#play{flex:0 0 112px;margin-left:10px;border-radius:999px;padding:12px 18px;background:#ded8c9;border-color:#ded8c9;color:#253239;font-weight:600}
+@media(max-width:680px){body{padding:10px}.wrap{border-radius:12px}.stage{aspect-ratio:2/3}.title{left:18px;top:18px}.title h1{font-size:1.8rem}.clock{top:16px;right:16px;padding:8px 10px}.clock b{font-size:1.5rem}nav{grid-area:3/1;flex-wrap:wrap;padding:8px;gap:5px}nav::before{display:none}.chap,.chap:first-child,.chap:nth-last-child(2){flex:1 1 44%;margin:0;padding:11px 10px;font-size:.8rem}#play{flex:1 1 100%;margin:2px 0 0;padding:12px}.verdict{grid-area:2/1;justify-self:stretch;align-self:stretch;margin:0;max-width:none;min-height:5.2em;display:flex;align-items:center;font-size:1rem;border-radius:0;border-left-color:transparent;background:#14212e;box-shadow:none;opacity:1;transform:none;color:transparent;transition:color .45s,border-color .45s}.verdict.show{color:var(--ink)}.l3{padding:5px 7px}.bub{font-size:.74rem;max-width:13em}}
 </style>
 </head>
 <body>
@@ -74,9 +105,9 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
       <div class="auth" id="A-mac"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12M6 22h12M7 2c0 6 10 6 10 10S7 16 7 22M17 2c0 6-10 6-10 10s10 4 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span id="authText"></span></div>
       <div class="title"><small id="eyebrow"></small><h1 id="ctitle"></h1></div>
       <div class="clock" id="clock"><b id="clockv">0.0 s</b><span id="clockl">press to ring</span></div>
-      <div class="verdict" id="verdict"></div>
     </div>
   </div>
+  <div class="verdict" id="verdict" aria-live="polite"></div>
   <nav id="nav" aria-label="Chapters"></nav>
 </div>
 
@@ -92,43 +123,56 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   let renderer;
   try{ renderer=new THREE.WebGLRenderer({antialias:true}); }
   catch(e){ const d=document.createElement('div');d.className='nogl';d.textContent='This browser could not start 3D graphics.';host.appendChild(d);return; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const small=matchMedia('(max-width:680px)').matches;
+  // Supersample 1x screens a little; never above 2x.
+  renderer.setPixelRatio(Math.min(Math.max(devicePixelRatio,1.5),2));
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.outputEncoding=THREE.sRGBEncoding;
-  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.82;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.9;
   host.insertBefore(renderer.domElement,host.firstChild);
 
   const scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x120d0a);
-  scene.fog=new THREE.Fog(0x120d0a,7,13);
+  scene.background=new THREE.Color(0x0d1217);
+  scene.fog=new THREE.Fog(0x0d1217,6,14);
   const camera=new THREE.PerspectiveCamera(42,16/9,0.05,50);
   const controls=new THREE.OrbitControls(camera,renderer.domElement);
   controls.enableDamping=true; controls.enablePan=false;
   controls.minDistance=1.1; controls.maxDistance=5.5; controls.maxPolarAngle=Math.PI*0.48;
 
-  const mat=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85,metalness:0},o));
+  // Hex colours are authored in sRGB; convert so the sRGB output does not wash them out.
+  const mat=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({roughness:.72,metalness:0},o,{color:new THREE.Color(c).convertSRGBToLinear()}));
   function add(m,parent=scene){m.castShadow=true;m.receiveShadow=true;parent.add(m);return m;}
-  function box(w,h,d,m,x,y,z,parent){const g=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);g.position.set(x,y,z);return add(g,parent);}
+  // Rounded boxes without another dependency. Project a subdivided cube onto a fillet.
+  function rounded(w,h,d){
+    const r=Math.min(w,h,d)*.18,s=Math.max(w,h,d)>.5?10:6,g=new THREE.BoxGeometry(w,h,d,s,s,s),p=g.attributes.position;
+    const inner=V(w/2-r,h/2-r,d/2-r),lower=inner.clone().negate(),q=new THREE.Vector3(),n=new THREE.Vector3();
+    for(let i=0;i<p.count;i++){q.set(p.getX(i),p.getY(i),p.getZ(i));n.copy(q);q.clamp(lower,inner);n.sub(q).normalize().multiplyScalar(r);q.add(n);p.setXYZ(i,q.x,q.y,q.z);}
+    g.computeVertexNormals();return g;
+  }
+  function box(w,h,d,m,x,y,z,parent){const g=new THREE.Mesh(rounded(w,h,d),m);g.position.set(x,y,z);return add(g,parent);}
   function blob(r,m,x,y,z,sx=1,sy=1,sz=1,parent){const g=new THREE.Mesh(new THREE.SphereGeometry(r,32,20),m);g.position.set(x,y,z);g.scale.set(sx,sy,sz);return add(g,parent);}
-  function glowTex(rgb){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,`rgba(${rgb},1)`);g.addColorStop(.4,`rgba(${rgb},.35)`);g.addColorStop(1,`rgba(${rgb},0)`);x.fillStyle=g;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(c);}
+  function glowTex(rgb){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');const g=x.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,`rgba(${rgb},1)`);g.addColorStop(.4,`rgba(${rgb},.35)`);g.addColorStop(1,`rgba(${rgb},0)`);x.fillStyle=g;x.fillRect(0,0,256,256);return new THREE.CanvasTexture(c);}
   function glow(rgb,size,pos){const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex(rgb),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0}));s.scale.set(size,size,1);s.position.copy(pos);scene.add(s);return s;}
   function limbGeo(r){const g=new THREE.CylinderGeometry(r,r*.95,1,14);g.rotateX(Math.PI/2);g.translate(0,0,.5);return g;}
 
   // ---- light
-  scene.add(new THREE.HemisphereLight(0x5a4434,0x120c08,.38));
-  const warm=new THREE.PointLight(0xffb37a,.55,9,1.6); warm.position.set(1.1,2.5,.6); warm.castShadow=true; warm.shadow.mapSize.set(1024,1024); warm.shadow.bias=-0.002; scene.add(warm);
-  const red=new THREE.PointLight(0xff2a14,2.4,3.2,1.3); red.position.set(0,1.15,-1.8); scene.add(red);
-  const fill=new THREE.DirectionalLight(0x8aa0c0,.18); fill.position.set(-2,3,3); scene.add(fill);
+  // night: a dim moonlit fill and a warm bedside key
+  scene.add(new THREE.HemisphereLight(0x1f2d3d,0x0b0908,.25));
+  const warm=new THREE.PointLight(0xffb37a,1.6,8,1.6); warm.position.set(-1.2,2.3,-.6); warm.castShadow=true; warm.shadow.mapSize.setScalar(1024); warm.shadow.bias=-.002; warm.shadow.radius=4; scene.add(warm);
+  const red=new THREE.PointLight(0xffb37a,1.8,3.2,1.3); red.position.set(0,1.15,-1.8); scene.add(red);
+  const lamp=new THREE.PointLight(0xffc89a,.9,4.5,1.5); lamp.position.set(.9,1.7,2.2); scene.add(lamp); // desk side, so faces read at night
+  const fill=new THREE.DirectionalLight(0x5f7fa8,.3); fill.position.set(2.5,5,3); fill.castShadow=true;
+  fill.shadow.mapSize.setScalar(small?2048:4096);fill.shadow.camera.left=-3;fill.shadow.camera.right=3;fill.shadow.camera.top=3;fill.shadow.camera.bottom=-3;fill.shadow.camera.near=.5;fill.shadow.camera.far=12;fill.shadow.normalBias=.025;fill.shadow.bias=-.0002;fill.shadow.radius=4;scene.add(fill);
 
   // ---- room
-  const floor=new THREE.Mesh(new THREE.PlaneGeometry(5,6),mat(0x5e4b3d)); floor.rotation.x=-Math.PI/2; floor.position.z=.4; floor.receiveShadow=true; scene.add(floor);
-  const wallM=mat(0xd8c6b3);
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(5,6),mat(0x4a555b)); floor.rotation.x=-Math.PI/2; floor.position.z=.4; floor.receiveShadow=true; scene.add(floor);
+  const wallM=mat(0x8e99a1);
   const back=new THREE.Mesh(new THREE.PlaneGeometry(5,3),wallM); back.position.set(0,1.5,-2); back.receiveShadow=true; scene.add(back);
   const lw=new THREE.Mesh(new THREE.PlaneGeometry(6,3),wallM); lw.rotation.y=Math.PI/2; lw.position.set(-2,1.5,.4); lw.receiveShadow=true; scene.add(lw);
   const cg=new THREE.PlaneGeometry(2.8,2.7,80,1); const cp=cg.attributes.position;
   for(let i=0;i<cp.count;i++){const u=cp.getX(i); cp.setZ(i,Math.sin(u*14)*.06+Math.sin(u*5.3)*.03);} cg.computeVertexNormals();
-  const curtain=new THREE.Mesh(cg,mat(0x6c7f75,{side:THREE.DoubleSide,roughness:.95})); curtain.rotation.y=-Math.PI/2; curtain.position.set(1.55,1.35,-.65); curtain.receiveShadow=true; scene.add(curtain);
-  const wood=mat(0x9b7a57);
+  const curtain=new THREE.Mesh(cg,mat(0x516c78,{side:THREE.DoubleSide,roughness:.95})); curtain.rotation.y=-Math.PI/2; curtain.position.set(1.55,1.35,-.65); curtain.receiveShadow=true; scene.add(curtain);
+  const wood=mat(0x806751);
   box(.04,1.9,.04,wood,-1.85,.95,-1.75); box(.04,1.9,.04,wood,-1.85,.95,-1.35);
   [.45,.95,1.45].forEach(y=>box(.3,.03,.42,wood,-1.82,y,-1.55));
   box(.16,.1,.12,mat(0xeae4da),-1.82,.52,-1.6);
@@ -140,47 +184,125 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   const echoGlow=glow('80,170,255',.35,V(ECHO.x,ECHO.y+.04,ECHO.z));
 
   // ---- bed
-  box(1.7,.3,2.1,mat(0xc4b9ab),0,.15,-.95);
+  box(1.7,.3,2.1,mat(0x59666a),0,.15,-.95);
   box(1.62,.2,2.0,mat(0xefe8dd),0,.4,-.95);
-  box(1.78,.78,.12,mat(0xe3dbcf),0,.69,-1.94);
-  box(1.78,.025,.03,new THREE.MeshBasicMaterial({color:0xff3a22}),0,1.085,-1.9);
-  const wallGlow=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.1),new THREE.MeshBasicMaterial({map:glowTex('255,50,25'),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9}));
+  box(1.78,.78,.12,mat(0x9aabaa),0,.69,-1.94);
+  box(1.78,.025,.03,new THREE.MeshBasicMaterial({color:0xffd1a0}),0,1.085,-1.9);
+  const wallGlow=new THREE.Mesh(new THREE.PlaneGeometry(2.8,1.1),new THREE.MeshBasicMaterial({map:glowTex('255,170,96'),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.55}));
   wallGlow.position.set(0,1.12,-1.995); scene.add(wallGlow);
-  const linen=mat(0xece3d6), duvetM=mat(0xe6dccd);
-  blob(.5,linen,-.4,.6,-1.62,.62,.18,.36); blob(.5,linen,.38,.6,-1.6,.6,.19,.36);
+  const linen=mat(0xece3d6), duvetM=mat(0xb8c3c0);
+  blob(.5,linen,-.4,.66,-1.62,.62,.18,.36); blob(.5,linen,.38,.6,-1.6,.6,.19,.36);
   box(1.64,.1,1.35,duvetM,0,.55,-.5);
   blob(.5,duvetM,.45,.6,-.95,.45,.22,.6);
 
+  // Upholstery channels, a woven rug, and low joinery details.
+  for(let i=0;i<8;i++)box(.19,.68,.028,mat(0xa0afac),-.735+i*.21,.7,-1.864);
+  box(2.65,.018,3.1,mat(0x657676,{roughness:1}),0,.012,-.3);
+  const weave=[mat(0x788786,{roughness:1}),mat(0x71817f,{roughness:1})];
+  for(let i=0;i<52;i++)box(2.55,.002,.009,weave[i%2],0,.023,-1.8+i*.058);
+  box(4,.055,.035,wood,0,.035,-1.97);
+  box(.035,.055,4.8,wood,-1.97,.035,.4);
+  for(let i=0;i<7;i++)box(.009,.002,1.24,linen,-.7+i*.23,.602,-.49);
+
   // ---- me, lying down
-  const skin=mat(0xc58b64,{roughness:.6}), shirt=mat(0x55626e), hairM=mat(0x1b1511), pants=mat(0x2f3540);
+  const SKIN=0xa36d4a, skin=mat(SKIN,{roughness:.6}), blazer=mat(0xcbb79a,{roughness:.85}), hairM=mat(0x0d0c0d,{roughness:.8}), pants=mat(0x2c3640,{roughness:.8});
+  const white=mat(0xf6f3ee,{roughness:.5}), silver=mat(0xc9d0d6,{metalness:.9,roughness:.22}), dark=mat(0x1b1310,{roughness:.6}), lip=mat(0x5e2f22,{roughness:.5}), iris=mat(0x2a1a12,{roughness:.3});
+  const skinBase=skin.color.clone(), curlGeo=new THREE.SphereGeometry(1,16,12);
+  function curl(r,x,y,z,head){const c=new THREE.Mesh(curlGeo,hairM);c.scale.setScalar(r);c.position.set(x,y,z);return add(c,head);}
+  function portrait(parent,x,y,z,tilt=0){
+    const head=new THREE.Group();head.position.set(x,y,z);head.rotation.x=tilt;parent.add(head);
+    // one egg-shaped head: the lower face tapers in to a small rounded chin
+    const eg=new THREE.SphereGeometry(.11,48,32),ep=eg.attributes.position;
+    for(let i=0;i<ep.count;i++){const t=ep.getY(i)/.11,k=t<0?1-.24*t*t:1-.04*t*t;ep.setXYZ(i,ep.getX(i)*.8*k,ep.getY(i)*(t<0?1.04:1.12),ep.getZ(i)*.92*(t<0?1-.08*t*t:1));}
+    eg.computeVertexNormals();add(new THREE.Mesh(eg,skin),head);
+    [-1,1].forEach(k=>{
+      blob(.024,skin,k*.09,-.008,-.004,.55,1,.7,head);
+      blob(.02,white,k*.037,.014,.083,1.25,.8,.45,head);
+      blob(.016,iris,k*.037,.014,.089,.72,.72,.4,head);
+      blob(.0035,white,k*.033,.019,.095,1,1,.5,head);
+      const brow=blob(.026,hairM,k*.04,.044,.087,1,.3,.4,head);brow.rotation.z=k*.12;
+    });
+    blob(.016,skin,0,-.006,.099,.75,.95,.75,head);
+    // broad grin: lips, open mouth, a row of teeth
+    const mouth=(r,m,zz,sy)=>{const cg=new THREE.CircleGeometry(r,32,Math.PI,Math.PI),cp=cg.attributes.position;for(let i=0;i<cp.count;i++)cp.setZ(i,-6.5*cp.getX(i)**2);const g=new THREE.Mesh(cg,m);g.scale.y=sy;g.position.set(0,-.046,zz);g.rotation.x=-.32;head.add(g);return g;};
+    mouth(.042,lip,.089,.55); mouth(.038,dark,.09,.5); mouth(.036,white,.091,.4);
+    // a tall curly mop: a cap, a cloud of curls that grows on top, and a fringe
+    blob(.11,hairM,0,.07,-.045,1.05,1.18,1.18,head);
+    for(let i=0;i<110;i++){
+      const yN=1-(i/109)*1.3, rr=Math.sqrt(Math.max(0,1-yN*yN)), phi=i*2.39996, px=Math.cos(phi)*rr, pz=Math.sin(phi)*rr;
+      if(pz>.3&&yN<.35)continue;               // keep the face clear
+      if(yN<-.1&&pz>-.35)continue;             // nothing over the cheeks
+      curl(.036+(i%4)*.005,px*.123,.075+yN*(yN>0?.135:.12),pz*.135-.045+Math.max(0,yN)*.025,head);
+    }
+    for(let i=0;i<7;i++){const a=(i-3)*.32;curl(.03+(i%2)*.004,Math.sin(a)*.085,.098+Math.abs(a)*-.01,Math.cos(a)*.083-.005,head);}
+    return head;
+  }
+  function timepiece(parent){
+    const g=new THREE.Group();parent.add(g);
+    box(.034,.026,.11,white,0,-.008,0,g);
+    box(.042,.016,.05,silver,0,.004,0,g);
+    box(.036,.003,.044,mat(0x0e1418,{roughness:.15}),0,.012,0,g);
+    box(.005,.012,.011,silver,.022,.004,.007,g);return g;
+  }
+  // sleeves end in a white shirt cuff and a relaxed hand; elbows are spheres so joints never step
+  // mitten hands: a flattened palm with a small thumb (child scale undoes the palm's squash)
+  function handMesh(){const h=add(new THREE.Mesh(new THREE.SphereGeometry(.034,24,16),skin));h.scale.set(1.05,.5,1.4);
+    const t=add(new THREE.Mesh(new THREE.SphereGeometry(.014,16,12),skin),h);t.position.set(.03/1.05,.004/.5,-.011/1.4);t.scale.set(1/1.05,.8/.5,1.4/1.4);return h;}
+  function cuffMesh(){return add(new THREE.Mesh(new THREE.CylinderGeometry(.043,.043,.03,24).rotateX(Math.PI/2),white));}
+  function elbowMesh(){return add(new THREE.Mesh(new THREE.SphereGeometry(.044,24,16),blazer));}
   const lying=new THREE.Group(); scene.add(lying);
   blob(.5,duvetM,-.4,.58,-.75,.5,.2,1.05,lying);
-  blob(.5,shirt,-.42,.63,-1.3,.46,.2,.26,lying);
-  blob(.11,skin,-.42,.77,-1.55,1,1,1.05,lying);
-  blob(.118,hairM,-.42,.75,-1.59,1.02,.92,1,lying);
-  blob(.04,skin,-.42,.68,-1.43,1,1,1.2,lying);
-  const LHEAD=V(-.42,.92,-1.55);
-  const shoulder=V(-.6,.68,-1.33);
+  blob(.5,blazer,-.42,.63,-1.3,.33,.15,.25,lying);
+  blob(.06,white,-.42,.7,-1.35,.7,.25,1.3,lying);
+  [-1,1].forEach(k=>{const l=blob(.04,blazer,-.42+k*.045,.71,-1.29,.45,.18,1.8,lying);l.rotation.y=k*.35;blob(.05,blazer,-.42+k*.14,.66,-1.37,1,.8,1,lying);});
+  portrait(lying,-.42,.8,-1.52,-Math.PI/2+.5);
+  const LHEAD=V(-.42,.95,-1.52);
+  // left arm rests across the duvet, watch up; the right arm does the reaching
+  const WRIST=V(-.34,.715,-1.0);
+  const lShoulder=V(-.28,.67,-1.35), lElbow=V(-.19,.69,-1.1);
+  const lUpper=new THREE.Group();lying.add(lUpper);add(new THREE.Mesh(limbGeo(.045),blazer),lUpper);
+  lUpper.position.copy(lShoulder);lUpper.lookAt(lElbow);lUpper.children[0].scale.z=lShoulder.distanceTo(lElbow);
+  const lFore=new THREE.Group();lying.add(lFore);add(new THREE.Mesh(limbGeo(.04),blazer),lFore);
+  lFore.position.copy(lElbow);lFore.lookAt(WRIST);lFore.children[0].scale.z=lElbow.distanceTo(WRIST)-.02;
+  const lElb=elbowMesh();lying.add(lElb);lElb.position.copy(lElbow);
+  const lCuff=cuffMesh();lying.add(lCuff);lCuff.position.copy(WRIST);lCuff.quaternion.copy(lFore.quaternion);lCuff.translateZ(-.015);
+  const lHand=handMesh();lying.add(lHand);lHand.position.copy(WRIST);lHand.quaternion.copy(lFore.quaternion);lHand.translateZ(.045);lHand.translateY(-.01);
+  const watch=timepiece(lying);watch.position.copy(WRIST);watch.quaternion.copy(lFore.quaternion);watch.rotateX(-Math.PI/2);watch.translateY(.045);watch.translateZ(.005);
+  const watchScrM=new THREE.MeshBasicMaterial({color:0x1a2026}); const watchScr=new THREE.Mesh(new THREE.PlaneGeometry(.03,.038),watchScrM); watchScr.rotation.x=-Math.PI/2; watchScr.position.y=.0145; watch.add(watchScr);
+  const watchGlow=glow('159,216,255',.22,watch.localToWorld(V(0,.03,0)));
+  const shoulder=V(-.56,.67,-1.35);
   const arm=new THREE.Group(); arm.position.copy(shoulder); lying.add(arm);
-  const sleeve=add(new THREE.Mesh(limbGeo(.052),shirt),arm), fore=add(new THREE.Mesh(limbGeo(.047),skin),arm);
-  const hand=add(new THREE.Mesh(new THREE.SphereGeometry(.045,20,14),skin),lying); hand.scale.set(1,.8,1.25);
-  const watch=new THREE.Group(); lying.add(watch);
-  add(new THREE.Mesh(new THREE.BoxGeometry(.05,.016,.058),mat(0x1d1d20,{roughness:.4})),watch);
-  const watchScrM=new THREE.MeshBasicMaterial({color:0x1a2026}); const watchScr=new THREE.Mesh(new THREE.PlaneGeometry(.042,.05),watchScrM); watchScr.rotation.x=-Math.PI/2; watchScr.position.y=.0085; watch.add(watchScr);
+  const sleeve=add(new THREE.Mesh(limbGeo(.045),blazer),arm), fore=add(new THREE.Mesh(limbGeo(.04),blazer),arm);
+  const cuff=cuffMesh(); arm.add(cuff); const elbow=elbowMesh(); arm.add(elbow);
+  const hand=handMesh(); lying.add(hand);
 
   // ---- me, standing
   const stand=new THREE.Group(); scene.add(stand); stand.visible=false;
-  const legs=[-.09,.09].map(x=>{const g=new THREE.Group();g.position.set(x,.84,0);stand.add(g);const m=new THREE.Mesh(new THREE.CylinderGeometry(.06,.055,.84,14),pants);m.position.y=-.42;add(m,g);return g;});
-  box(.38,.56,.22,shirt,0,1.12,0,stand);
-  blob(.05,skin,0,1.44,0,1,1,1,stand);
-  blob(.11,skin,0,1.57,.01,1,1.08,1,stand);
-  blob(.116,hairM,0,1.61,-.015,1,.9,1,stand);
-  const lArm=new THREE.Group(); lArm.position.set(.23,1.36,0); stand.add(lArm);
-  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.048,.044,.62,14),shirt),lArm); la.position.y=-.31;
+  const legs=[-.065,.065].map(x=>{const g=new THREE.Group();g.position.set(x,.84,0);stand.add(g);const m=new THREE.Mesh(new THREE.CylinderGeometry(.046,.04,.8,20),pants);m.position.y=-.4;add(m,g);blob(.05,dark,0,-.81,.035,.85,.5,1.5,g);return g;});
+  // slim tailored torso: a lathed profile, chest wider than the waist, flattened front to back
+  const torsoG=new THREE.LatheGeometry([[0,.82],[.11,.83],[.122,.9],[.112,1.05],[.135,1.25],[.132,1.36],[.105,1.41],[.03,1.43],[0,1.43]].map(([r,y])=>new THREE.Vector2(r,y)),40);
+  const torso=add(new THREE.Mesh(torsoG,blazer),stand);torso.scale.z=.56;
+  // flat extruded pieces: the shirt V, pointed collar tips and peaked lapels
+  const flat=(pts,m,z,depth=.006)=>{const g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([x,y])=>new THREE.Vector2(x,y))),{depth,bevelEnabled:true,bevelThickness:.002,bevelSize:.002,bevelSegments:2});const o=new THREE.Mesh(g,m);o.position.z=z;return add(o,stand);};
+  const shirtM=mat(0xf6f3ee,{roughness:.5,side:THREE.DoubleSide}), lapelM=mat(0xbfa98a,{roughness:.8,side:THREE.DoubleSide});
+  flat([[-.045,1.41],[.045,1.41],[0,1.03]],shirtM,.07,.004);
+  [-1,1].forEach(k=>{
+    flat([[.04,1.41],[0,1.02],[.022,1.02],[.085,1.22],[.1,1.3],[.074,1.29],[.082,1.36],[.068,1.42]].map(([x,y])=>[k*x,y]),lapelM,.074);
+    flat([[k*.01,1.43],[k*.045,1.425],[k*.017,1.36]],shirtM,.072,.005);
+    blob(.05,blazer,k*.13,1.35,0,1.1,.7,1,stand);
+  });
+  blob(.008,mat(0xb39a74,{metalness:.5,roughness:.4}),.03,1.0,.07,1,1,.4,stand);
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.03,.034,.09,20),skin);neck.position.y=1.45;add(neck,stand);
+  portrait(stand,0,1.58,.01);
+  const lArm=new THREE.Group(); lArm.position.set(.165,1.36,0); stand.add(lArm);
+  const la=add(new THREE.Mesh(new THREE.CylinderGeometry(.045,.04,.56,20),blazer),lArm); la.position.y=-.27;
+  const lc=add(new THREE.Mesh(new THREE.CylinderGeometry(.042,.042,.03,20),white),lArm); lc.position.y=-.56;
+  blob(.036,skin,0,-.62,0,.55,1.45,1.0,lArm); blob(.012,skin,0,-.6,.03,1,1.4,1,lArm);
+  const standingWatch=timepiece(lArm);standingWatch.position.set(0,-.52,.032);standingWatch.rotation.x=Math.PI/2;
   const arm2=new THREE.Group(); scene.add(arm2);
-  const sleeve2=add(new THREE.Mesh(limbGeo(.048),shirt),arm2), fore2=add(new THREE.Mesh(limbGeo(.044),skin),arm2);
-  const hand2=add(new THREE.Mesh(new THREE.SphereGeometry(.045,20,14),skin)); hand2.scale.set(1,.8,1.25);
-  arm2.visible=hand2.visible=false;
+  const sleeve2=add(new THREE.Mesh(limbGeo(.045),blazer),arm2), fore2=add(new THREE.Mesh(limbGeo(.04),blazer),arm2);
+  const cuff2=cuffMesh(); arm2.add(cuff2); const elbow2=elbowMesh(); arm2.add(elbow2);
+  const hand2=handMesh(); arm2.visible=hand2.visible=false;
 
   // ---- IKEA remote on the wall
   const BTN=V(-1.08,.8,-1.985);
@@ -190,7 +312,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   const ripples=[0,1].map(()=>{const r=new THREE.Mesh(new THREE.RingGeometry(.06,.075,40),new THREE.MeshBasicMaterial({color:0x9fd8ff,transparent:true,opacity:0,depthWrite:false}));r.position.set(BTN.x,BTN.y,BTN.z+.03);scene.add(r);return r;});
 
   // ---- desk, Mac mini + eMeet, Pi underneath
-  const deskM=mat(0x7d5f45,{roughness:.7});
+  const deskM=mat(0x8b725a,{roughness:.7});
   box(1.5,.04,.65,deskM,.15,.74,1.45);
   [[-.55,1.18],[.85,1.18],[-.55,1.72],[.85,1.72]].forEach(([x,z])=>box(.04,.72,.04,deskM,x,.36,z));
   const MAC=V(.12,.8,1.38);
@@ -208,7 +330,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   // ---- her phone, in Singapore
   const PHONE=V(1.05,1.72,-.55);
   const phone=new THREE.Group(); phone.position.copy(PHONE); phone.rotation.y=-.5; scene.add(phone);
-  phone.add(new THREE.Mesh(new THREE.BoxGeometry(.085,.17,.012),mat(0x1d1d20,{roughness:.4})));
+  phone.add(new THREE.Mesh(rounded(.085,.17,.012),mat(0x1d1d20,{roughness:.4})));
   const pScrM=new THREE.MeshBasicMaterial({color:0x26303a}); const pScr=new THREE.Mesh(new THREE.PlaneGeometry(.074,.155),pScrM); pScr.position.z=.0065; phone.add(pScr);
   const phoneGlow=glow('255,177,92',.6,PHONE);
 
@@ -223,7 +345,6 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   }
 
   // ---- signal paths
-  const WRIST=V(-.5,1.0,-1.36);
   const curve=pts=>new THREE.CatmullRomCurve3(pts.map(p=>V(...p)),false,'catmullrom',.4);
   const paths={
     A:curve([[BTN.x,BTN.y,BTN.z+.03],[-1.35,.65,-1.4],[-1.3,.3,-.2],[-1,.12,.9],[PI.x,.07,PI.z]]),
@@ -257,18 +378,21 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   S.devAt=V(0,0,0); S.sfxAt=V(0,0,0);
   const tmp=new THREE.Vector3();
   function placeHud(w,h){
+    const ck=$('clock'), ckB=ck.classList.contains('show')?ck.offsetTop+ck.offsetHeight+8:0, ckL=ck.offsetLeft-8;
     for(const id in anchors){
       const el=$(id); tmp.copy(anchors[id]()).project(camera);
       if(tmp.z>1||Math.abs(tmp.x)>1.15||Math.abs(tmp.y)>1.15){el.setAttribute('data-off','');continue;}
       el.removeAttribute('data-off');
-      el.style.transform=`translate(${(tmp.x+1)/2*w}px,${(1-tmp.y)/2*h}px) translate(-50%,-100%)`;
+      // keep labels and bubbles fully inside the stage
+      const hw=el.offsetWidth/2+8, x=Math.min(w-hw,Math.max(hw,(tmp.x+1)/2*w)), y=Math.min(h-8,Math.max(el.offsetHeight+(x+hw>ckL?Math.max(8,ckB):8),(1-tmp.y)/2*h));
+      el.style.transform=`translate(${x}px,${y}px) translate(-50%,-100%)`;
     }
   }
 
   // ---- camera
   const shots={
     wide:{p:V(1.05,2.05,3.75),t:V(-.2,.6,.05)},
-    bed:{p:V(.35,1.55,.35),t:V(-.75,.72,-1.55)},
+    bed:{p:V(.3,1.95,.05),t:V(-.55,.8,-1.5)},
     shelf:{p:V(.25,1.6,.6),t:V(-1.25,.85,-1.45)},
     walk:{p:V(2.0,1.9,2.4),t:V(.3,.7,.2)},
     desk:{p:V(1.35,1.95,3.0),t:V(.1,1.0,1.0)},
@@ -288,7 +412,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     if(which==='pi'){piLedM.color.set(on?0x9fd8ff:0x223322);piGlow.material.opacity=on?.9:0;$('L-pi').classList.toggle('on',on);}
     if(which==='mac'){ringM.color.set(on?0x9fd8ff:0x3a4650);macGlow.material.opacity=on?.8:0;$('L-mac').classList.toggle('on',on);}
     if(which==='phone'){pScrM.color.set(on?0xffb15c:0x26303a);phoneGlow.material.opacity=on?.9:0;$('L-phone').classList.toggle('on',on);S.ringing=on;}
-    if(which==='watch'){watchScrM.color.set(on?0x9fd8ff:0x1a2026);}
+    if(which==='watch'){watchScrM.color.set(on?0x9fd8ff:0x1a2026);watchGlow.material.opacity=on?.9:0;}
   }
   function echoState(s){echoRingM.color.set(s==='listen'?0x3aa0ff:s==='no'?0xff4a3a:0x22272c);echoGlow.material.opacity=s==='off'?0:.8;echoGlow.material.color.set(s==='no'?0xff6a5a:0xffffff);}
   function travel(k,ms,fast){
@@ -304,7 +428,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 
   function resetScene(){
     tweens=[]; pulse.visible=false;
-    S.boom=0; bits.forEach(m=>m.visible=false); flash.material.opacity=0; skin.color.set(0xc58b64); stand.scale.setScalar(1); stand.rotation.z=0;
+    S.boom=0; bits.forEach(m=>m.visible=false); flash.material.opacity=0; skin.color.copy(skinBase); stand.scale.setScalar(1); stand.rotation.z=0;
     Object.keys(wires).forEach(k=>setWire(k,0));
     ['btn','pi','mac','phone','watch'].forEach(n=>setOn(n,false));
     echoState('off'); S.speaking=false; S.press=0; S.ripple=-1; S.walk=0;
@@ -325,7 +449,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   }
   async function pressEmeet(ok,fast){
     arm2.visible=hand2.visible=true;
-    const sh=stand.localToWorld(V(-.23,1.36,0));
+    const sh=stand.localToWorld(V(-.165,1.36,0));
     S.standTip=sh.clone().add(V(0,-.6,.05));
     await lerpTo(S.standTip,V(MAC.x,.86,MAC.z),700,fast); if(!ok())return;
     ringM.color.set(0x9fd8ff); macGlow.material.opacity=.8;
@@ -351,7 +475,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
       bubble('B-me',''); bubble('B-sfx','');
       bubble('B-dev','"OK, calling Manager."',V(MAC.x,1.2,MAC.z),'fail'); setOn('mac',true); S.speaking=true; await wait(1400,f); if(!ok())return;
       bubble('B-me','"BOSS?!"','','fail');
-      const base=new THREE.Color(0xc58b64), angry=new THREE.Color(0xe0402e);
+      const base=skinBase, angry=new THREE.Color(0xe0402e).convertSRGBToLinear();
       await anim(1100,x=>{skin.color.copy(base).lerp(angry,x);stand.scale.setScalar(1+.14*x);stand.rotation.z=Math.sin(x*60)*.05*x;},f); if(!ok())return;
       const c=stand.localToWorld(V(0,1.2,0));
       stand.visible=false; arm2.visible=hand2.visible=false; S.standing=false; bubble('B-me','');
@@ -427,7 +551,7 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     dir.subVectors(to,from); const len=Math.max(.05,dir.length());
     group.position.copy(from); group.lookAt(to);
     sl.scale.set(1,1,len*.45); fo.position.z=len*.45; fo.scale.set(.9,.9,len*.55);
-    hd.position.copy(to); hd.quaternion.copy(group.quaternion);
+    hd.position.copy(to); hd.quaternion.copy(group.quaternion); group.children[2].position.z=len-.05; group.children[3].position.z=len*.45;
   }
   const tipNow=new THREE.Vector3();
   function frame(now){
@@ -437,13 +561,12 @@ nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
     rocker.position.z=BTN.z+.016-.006*S.press;
     arm.position.copy(shoulder); arm.lookAt(tipNow); dir.subVectors(tipNow,shoulder); const len=dir.length();
     sleeve.scale.set(1,1,len*.45); fore.position.z=len*.45; fore.scale.set(.9,.9,len*.55);
-    hand.position.copy(tipNow); hand.quaternion.copy(arm.quaternion);
-    watch.visible=S.watch; if(S.watch){watch.position.lerpVectors(shoulder,tipNow,.86); watch.quaternion.copy(arm.quaternion); watch.rotateX(-Math.PI/2); watch.translateY(.04);}
+    hand.position.copy(tipNow); hand.quaternion.copy(arm.quaternion); cuff.position.z=len-.05; elbow.position.z=len*.45;
     // standing body
     if(S.standing){
       const sw=Math.sin(now/140)*.45*(S.walk>0&&S.walk<1?1:0);
       legs[0].rotation.x=sw; legs[1].rotation.x=-sw; lArm.rotation.x=-sw*.6;
-      if(arm2.visible&&S.standTip) limb(arm2,sleeve2,fore2,hand2,stand.localToWorld(V(-.23,1.36,0)),S.standTip);
+      if(arm2.visible&&S.standTip) limb(arm2,sleeve2,fore2,hand2,stand.localToWorld(V(-.165,1.36,0)),S.standTip);
     }
     // explosion
     if(S.boom){const t=(now-S.boom)/1000;

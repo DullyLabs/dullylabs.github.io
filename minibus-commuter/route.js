@@ -32,14 +32,15 @@ const bus = document.querySelector('.route-bus');
 const ferry = document.querySelector('.star-ferry');
 const locationLabel = document.querySelector('#route-location');
 const speech = document.querySelector('.bus-speech');
-const wanChaiIndex = stops.findIndex(stop => stop.id === 'wan-chai');
+const wanChaiIndex = stops.findIndex(stop => stop.dataset.id === 'wan-chai');
 const farParallax = .12;
 const doorButton = document.querySelector('.door-toggle');
 const layers = places.map(stop => [stop.querySelector('.far'), stop.querySelector('.mid')]);
 
+const touchScreen = matchMedia('(pointer: coarse)');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let reducedMotion = motionPreference.matches;
-const initialStop = places.findIndex(stop => `#${stop.id}` === location.hash);
+const initialStop = places.findIndex(stop => `#${stop.dataset.id}` === location.hash);
 let stopWidth = 0, scale = 1, scrollPerStop = 0, current = -1, lastX = 0, idleTimer, glide;
 let journeyReady = false, previousPosition = null, calloutArmed = false, speechTimer, provisional = true;
 let ferryExitPosition = wanChaiIndex, ferryTravel = 0;
@@ -60,11 +61,14 @@ document.querySelectorAll('[data-stop]').forEach(link => link.addEventListener('
 function layout() {
   if (!viewport.clientWidth) return; // hidden or unrendered; resize will call again
   const position = scrollPerStop ? scrollY / scrollPerStop : Math.max(initialStop, 0);
+  viewport.style.height = '';
   stopWidth = viewport.clientWidth;
   // Give narrow screens more scroll per stop so a single flick doesn't skip districts.
   scrollPerStop = Math.max(stopWidth, viewport.clientHeight * .9);
-  // Safari can lay out while the panel lags the window, or the window is still empty or toolbar-less.
-  provisional = !(Math.abs(viewport.clientHeight - innerHeight) <= 2 && innerHeight > 0 && innerHeight < screen.height);
+  // A panel taller than the window is a stale box from Safari's launch or restore.
+  provisional = innerHeight > 0 && viewport.clientHeight > innerHeight + 2;
+  // Pin a settled panel on touch screens so toolbar show/hide doesn't resize the scene.
+  if (touchScreen.matches && !provisional) viewport.style.height = `${viewport.clientHeight}px`;
   track.style.setProperty('--stop', `${stopWidth}px`);
   const svg = stops[0].querySelector('.landmarks');
   scale = Math.min(svg.clientWidth / 1000, svg.clientHeight / 300);
@@ -134,14 +138,12 @@ function render() {
   places.forEach((place, i) => place.classList.toggle('active', i === index));
   stops.forEach((stop, i) => { stop.inert = i !== index; });
   bus.classList.toggle('off-duty', index === last);
-  history.replaceState(null, '', `#${places[index].id}`);
+  history.replaceState(null, '', `#${places[index].dataset.id}`);
 }
 addEventListener('scroll', render, {passive: true});
 // Watch the panel itself: on launch or restore, iOS Safari can hand layout a stale box (386x2741 on
-// a 402x714 screen) or an empty or toolbar-less window (402x874) that settles without a window
-// resize, even mid-drag, so re-lay out on any mismatch until a layout lands on a settled size.
-// After that, ignore height-only changes within 1.5x so toolbar show/hide doesn't re-layout and
-// jump the scroll position; just keep the scroll length matched so the depot is still reachable.
+// a 402x714 screen) that settles without a window resize, so re-lay out until it fits the window.
+// After that, ignore height-only changes within 1.5x; just keep the scroll length matched.
 new ResizeObserver(() => {
   const fit = Math.max(viewport.clientWidth, viewport.clientHeight * .9);
   if (viewport.clientWidth !== stopWidth || Math.max(fit, scrollPerStop) > (provisional ? 1 : 1.5) * Math.min(fit, scrollPerStop)) layout();
@@ -155,16 +157,14 @@ addEventListener('keydown', event => {
   }
 });
 layout();
-// Native fragment scrolling runs after deferred scripts and targets the panel's
-// vertical position, which is shared by every stop. Restore our mapped position.
+// Stops carry data-id, not id, so the hash never triggers a native fragment jump.
 addEventListener('load', () => requestAnimationFrame(() => {
-  if (initialStop >= 0) scrollTo({top: initialStop * scrollPerStop, behavior: 'instant'});
   render();
   calloutArmed = previousPosition <= wanChaiIndex + .01;
   journeyReady = true;
 }), {once: true});
 addEventListener('hashchange', () => {
-  const target = places.findIndex(stop => `#${stop.id}` === location.hash);
+  const target = places.findIndex(stop => `#${stop.dataset.id}` === location.hash);
   if (target >= 0) driveTo(target);
 });
 // Tabbing into the depot's links drives the bus there so focus is always on screen.
