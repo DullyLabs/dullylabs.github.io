@@ -245,12 +245,17 @@ footer{padding:0 clamp(14px,3.5vw,36px) 64px;text-align:center;color:var(--sub);
 footer .fl{display:flex;gap:20px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
 footer a:hover{color:var(--ink)}
 footer small{display:block;margin-top:10px;opacity:.75;font-size:13px}
+footer .about{max-width:46ch;margin:0 auto 22px}
+.end .big a,footer .about a{text-decoration:underline;text-underline-offset:3px}
+footer .more{row-gap:8px}
+footer .more span{flex-basis:100%;opacity:.75;font-size:13px}
 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PluckIt","url":"https://dullylabs.com/pluckit/","operatingSystem":"macOS 15 or later","applicationCategory":"UtilitiesApplication","downloadUrl":"https://github.com/dulangaj/PluckIt","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -394,14 +399,16 @@ footer small{display:block;margin-top:10px;opacity:.75;font-size:13px}
   <div class="in rv">
     <img src="/pluckit/assets/app-icon.png" alt="" />
     <h2>Stop retyping<br />what's already <span class="gt">written.</span></h2>
-    <p class="big" style="margin-inline:auto">A small Mac app that does one thing. Clone it, build it, keep it.</p>
+    <p class="big" style="margin-inline:auto">A small Mac app that does one thing. <a href="https://github.com/dulangaj/PluckIt">Clone it</a>, build it, keep it.</p>
     <div class="acts" style="justify-content:center;margin-top:32px"><a class="btn" href="#build">Build it yourself →</a></div>
   </div>
 </section>
 </main>
 
 <footer>
+  <p class="about">PluckIt is a Mac app that pulls text out of screenshots and photos, without anything leaving your Mac. <a href="https://github.com/dulangaj/PluckIt">Source on GitHub</a></p>
   <div class="fl"><a href="/">Dully Labs</a><a href="https://dulangaj.com">Developer</a></div>
+  <div class="fl more"><span>More from Dully Labs</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/weeklypulse/">Weekly Pulse</a><a href="/neverpressstart/">Never Press Start</a><a href="/notes/">Notes</a></div>
   Made by Dulanga Jayawardena in Hong Kong.
   <small>© <span data-year></span> Dulanga Jayawardena</small>
 </footer>

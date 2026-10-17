@@ -5,8 +5,9 @@
 <link rel="canonical" href="https://dullylabs.com/weeklypulse/" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#F3EFE7" />
+<meta name="apple-itunes-app" content="app-id=6761065411" />
 <title>Weekly Pulse · Private check-in</title>
-<meta name="description" content="Rate four parts of your life each week and spot what's slipping. Private, on your device." />
+<meta name="description" content="Rate work, play, love and health from 1 to 10 each week, spot what's slipping and read why it moved. Free on iPhone and iPad, with no account or ads." />
 <!-- Unfurl card.
 
      The image URLs are absolute while the rest of this file is root-relative,
@@ -36,7 +37,7 @@
 <meta property="og:url" content="https://dullylabs.com/weeklypulse/" />
 <meta property="og:site_name" content="Dully Labs" />
 <meta property="og:title" content="Weekly Pulse | A private weekly check-in" />
-<meta property="og:description" content="Rate four parts of your life each week and spot what's slipping. Private, on your device." />
+<meta property="og:description" content="Rate work, play, love and health from 1 to 10 each week, spot what's slipping and read why it moved. Free on iPhone and iPad, with no account or ads." />
 <meta property="og:image" content="https://dullylabs.com/weeklypulse/assets/og.png?v=4" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
@@ -44,7 +45,7 @@
 <meta property="og:image:alt" content="&quot;Track Your Pulse.&quot; in large black type on a cream background, the full stop drawn as an orange dot, with the Weekly Pulse name above." />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Weekly Pulse | A private weekly check-in" />
-<meta name="twitter:description" content="Rate four parts of your life each week and spot what's slipping. Private, on your device." />
+<meta name="twitter:description" content="Rate work, play, love and health from 1 to 10 each week, spot what's slipping and read why it moved. Free on iPhone and iPad, with no account or ads." />
 <meta name="twitter:image" content="https://dullylabs.com/weeklypulse/assets/og.png?v=4" />
 <meta name="twitter:image:alt" content="&quot;Track Your Pulse.&quot; in large black type on a cream background, the full stop drawn as an orange dot, with the Weekly Pulse name above." />
 <link rel="icon" href="/weeklypulse/assets/app-icon.png" />
@@ -119,7 +120,11 @@ footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max
 footer .note{font-size:13px;opacity:.72;text-align:center} /* 6:1+ in both themes */
 footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;width:min(560px,100%);padding-top:20px;border-top:1px solid color-mix(in srgb,currentColor 20%,transparent)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+footer .note{max-width:560px}
+footer .more{border:0;padding:0;font-size:13px}
+footer .more span{flex-basis:100%;text-align:center;opacity:.72}
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"MobileApplication","name":"Weekly Pulse","url":"https://dullylabs.com/weeklypulse/","operatingSystem":"iOS 27.0 or later","applicationCategory":"HealthApplication","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"installUrl":"https://apps.apple.com/app/id6761065411","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
 </head>
 <body>
 <div class="bar"></div><div class="bar"></div><!-- edge strips: iOS Safari tints its bars from fixed elements at the edges -->
@@ -153,7 +158,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;w
     <div id="dot"></div>
   </div>
 </main>
-<footer><p class="note">Not a medical app. Export anytime.</p><div class="links"><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div></footer>
+<footer><p class="note">Weekly Pulse is a free iPhone and iPad app for rating four parts of your life each week and spotting what's slipping. Not a medical app. Export anytime.</p><div class="links"><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div><div class="links more"><span>More from Dully Labs</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/pluckit/">PluckIt</a><a href="/neverpressstart/">Never Press Start</a><a href="/notes/">Notes</a></div></footer>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});

@@ -275,3 +275,5 @@
 [data-theme=dark] .lang-toggle{box-shadow:inset 0 -3px 0 #8a0d22,0 0 14px #ff3b5a66}
 /* Chinese labels sit centred in their English-sized box (see lang.js). */
 [data-fit]{justify-content:center;align-items:center;text-align:center;white-space:nowrap}.skip[data-fit],[data-stop][data-fit]{display:inline-flex}
+.more-apps{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11px;letter-spacing:1px}
+.more-apps>a:not(.download){font-size:inherit;max-width:none;padding-bottom:2px}
