@@ -113,7 +113,7 @@ input[type=range]::-moz-range-thumb{width:1em;height:1em;border:0;border-radius:
 #card p{font-size:max(18px,2.2*var(--u))}
 #card .dl{background:var(--hot);color:#111;text-decoration:none;font-weight:800;font-size:max(16px,1.1*var(--u));padding:.875em 1.5em;border-radius:99px}
 .screens{display:flex;gap:12px}
-.screens img{height:min(var(--sh,42vh),calc((100vw - 56px)/3/.46));border-radius:14px}
+.screens img{width:auto;height:min(var(--sh,42vh),calc((100vw - 56px)/3/.46));border-radius:14px}
 footer{background:var(--inv);color:var(--base);padding:32px 16px calc(32px + max(env(safe-area-inset-bottom),40px));display:flex;flex-direction:column;align-items:center;gap:20px;font-size:14px}
 footer .note{font-size:13px;opacity:.72;text-align:center} /* 6:1+ in both themes */
 footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;width:min(560px,100%);padding-top:20px;border-top:1px solid color-mix(in srgb,currentColor 20%,transparent)}
@@ -147,7 +147,7 @@ footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;w
       <h2><span class="split">Weekly Pulse</span><span id="period" style="display:inline-block;width:.2em"></span></h2>
       <p class="split">Four scores. Twenty seconds.</p>
       <a class="dl" href="https://apps.apple.com/app/id6761065411">Download on the App Store</a>
-      <div class="screens"><img src="/weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen"><img src="/weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen"><img src="/weeklypulse/assets/screens/trends.png" alt="Weekly Pulse trends screen"></div>
+      <div class="screens"><picture><source srcset="/weeklypulse/assets/screens/check-in.webp" type="image/webp"><img src="/weeklypulse/assets/screens/check-in.png" alt="Weekly Pulse check-in screen" width="800" height="1738"></picture><picture><source srcset="/weeklypulse/assets/screens/diary.webp" type="image/webp"><img src="/weeklypulse/assets/screens/diary.png" alt="Weekly Pulse diary screen" width="800" height="1738"></picture><picture><source srcset="/weeklypulse/assets/screens/trends.webp" type="image/webp"><img src="/weeklypulse/assets/screens/trends.png" alt="Weekly Pulse trends screen" width="800" height="1738"></picture></div>
     </section>
     <div id="dot"></div>
   </div>
