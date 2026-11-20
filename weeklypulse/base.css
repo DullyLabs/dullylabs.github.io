@@ -26,7 +26,7 @@ img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 
-h1, h2, h3, .fr {
+h1, h2, h3 {
   font-family: Fredoka, Nunito, sans-serif;
   font-weight: 600;
   letter-spacing: -.02em;
@@ -111,62 +111,12 @@ nav.top .r a:hover { transform: rotate(-2.5deg) scale(1.06); }
 }
 .pop:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--shadow); }
 .pop:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
-.ghost { background: var(--card); color: var(--ink); }
 
 /* The solid .pop is the one element on the page filled with --ink, so it's the
    one that needs the split slab (see --shadow-ink). Re-pointing the token
    rather than the box-shadow means hover and active, which grow the same slab
-   to 7px and shrink it to 1px, follow without being restated. .ghost is
-   excluded because it's --card and the ordinary slab reads against it. */
-.pop:not(.ghost) { --shadow: var(--shadow-ink); }
-
-/* The App Store link: the same slab as .pop, filled with --sun so the one
-   control that leaves the site carries the accent rather than the ink. */
-.get {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 11px 20px;
-  background: var(--sun);
-  color: var(--on-accent);
-  border: var(--bw-s) solid var(--edge);
-  border-radius: var(--r-sm);
-  font-family: Fredoka, Nunito, sans-serif;
-  font-size: 15px;
-  box-shadow: 4px 4px 0 var(--shadow);
-  transition: .3s var(--sp);
-  cursor: pointer;
-}
-@keyframes blip { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .3; transform: scale(.68); } }
-
-/* In the bar it drops to nav scale but keeps the slab press instead of the
-   rotate-and-scale the sibling links take, because it reads as a button. The
-   press has to be restated at nav specificity to beat `nav.top .r a:hover`,
-   and the last rule re-shows it on phones, where the nav links are dropped
-   but a link to the App Store is the whole point of the page. */
-nav.top .r a.get { padding: 9px 15px; font-size: 14px; border-radius: var(--r-sm); box-shadow: 3px 3px 0 var(--shadow); }
-.get:hover, nav.top .r a.get:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--shadow); }
-.get:active, nav.top .r a.get:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--shadow); }
-@media (max-width: 760px) { nav.top .r a.get { display: inline-flex; } }
-
-/* Availability as a quiet label rather than a control, for the places where
-   the status sits next to a real call to action and must not compete with it. */
-.status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: var(--sub);
-}
-.status .dot {
-  width: 8px;
-  height: 8px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--flame);
-  animation: blip 1.8s ease-in-out infinite;
-}
+   to 7px and shrink it to 1px, follow without being restated. */
+.pop { --shadow: var(--shadow-ink); }
 
 /* ── theme toggle ── */
 .theme-toggle {
