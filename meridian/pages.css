@@ -1,0 +1,46 @@
+/* Meridian privacy and support pages: the app's paper, ink and signal red, set in Swiss caps. */
+:root{color-scheme:light;--bg:#f2efe8;--ink:#141412;--muted:#55534d;--rule:color-mix(in srgb,var(--ink) 15%,transparent);--signal:#b8321c;--focus:#2f5d8a}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#141412;--ink:#f2efe8;--muted:#aaa69c;--signal:#ff7a5c;--focus:#9cc3ea}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){color-scheme:dark;--bg:#141412;--ink:#f2efe8;--muted:#aaa69c;--signal:#ff7a5c;--focus:#9cc3ea}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 system-ui,-apple-system,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.skip-link{position:absolute;left:-9999px;top:0;padding:12px 20px;background:var(--ink);color:var(--bg);font-weight:700}
+.skip-link:focus{left:0}
+.caps{font-weight:600;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+
+nav.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(16px,3vw,32px);border-bottom:1px solid var(--rule)}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none}
+.mark img{width:32px;height:32px;border-radius:8px}
+nav.top .r{display:flex;align-items:center;gap:8px}
+nav.top .r a,.theme-toggle{min-height:44px;display:flex;align-items:center;padding:0 12px;border:1px solid var(--rule);background:none;color:inherit;text-decoration:none}
+nav.top .r a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+.theme-toggle{width:44px;padding:0;justify-content:center;cursor:pointer}
+.theme-toggle svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round}
+.theme-toggle .sun,:root[data-theme="dark"] .theme-toggle .moon{display:none}
+:root[data-theme="dark"] .theme-toggle .sun{display:block}
+
+main{max-width:760px;margin:0 auto;padding:clamp(40px,7vw,80px) clamp(16px,3vw,32px) clamp(56px,8vw,96px)}
+.eyebrow{margin:0 0 16px;color:var(--signal)}
+h1{margin:0;font-size:clamp(40px,7vw,72px);line-height:1;font-weight:800;font-stretch:condensed;letter-spacing:-.02em}
+.lead{margin:20px 0 0;max-width:52ch;font-size:clamp(18px,2vw,20px);color:var(--muted)}
+.updated{margin:16px 0 0;color:var(--muted)}
+.head{padding-bottom:clamp(32px,5vw,48px)}
+.cta{display:inline-flex;align-items:center;min-height:44px;margin-top:28px;padding:0 20px;background:var(--ink);color:var(--bg);text-decoration:none}
+h2{margin:0 0 8px;font-size:20px;line-height:1.25}
+section{padding:22px 0;border-top:1px solid var(--rule)}
+section p{margin:0;max-width:65ch}
+details{border-top:1px solid var(--rule)}
+details:last-child{border-bottom:1px solid var(--rule)}
+summary{min-height:56px;display:flex;align-items:center;font-weight:700;font-size:18px;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"+";width:28px;flex-shrink:0;color:var(--signal)}
+details[open] summary:before{content:"–"}
+details p{margin:0 0 18px 28px;max-width:62ch}
+
+footer{border-top:1px solid var(--rule);color:var(--muted);padding:28px clamp(16px,3vw,32px);text-align:center}
+footer .fl{display:flex;flex-wrap:wrap;justify-content:center;gap:0 20px}
+footer .fl a{min-height:44px;display:inline-flex;align-items:center}
+footer small{display:block;margin-top:8px;letter-spacing:.06em}
+[hidden]{display:none!important}
