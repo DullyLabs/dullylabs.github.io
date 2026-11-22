@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><link rel="canonical" href="https://dullylabs.com/meridian/" /><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f2efe8">
+<title>Meridian · World clock for iPhone and iPad</title>
+<meta name="description" content="Meridian is a world clock for iPhone and iPad. Each city gets its own band, light by day and dark by night, and a slider shows everyone's time up to 12 hours ahead or back.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://dullylabs.com/meridian/"><meta property="og:site_name" content="Dully Labs"><meta property="og:title" content="Meridian · World clock for iPhone and iPad"><meta property="og:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta property="og:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="1024"><meta property="og:image:alt" content="The Meridian app icon."><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Meridian · World clock for iPhone and iPad"><meta name="twitter:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta name="twitter:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta name="twitter:image:alt" content="The Meridian app icon.">
+<link rel="icon" href="/meridian/assets/app-icon.png"><link rel="apple-touch-icon" href="/meridian/assets/app-icon.png">
+<script src="/assets/theme.js"></script>
+<link rel="stylesheet" href="style.css"><script type="module" src="script.js"></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meridian","url":"https://dullylabs.com/meridian/","operatingSystem":"iOS, iPadOS","applicationCategory":"UtilitiesApplication","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
+</head>
+<body>
+<a class="skip-link" href="#shift">Skip to time control</a>
+<header class="masthead"><a class="brand caps" href="/meridian/"><img src="/meridian/assets/app-icon.png" alt="" width="32" height="32"> Meridian</a><div class="masthead-right"><button class="theme-toggle" type="button" aria-label="Use dark appearance" hidden>◐</button></div></header>
+<main>
+<section class="hero" aria-labelledby="title">
+<div class="edition caps"><span>One planet. Terrible availability.</span></div>
+<h1 id="title">It’s always 3am <br><em>somewhere.</em></h1>
+<div class="intro"><p>Spin the Earth.<br>See who you’re about to wake.</p></div>
+<div class="mission" id="clock">
+<div class="planet-panel">
+<div class="instrument caps"><span>Planetary meeting scheduler</span><span id="mode">● Live</span></div>
+<div class="universe" id="universe"><canvas id="planet" width="800" height="800" aria-hidden="true"></canvas><span class="sun-label caps" aria-hidden="true">The sun<br>declined<br>your invite</span><span class="night-label caps" aria-hidden="true">Do not<br>disturb</span><div class="drag-note" aria-hidden="true">↔ Grab Earth.</div></div>
+<div class="controls"><div class="control-top"><label for="shift">Rotate responsibly.</label><output id="shift-label" for="shift" aria-live="off">Now</output></div><input type="range" id="shift" min="-720" max="720" step="15" value="0" aria-label="Shift every city’s time"><p class="you caps" id="you"></p><div class="control-bottom"><span>−12 hours</span><button type="button" id="now">Back to now</button><span>+12 hours</span></div></div>
+</div>
+<div class="dispatch"><div class="instrument caps"><span>Reports from the ground</span></div><ol id="bands"></ol><div class="verdict"><span class="caps">Meeting damage report</span><h2 id="report"></h2><p id="damage"></p></div></div>
+</div>
+<div class="news"><span class="caps">Breaking /</span><p id="headline">It is already tomorrow somewhere.</p></div>
+</section>
+<section class="product" aria-labelledby="product-title"><div class="product-copy"><h2 id="product-title">Keep your friends.<br>Know their hours.</h2><p>A world clock for iPhone and iPad, with Home and Lock&nbsp;Screen widgets.</p><p class="product-joke">“Are you up?” is not a time zone converter.</p><p><span class="cta caps">Coming soon to the App Store</span></p><p class="caps facts"><span>No account</span> · <span>No ads</span> · <span>No data collected</span></p></div><figure><img src="/meridian/assets/screens/hours-widget.webp" width="964" height="1346" loading="lazy" alt="Meridian's Hours widget shows London, New York, Tokyo and Sydney, with the hour everyone is awake highlighted in red."><figcaption>Finds when everyone’s awake.<br>Willing is a separate problem.</figcaption></figure></section>
+</main>
+<footer><span class="links"><a href="/">Dully Labs</a><a href="/meridian/privacy/">Privacy</a><a href="/meridian/support/">Support</a><a href="https://dulangaj.com">Developer</a></span><span class="links more"><span>More from Dully Labs:</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/neverpressstart/">Never Press Start</a><a href="/weeklypulse/">Weekly Pulse</a><a href="/pluckit/">PluckIt</a><a href="/notes/">Notes</a></span><span class="credit"><span>©︎ <span data-year></span> Dulanga Jayawardena</span><span>It’s already tomorrow somewhere.</span></span></footer>
+<noscript><p class="no-script">Enable JavaScript to spin the planet and see live city times.</p></noscript>
+</body></html>
