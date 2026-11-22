@@ -3,6 +3,30 @@
 // 24 `jokes` (one per local hour, 0-23) and an `asleep` headline. Pins only need name, code, lat and lon.
 export const CITIES = [
   {
+    name: 'Sydney', code: 'SYD', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, band: true, sleep: [23, 5],
+    asleep: 'Sydney is asleep. Knocked off early again.',
+    jokes: [
+      'Kebab on Oxford Street. Earned it.', 'Remembering when 1:30 meant locked out.', 'Uber surge pricing. Walking it is.', 'Taxi rank queue. Character building.',
+      'Bin chicken eating your leftover kebab.', 'Bondi to Bronte before the boss.', 'Ocean swim done. Smug all day.', 'Flat white, judged harshly. It’s fine.',
+      'Ferry to work. Unreasonably beautiful.', 'Stand-up meeting. Everyone says “no worries.”', 'Smashed avo. Still renting.', 'Morning tea. It’s a whole thing.',
+      'Lunch in the sun. Sunscreen first.', 'Checking the surf report. Then emails.', 'Planning when to knock off.', 'Friday arvo drinks started. It’s Tuesday.',
+      'Knocked off. Not explaining why.', 'Schooners at the pub, sun still up.', 'Rooftop bar. Everyone’s a “legend.”', 'Barbie in the park. Snags on.',
+      'Dinner. Everything’s $34 now.', 'Posting the sunset. It set at seven.', 'Rooftop’s closing. Somehow already tired.', 'Asleep early. Swim at five.'
+    ]
+  },
+  {
+    name: 'Hong Kong', code: 'HKG', zone: 'Asia/Hong_Kong', lat: 22.3, lon: 114.2, band: true, sleep: [1, 6],
+    asleep: 'Hong Kong is asleep. First time since 2015.',
+    jokes: [
+      'Last red minibus home. Driver testing physics.', 'Taxi refuses: wrong side of the harbour.', 'Lan Kwai Fong, still in your work shirt.', 'Club 7-Eleven. Cheapest bar in LKF.',
+      'Still in LKF. Meeting at nine.', 'Tai chi aunties out-stretching you.', 'Dragon’s Back before work. Already sweating.', 'MTR door chime. You squeeze in anyway.',
+      'Pineapple bun and milk tea, standing.', 'In the office. Not leaving soon.', 'Aircon set to arctic. Cardigan on.', 'Refreshing the Observatory. Please, signal 8.',
+      'Cha chaan teng set lunch. Out in 20.', 'Yum cha with seven strangers.', 'Teapot lid flipped. Refill, please.', 'Third milk tea. Spreadsheets blurring.',
+      'Boss still in. So are you.', 'Officially home time. Hilarious.', 'Ordering dinner to your desk.', 'Contract says 6pm. Cute.',
+      'Office lights on a timer. Waving arms.', 'Still at work. Boss still at work.', 'Finally leaving. Same time tomorrow.', 'Dai pai dong. Beer in a bowl.'
+    ]
+  },
+  {
     name: 'London', code: 'LON', zone: 'Europe/London', lat: 51.5, lon: -0.12, band: true, sleep: [1, 6],
     asleep: 'London is asleep. Somewhere, a kettle is still warm.',
     jokes: [
@@ -24,30 +48,6 @@ export const CITIES = [
       'Sad desk salad. $19, plus tip.', 'Halal cart line wraps the block.', 'Jaywalking with total confidence.', '“Just circling back,” email number four.',
       'Honking at traffic that cannot move.', 'Swiping into the subway, praying.', 'Happy hour: $17 drinks, very happy.', 'Two-hour wait for a table. Worth it.',
       'Dinner reservation booked a month ago.', 'Eating in a closet-sized restaurant.', 'Home to a $4,000 shoebox.', 'Not sleeping. Neither is the city.'
-    ]
-  },
-  {
-    name: 'Hong Kong', code: 'HKG', zone: 'Asia/Hong_Kong', lat: 22.3, lon: 114.2, band: true, sleep: [1, 6],
-    asleep: 'Hong Kong is asleep. First time since 2015.',
-    jokes: [
-      'Last red minibus home. Driver testing physics.', 'Taxi refuses: wrong side of the harbour.', 'Lan Kwai Fong, still in your work shirt.', 'Club 7-Eleven. Cheapest bar in LKF.',
-      'Still in LKF. Meeting at nine.', 'Tai chi aunties out-stretching you.', 'Dragon’s Back before work. Already sweating.', 'MTR door chime. You squeeze in anyway.',
-      'Pineapple bun and milk tea, standing.', 'In the office. Not leaving soon.', 'Aircon set to arctic. Cardigan on.', 'Refreshing the Observatory. Please, signal 8.',
-      'Cha chaan teng set lunch. Out in 20.', 'Yum cha with seven strangers.', 'Teapot lid flipped. Refill, please.', 'Third milk tea. Spreadsheets blurring.',
-      'Boss still in. So are you.', 'Officially home time. Hilarious.', 'Ordering dinner to your desk.', 'Contract says 6pm. Cute.',
-      'Office lights on a timer. Waving arms.', 'Still at work. Boss still at work.', 'Finally leaving. Same time tomorrow.', 'Dai pai dong. Beer in a bowl.'
-    ]
-  },
-  {
-    name: 'Sydney', code: 'SYD', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, band: true, sleep: [23, 5],
-    asleep: 'Sydney is asleep. Knocked off early again.',
-    jokes: [
-      'Kebab on Oxford Street. Earned it.', 'Remembering when 1:30 meant locked out.', 'Uber surge pricing. Walking it is.', 'Taxi rank queue. Character building.',
-      'Bin chicken eating your leftover kebab.', 'Bondi to Bronte before the boss.', 'Ocean swim done. Smug all day.', 'Flat white, judged harshly. It’s fine.',
-      'Ferry to work. Unreasonably beautiful.', 'Stand-up meeting. Everyone says “no worries.”', 'Smashed avo. Still renting.', 'Morning tea. It’s a whole thing.',
-      'Lunch in the sun. Sunscreen first.', 'Checking the surf report. Then emails.', 'Planning when to knock off.', 'Friday arvo drinks started. It’s Tuesday.',
-      'Knocked off. Not explaining why.', 'Schooners at the pub, sun still up.', 'Rooftop bar. Everyone’s a “legend.”', 'Barbie in the park. Snags on.',
-      'Dinner. Everything’s $34 now.', 'Posting the sunset. It set at seven.', 'Rooftop’s closing. Somehow already tired.', 'Asleep early. Swim at five.'
     ]
   },
   { name: 'Colombo', code: 'CMB', lat: 6.9, lon: 79.9 },
