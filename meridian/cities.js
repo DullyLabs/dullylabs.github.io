@@ -60,7 +60,7 @@ export const COPY = {
   allAwake: 'All awake. Nobody volunteered.',
   allAwakeNote: 'Quick, before someone yawns.',
   sorry: name => `Sorry, ${name}.`,
-  asleepNote: names => `${names} ${names.includes(' and ') ? 'are' : 'is'} asleep. Text, don’t call.`,
+  asleepNote: others => others ? `${others} too. Text, don’t call.` : 'Text, don’t call.',
   headline: 'Four time zones. Zero good times.'
 };
 

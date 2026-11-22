@@ -42,12 +42,12 @@ function render() {
     el.classList.toggle('night', t.h < 6 || t.h >= 18);
     el.querySelector('b').textContent = pad(t.h);
     el.querySelector('i').textContent = ':' + pad(t.m);
-    el.querySelector('.date').textContent = dayWord(t.day - you.day);
+    el.querySelector('.date').textContent = t.day === you.day ? '' : dayWord(t.day - you.day);
     el.querySelector('.gossip').textContent = city.jokes[t.h];
   }
   const sleeping = bands.filter(city => asleep(city, city.time.h));
   $('report').textContent = sleeping.length ? COPY.sorry(sleeping[0].name) : COPY.allAwake;
-  $('damage').textContent = sleeping.length ? COPY.asleepNote(new Intl.ListFormat('en').format(sleeping.map(c => c.name))) : COPY.allAwakeNote;
+  $('damage').textContent = sleeping.length ? COPY.asleepNote(new Intl.ListFormat('en').format(sleeping.slice(1).map(c => c.name))) : COPY.allAwakeNote;
   $('headline').textContent = sleeping.length ? sleeping[0].asleep : COPY.headline;
   $('you').textContent = `You, ${HOME_NAME}: ${pad(you.h)}:${pad(you.m)} ${shift ? dayWord(you.day - wall(HOME, new Date()).day) : ''}`.trim();
   $('shift-label').textContent = offsetLabel(shift);

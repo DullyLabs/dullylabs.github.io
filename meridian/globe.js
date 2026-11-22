@@ -1,5 +1,5 @@
 // The spinning Earth: dotted land, an equinox terminator facing a fixed sun on the right, and city pins. A diagram, not an ephemeris.
-const RAD = Math.PI / 180, SIZE = 800, CX = 380, CY = 365, R = 265, SUN_ANGLE = 65;
+const RAD = Math.PI / 180, SIZE = 800, CX = 380, CY = 365, R = 265, SUN_ANGLE = 90;
 
 // Coarse outlines, only used to place the land dots.
 const LANDS = [
@@ -71,6 +71,7 @@ export function drawGlobe(canvas, at, pins, dark) {
     const [x, y, z] = project(pin.lon, pin.lat);
     if (z < 0.05) continue;
     ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fillStyle = signal; ctx.fill();
+    if (z < 0.25) continue; // no labels near the edge, where they spill off the globe
     ctx.lineWidth = 4; ctx.strokeStyle = dark ? '#141412' : '#f2efe8'; ctx.strokeText(pin.code, x + 10, y - 8);
     ctx.fillStyle = ink; ctx.fillText(pin.code, x + 10, y - 8);
   }
