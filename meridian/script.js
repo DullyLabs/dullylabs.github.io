@@ -2,10 +2,10 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const cities = [
-    { name: 'London', zone: 'Europe/London', lat: 51.5, lon: -.12, code: 'LON' },
-    { name: 'New York', zone: 'America/New_York', lat: 40.7, lon: -74, code: 'NYC' },
-    { name: 'Tokyo', zone: 'Asia/Tokyo', lat: 35.7, lon: 139.7, code: 'TYO' },
-    { name: 'Sydney', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, code: 'SYD' }
+    { key: 'london', sleep: [1, 6], name: 'London', zone: 'Europe/London', lat: 51.5, lon: -.12, code: 'LON' },
+    { key: 'newYork', sleep: [4, 6], name: 'New York', zone: 'America/New_York', lat: 40.7, lon: -74, code: 'NYC' },
+    { key: 'hongKong', sleep: [1, 6], name: 'Hong Kong', zone: 'Asia/Hong_Kong', lat: 22.3, lon: 114.2, code: 'HKG' },
+    { key: 'sydney', sleep: [23, 5], name: 'Sydney', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, code: 'SYD' }
   ];
   const pins = [...cities, { lat: 1.35, lon: 103.8, code: 'SIN' }, { lat: 6.9, lon: 79.9, code: 'CMB' }, { lat: -33.4, lon: -70.7, code: 'SCL' }, { lat: -26.2, lon: 28, code: 'JNB' }];
   const home = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -15,20 +15,41 @@
     const parts = Object.fromEntries(formats.get(zone).formatToParts(at).map(p => [p.type, p.value]));
     return { h: +parts.hour, m: parts.minute, day: Date.UTC(+parts.year, +parts.month - 1, +parts.day) / 864e5 };
   }
-  const jokes = [
-    'Your “quick call” is now evidence.', 'Asleep. Your urgency is not contagious.',
-    'Even the group chat has a bedtime.', 'No. Whatever it is, no.',
-    'Only bakers have jurisdiction here.', 'Up before the alarm. Suspicious.',
-    'Negotiating with a snooze button.', 'Conscious. Let’s not get ambitious.',
-    'Dressed from the waist up.', 'Available, in the legal sense.',
-    'In a meeting about fewer meetings.', 'Lunch is now a strategic priority.',
-    'On mute. On sandwich.', 'The lunch break has entered overtime.',
-    'Moving a mouse to establish an alibi.', 'Coffee number three. Still no personality.',
-    'Typing “EOD”. Meaning Thursday.', 'One foot out. The other on Slack.',
-    'The laptop is closed. Take the hint.', 'Dinner. Your deck is not a side dish.',
-    'Has plans. The plans are a sofa.', '“One episode” has become a season.',
-    'One eye open. Not for you.', 'Tomorrow’s problems have been muted.'
-  ];
+  const jokes = {
+    london: [
+      'Night bus, top deck, front seat. Victory.', 'Chicken shop. Third one tonight.', 'Fox screaming. Nobody’s being murdered. Probably.', 'Only the foxes are still out.',
+      'Even the Night Tube’s gone home.', 'Bin lorries doing the dawn chorus.', 'First Tube. Already no seats.', 'Northern line, inside a stranger’s armpit.',
+      'Signal failure at Bank. Obviously.', 'Pret queue. Same oat flat white.', 'Kettle on. Asking who wants one.', 'Saying “lovely” about something not lovely.',
+      'Meal deal at the desk.', 'Back from a 28-minute lunch hour.', 'Raining. It was sunny ten minutes ago.', '“Quick one later?” emails begin.',
+      'Pretending to work. Eyeing the pub.', 'Pint on the pavement, coat on.', 'Still at the pub. “Just the one.”', 'Third “just the one.”',
+      'Dinner is crisps. Two flavours.', 'Saying sorry to whoever bumped you.', 'Last orders. Ordering two.', 'Tapping in for the last Tube. Regret.'
+    ],
+    newYork: [
+      'Bodega cat judging your sandwich order.', 'Folded slice, eaten mid-stride.', 'Bar’s still open. Of course it is.', 'Last call is 4am. Pacing yourself.',
+      'Last call. Bacon egg and cheese next.', 'Bars close. Bodegas don’t.', 'Running for a train that’s delayed.', '“Being held by the train dispatcher.”',
+      'Coffee in the blue Greek cup.', 'Walking faster than everyone. Still late.', '“Quick sync,” sixty minutes.', 'Rent is due. Rent is always due.',
+      'Sad desk salad. $19, plus tip.', 'Halal cart line wraps the block.', 'Jaywalking with total confidence.', '“Just circling back,” email number four.',
+      'Honking at traffic that cannot move.', 'Swiping into the subway, praying.', 'Happy hour: $17 drinks, very happy.', 'Two-hour wait for a table. Worth it.',
+      'Dinner reservation booked a month ago.', 'Eating in a closet-sized restaurant.', 'Home to a $4,000 shoebox.', 'Not sleeping. Neither is the city.'
+    ],
+    hongKong: [
+      'Last red minibus home. Driver testing physics.', 'Taxi refuses: wrong side of the harbour.', 'Lan Kwai Fong, still in your work shirt.', 'Club 7-Eleven. Cheapest bar in LKF.',
+      'Still in LKF. Meeting at nine.', 'Tai chi aunties out-stretching you.', 'Dragon’s Back before work. Already sweating.', 'MTR door chime. You squeeze in anyway.',
+      'Pineapple bun and milk tea, standing.', 'In the office. Not leaving soon.', 'Aircon set to arctic. Cardigan on.', 'Refreshing the Observatory. Please, signal 8.',
+      'Cha chaan teng set lunch. Out in 20.', 'Yum cha with seven strangers.', 'Teapot lid flipped. Refill, please.', 'Third milk tea. Spreadsheets blurring.',
+      'Boss still in. So are you.', 'Officially home time. Hilarious.', 'Ordering dinner to your desk.', 'Contract says 6pm. Cute.',
+      'Office lights on a timer. Waving arms.', 'Still at work. Boss still at work.', 'Finally leaving. Same time tomorrow.', 'Dai pai dong. Beer in a bowl.'
+    ],
+    sydney: [
+      'Kebab on Oxford Street. Earned it.', 'Remembering when 1:30 meant locked out.', 'Uber surge pricing. Walking it is.', 'Taxi rank queue. Character building.',
+      'Bin chicken eating your leftover kebab.', 'Bondi to Bronte before the boss.', 'Ocean swim done. Smug all day.', 'Flat white, judged harshly. It’s fine.',
+      'Ferry to work. Unreasonably beautiful.', 'Stand-up meeting. Everyone says “no worries.”', 'Smashed avo. Still renting.', 'Morning tea. It’s a whole thing.',
+      'Lunch in the sun. Sunscreen first.', 'Checking the surf report. Then emails.', 'Planning when to knock off.', 'Friday arvo drinks started. It’s Tuesday.',
+      'Knocked off. Not explaining why.', 'Schooners at the pub, sun still up.', 'Rooftop bar. Everyone’s a “legend.”', 'Barbie in the park. Snags on.',
+      'Dinner. Everything’s $34 now.', 'Posting the sunset. It set at seven.', 'Rooftop’s closing. Somehow already tired.', 'Asleep early. Swim at five.'
+    ]
+  };
+  const asleepLines = { london: 'London is asleep. Somewhere, a kettle is still warm.', newYork: 'New York is asleep. “Just circling back” is now a threat.', hongKong: 'Hong Kong is asleep. First time since 2015.', sydney: 'Sydney is asleep. Knocked off early again.' };
   cities.forEach(city => {
     const li = document.createElement('li'); li.className = 'band';
     li.innerHTML = `<div class="band-top caps"><span>${city.name}</span><span class="date"></span></div><div class="band-body"><p class="band-time"><b></b><i></i></p><p class="gossip"></p></div>`;
@@ -92,13 +113,12 @@
       city.el.querySelector('b').textContent = String(t.h).padStart(2,'0');
       city.el.querySelector('i').textContent = ':'+t.m;
       city.el.querySelector('.date').textContent = day > 0 ? 'Tomorrow' : day < 0 ? 'Yesterday' : 'Today';
-      city.el.querySelector('.gossip').textContent = jokes[t.h];
+      city.el.querySelector('.gossip').textContent = jokes[city.key][t.h];
     });
-    const sleeping = cities.filter(c => c.time.h < 7 || c.time.h >= 23);
+    const sleeping = cities.filter(({ sleep: [from, to], time: { h } }) => from < to ? h >= from && h < to : h >= from || h < to) // each city's own bedtime, matching its jokes;
     $('report').textContent = sleeping.length ? `Sorry, ${sleeping[0].name}.` : 'All awake. Nobody volunteered.';
     $('damage').textContent = sleeping.length ? `${new Intl.ListFormat('en').format(sleeping.map(c=>c.name))} ${sleeping.length > 1 ? 'are' : 'is'} asleep. Text, don’t call.` : 'Quick, before someone yawns.';
-    const ny = cities[1], tokyo = cities[2];
-    $('headline').textContent = ny.time.h < 7 ? 'New York is asleep. “Just circling back” is now a threat.' : tokyo.time.h >= 22 || tokyo.time.h < 7 ? 'Tokyo has left the chat. Geographically.' : cities[0].time.h >= 17 ? 'London has logged off. The sun respects boundaries.' : 'Four time zones. Zero good times.';
+    $('headline').textContent = sleeping.length ? asleepLines[sleeping[0].key] : cities[0].time.h >= 17 ? 'London has logged off. The sun respects boundaries.' : 'Four time zones. Zero good times.';
     const label = shift ? `${shift > 0 ? '+' : '−'}${Math.floor(Math.abs(shift)/60)}h ${String(Math.abs(shift)%60).padStart(2,'0')}m` : 'Now';
     $('shift-label').textContent = label; $('mode').textContent = shift ? '○ Time travel' : '● Live'; $('now').hidden = !shift;
     $('shift').setAttribute('aria-valuetext',shift ? `${label.slice(1).replace('h',' hours').replace('m',' minutes')} ${shift>0?'ahead':'back'}` : 'Now');
