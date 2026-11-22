@@ -148,7 +148,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .project-link:is(:focus-visible, .is-active) .slip-front { transform: rotate(0deg) translateY(-6px); }
 .project-link:is(:focus-visible, .is-active) .chart-shape { transform: scale(.86, 1.1); }
 .project-link:is(:focus-visible, .is-active) .lifted-text { transform: translate(7px, -12px) rotate(-1deg); box-shadow: 0 12px 0 #776b1812, 0 20px 26px #64571820; }
-.project-link:is(:focus-visible, .is-active) .mg-night { transform: translateX(-30px); }
+.project-link:is(:focus-visible, .is-active) .mg-night { transform: translateX(-30px) rotate(0deg); }
 .project-link:is(:focus-visible, .is-active) :is(.mg-sun, .mg-sunglow) { transform: translate(-17px, 6px); }
 .project-link:is(:focus-visible, .is-active) .mg-tag-asleep rect { fill: #f6f2e8; stroke: #14141233; }
 .project-link:is(:focus-visible, .is-active) .mg-tag-asleep text { fill: #1c1b18; }
@@ -160,7 +160,7 @@ h1 em { font-style: normal; color: var(--accent); }
   .project-link:hover .slip-front { transform: rotate(0deg) translateY(-6px); }
   .project-link:hover .chart-shape { transform: scale(.86, 1.1); }
   .project-link:hover .lifted-text { transform: translate(7px, -12px) rotate(-1deg); box-shadow: 0 12px 0 #776b1812, 0 20px 26px #64571820; }
-  .project-link:hover .mg-night { transform: translateX(-30px); }
+  .project-link:hover .mg-night { transform: translateX(-30px) rotate(0deg); }
   .project-link:hover :is(.mg-sun, .mg-sunglow) { transform: translate(-17px, 6px); }
   .project-link:hover .mg-tag-asleep rect { fill: #f6f2e8; stroke: #14141233; }
   .project-link:hover .mg-tag-asleep text { fill: #1c1b18; }
@@ -236,4 +236,4 @@ h1 em { font-style: normal; color: var(--accent); }
   .project-link .lifted-text { transform: rotate(3deg) !important; }
   .project-link .project-cta > span { transform: none !important; }
 }
-.project-meridian .meridian-exhibit{background:#ded8cb;color:#141412}.meridian-art{position:absolute;inset:44px 12px 34px;display:flex;align-items:center;justify-content:center}.meridian-globe{width:100%;height:100%;overflow:visible}.mg-sphere{fill:#f6f2e8;filter:drop-shadow(5px 7px 0 #14141218)}.mg-lines{fill:none;stroke:#14141216;stroke-width:.8}.mg-land{fill:none;stroke:#1c1b18;stroke-width:2.5;stroke-linecap:round}.mg-land-night{stroke:#6f6b62}.mg-night-fill{fill:#1c1b18}.mg-rim{fill:none;stroke:#14141240;stroke-width:.8}.mg-orbit{fill:none;stroke:#e8452c;stroke-width:1.1;stroke-dasharray:5 5}.mg-orbit-back{opacity:.4}.mg-sun,.mg-tag circle{fill:#e8452c}.mg-tag rect{fill:#f6f2e8;stroke:#14141233;stroke-width:.8}.mg-tag text{font:600 7px/1 var(--sans);letter-spacing:.14em;fill:#1c1b18;text-anchor:middle}.mg-tag-asleep rect{fill:#1c1b18;stroke:#f6f2e84d}.mg-tag-asleep text{fill:#a8a397}.mg-note text{font:500 13.5px/1 var(--serif);fill:#57524a}.mg-note path{fill:none;stroke:#57524a;stroke-width:1.2;stroke-linecap:round}.mg-night,.mg-sun,.mg-sunglow{transform-box:view-box}@media(prefers-reduced-motion:no-preference){.mg-night,.mg-sun,.mg-sunglow{transition:transform .6s ease}.mg-tag-asleep :is(rect,text){transition:fill .3s ease .25s,stroke .3s ease .25s}}@media(max-width:600px){.meridian-art{inset:44px 4px 34px}}
+.project-meridian .meridian-exhibit{background:#ded8cb;color:#141412}.meridian-art{position:absolute;inset:44px 12px 34px;display:flex;align-items:center;justify-content:center}.meridian-globe{width:100%;height:100%;overflow:visible}.mg-sphere{fill:#f6f2e8}.mg-lines{fill:none;stroke:#14141216;stroke-width:.8}.mg-land{fill:none;stroke:#1c1b18;stroke-width:2.5;stroke-linecap:round}.mg-land-night{stroke:#6f6b62}.mg-night-fill{fill:#1c1b18}.mg-rim{fill:none;stroke:#14141240;stroke-width:.8}.mg-orbit{fill:none;stroke:#e8452c;stroke-width:1.1;stroke-dasharray:5 5}.mg-orbit-back{opacity:.4}.mg-sun,.mg-tag circle{fill:#e8452c}.mg-tag rect{fill:#f6f2e8;stroke:#14141233;stroke-width:.8}.mg-tag text{font:600 7px/1 var(--sans);letter-spacing:.14em;fill:#1c1b18;text-anchor:middle}.mg-tag-asleep rect{fill:#1c1b18;stroke:#f6f2e84d}.mg-tag-asleep text{fill:#a8a397}.mg-note text{font:500 13.5px/1 var(--serif);fill:#57524a}.mg-note path{fill:none;stroke:#57524a;stroke-width:1.2;stroke-linecap:round}.mg-night,.mg-sun,.mg-sunglow{transform-box:view-box}.mg-night{transform-origin:180px 115px;transform:translateX(0) rotate(10deg)}@media(prefers-reduced-motion:no-preference){.mg-night,.mg-sun,.mg-sunglow{transition:transform .6s ease}.mg-tag-asleep rect{transition:fill .3s ease .25s,stroke .3s ease .25s}.mg-tag-asleep text{transition:fill .1s ease .35s}}@media(max-width:600px){.meridian-art{inset:44px 4px 34px}}
