@@ -19,14 +19,14 @@
     'Even the group chat has a bedtime.', 'No. Whatever it is, no.',
     'Only bakers have jurisdiction here.', 'Up before the alarm. Suspicious.',
     'Negotiating with a snooze button.', 'Conscious. Let’s not get ambitious.',
-    'Commuting to a video call.', 'Available, in the legal sense.',
+    'Dressed from the waist up.', 'Available, in the legal sense.',
     'In a meeting about fewer meetings.', 'Lunch is now a strategic priority.',
     'On mute. On sandwich.', 'The lunch break has entered overtime.',
     'Moving a mouse to establish an alibi.', 'Coffee number three. Still no personality.',
-    'That deadline is becoming a tomorrow problem.', 'One foot out. The other on Slack.',
+    'Typing “EOD”. Meaning Thursday.', 'One foot out. The other on Slack.',
     'The laptop is closed. Take the hint.', 'Dinner. Your deck is not a side dish.',
     'Has plans. The plans are a sofa.', '“One episode” has become a season.',
-    'Brushing teeth. Make it quick.', 'Tomorrow’s problems have been muted.'
+    'One eye open. Not for you.', 'Tomorrow’s problems have been muted.'
   ];
   cities.forEach(city => {
     const li = document.createElement('li'); li.className = 'band';
@@ -96,9 +96,9 @@
     });
     const sleeping = cities.filter(c => c.time.h < 7 || c.time.h >= 23);
     $('report').textContent = sleeping.length ? `Sorry, ${sleeping[0].name}.` : 'All awake. Nobody volunteered.';
-    $('damage').textContent = sleeping.length ? `${new Intl.ListFormat('en').format(sleeping.map(c=>c.name))} ${sleeping.length > 1 ? 'are' : 'is'} asleep. Text, don’t call.` : 'Consent sold separately.';
+    $('damage').textContent = sleeping.length ? `${new Intl.ListFormat('en').format(sleeping.map(c=>c.name))} ${sleeping.length > 1 ? 'are' : 'is'} asleep. Text, don’t call.` : 'Quick, before someone yawns.';
     const ny = cities[1], tokyo = cities[2];
-    $('headline').textContent = ny.time.h < 7 ? 'New York is asleep. “Just circling back” is now a threat.' : tokyo.time.h >= 22 || tokyo.time.h < 7 ? 'Tokyo has left the chat. Geographically.' : cities[0].time.h >= 17 ? 'London has logged off. The sun respects boundaries.' : 'Four time zones. The meeting could still be an email.';
+    $('headline').textContent = ny.time.h < 7 ? 'New York is asleep. “Just circling back” is now a threat.' : tokyo.time.h >= 22 || tokyo.time.h < 7 ? 'Tokyo has left the chat. Geographically.' : cities[0].time.h >= 17 ? 'London has logged off. The sun respects boundaries.' : 'Four time zones. Zero good times.';
     const label = shift ? `${shift > 0 ? '+' : '−'}${Math.floor(Math.abs(shift)/60)}h ${String(Math.abs(shift)%60).padStart(2,'0')}m` : 'Now';
     $('shift-label').textContent = label; $('mode').textContent = shift ? '○ Time travel' : '● Live'; $('now').hidden = !shift;
     $('shift').setAttribute('aria-valuetext',shift ? `${label.slice(1).replace('h',' hours').replace('m',' minutes')} ${shift>0?'ahead':'back'}` : 'Now');
