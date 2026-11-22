@@ -12,7 +12,6 @@
   --street-muted: #687360;
   --street-accent: #00734f;
   --street-edge: #173b2b30;
-  --neighbourhood: #e9e7d2;
   background-color: var(--street);
   color: var(--street-ink);
 }
@@ -22,7 +21,6 @@
   --street-muted: #afbaa9;
   --street-accent: #9bd1b0;
   --street-edge: #afc3a638;
-  --neighbourhood: #182a20;
 }
 .day-page,
 .day-page :where(header, footer, section, p, span, h1, h2, em, article, button, a, dialog, .arrival-plate) {
@@ -50,12 +48,6 @@
   box-shadow: 0 3px 18px #b9d4980a;
 }
 [data-theme=dark] .day-page .download:hover{ background-color: #e0edce; }
-[data-theme=dark] .day-page .bus-stage {
-  background: radial-gradient(ellipse at 55% 70%, #31402a 0, #192b20 48%, #122219 100%);
-}
-[data-theme=dark] .day-page .street-line {
-  background: repeating-linear-gradient(90deg, transparent 0 40px, #8b9573 40px 105px);
-}
 [data-theme=dark] .day-page .sky-type{ color: #aec49d12; }
 [data-theme=dark] .day-page .arrival-plate {
   background-color: #f7ebd2;
