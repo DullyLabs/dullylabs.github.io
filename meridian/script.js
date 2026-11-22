@@ -1,227 +1,113 @@
-// Meridian landing page: a live clock of bands in the visitor's own time, shifted by one slider.
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const el = (tag, cls, text) => {
-    const node = document.createElement(tag);
-    if (cls) node.className = cls;
-    if (text != null) node.textContent = text;
-    return node;
-  };
-  document.querySelectorAll('[data-year]').forEach(node => { node.textContent = new Date().getFullYear(); });
-
-  const HOUR = 36e5, MAX_BANDS = 6;
-  const HOME = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-  const hourOptions = new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).resolvedOptions();
-  const H12 = hourOptions.hourCycle ? /h1[12]/.test(hourOptions.hourCycle) : !!hourOptions.hour12;
-
-  // What a city is up to at each local hour (0-23). The gossip is this page's; the app sticks to the time.
-  const GOSSIP = [
-    'asleep. Mostly.', 'dreaming', 'dead to the world', 'asleep. Do not call.', 'asleep, except the bakers',
-    'hitting snooze', 'waking up, reluctantly', 'waiting for the kettle', 'on the commute', 'opening the laptop',
-    'in a meeting that could have been an email', 'thinking about lunch', 'at lunch', 'finishing lunch',
-    'pretending to work', 'on a third coffee', 'watching the clock', 'clocking off', 'heading home',
-    'having dinner', 'doing the dishes', 'on the sofa', 'turning in', 'saying “one more episode”',
+  const cities = [
+    { name: 'London', zone: 'Europe/London', lat: 51.5, lon: -.12, code: 'LON' },
+    { name: 'New York', zone: 'America/New_York', lat: 40.7, lon: -74, code: 'NYC' },
+    { name: 'Tokyo', zone: 'Asia/Tokyo', lat: 35.7, lon: 139.7, code: 'TYO' },
+    { name: 'Sydney', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, code: 'SYD' }
   ];
-
-  // Cities people type that are not time zone names.
-  const ALIASES = {
-    'Mumbai': 'Asia/Kolkata', 'Delhi': 'Asia/Kolkata', 'Bangalore': 'Asia/Kolkata', 'Beijing': 'Asia/Shanghai',
-    'San Francisco': 'America/Los_Angeles', 'Seattle': 'America/Los_Angeles', 'Boston': 'America/New_York',
-    'Washington': 'America/New_York', 'Miami': 'America/New_York', 'Montreal': 'America/Toronto',
-    'Rio de Janeiro': 'America/Sao_Paulo', 'Cape Town': 'Africa/Johannesburg', 'Abu Dhabi': 'Asia/Dubai',
-    'Osaka': 'Asia/Tokyo', 'Munich': 'Europe/Berlin', 'Frankfurt': 'Europe/Berlin', 'Barcelona': 'Europe/Madrid',
-    'Milan': 'Europe/Rome', 'Geneva': 'Europe/Zurich', 'Edinburgh': 'Europe/London', 'Manchester': 'Europe/London',
-    'Wellington': 'Pacific/Auckland', 'Canberra': 'Australia/Sydney', 'Tel Aviv': 'Asia/Jerusalem',
-    'Hanoi': 'Asia/Ho_Chi_Minh', 'Hawaii': 'Pacific/Honolulu',
-  };
-  const DEFAULTS = ['Europe/London', 'America/New_York', 'Asia/Tokyo', 'Australia/Sydney'];
-  const cityName = tz => tz.split('/').pop().replace(/_/g, ' ');
-
-  const index = new Map(); // lowercased name or zone id -> { tz, name }
-  const zones = Intl.supportedValuesOf ? Intl.supportedValuesOf('timeZone') : DEFAULTS;
-  for (const tz of zones) {
-    const city = { tz, name: cityName(tz) };
-    index.set(tz.toLowerCase(), city);
-    if (!index.has(city.name.toLowerCase())) index.set(city.name.toLowerCase(), city);
-  }
-  for (const [name, tz] of Object.entries(ALIASES)) index.set(name.toLowerCase(), { tz, name });
-  const names = [...new Set([...index.values()].map(city => city.name))].sort();
-  $('zones').append(...names.map(name => Object.assign(el('option'), { value: name })));
-
-  // Wall-clock time in a zone at an instant, via Intl.
+  const home = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const formats = new Map();
-  function wall(tz, ms) {
-    let format = formats.get(tz);
-    if (!format) {
-      format = new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
-      formats.set(tz, format);
-    }
-    const p = {};
-    for (const { type, value } of format.formatToParts(ms)) p[type] = +value;
-    const h = p.hour % 24;
-    return { h, m: p.minute, s: p.second, day: Date.UTC(p.year, p.month - 1, p.day) / 864e5, asUTC: Date.UTC(p.year, p.month - 1, p.day, h, p.minute, p.second) };
+  function wall(zone, at) {
+    if (!formats.has(zone)) formats.set(zone, new Intl.DateTimeFormat('en-GB', { timeZone: zone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }));
+    const parts = Object.fromEntries(formats.get(zone).formatToParts(at).map(p => [p.type, p.value]));
+    return { h: +parts.hour, m: parts.minute, day: Date.UTC(+parts.year, +parts.month - 1, +parts.day) / 864e5 };
   }
-  const pad = n => String(n).padStart(2, '0');
-  const shownHour = h => H12 ? String(h % 12 || 12) : pad(h);
-  const hourMark = h => H12 ? `${h % 12 || 12}${h < 12 ? 'AM' : 'PM'}` : `${pad(h)}:00`;
-  const isDay = h => h >= 6 && h < 18;
-  const isAwake = h => h >= 7 && h < 23;
-  const isWork = t => t.h >= 9 && t.h < 18 && (t.day + 4) % 7 % 6 !== 0; // weekdays only, like the app
-  const duration = (minutes, h, m) => [Math.floor(minutes / 60) && `${Math.floor(minutes / 60)}${h}`, minutes % 60 && `${minutes % 60}${m}`].filter(Boolean).join(' ');
-
-  function offsetLabel(city, here) {
-    const minutes = Math.round((city.asUTC - here.asUTC) / 6e4);
-    const gap = minutes ? `${minutes > 0 ? '+' : '−'}${duration(Math.abs(minutes), 'H', 'M')}` : 'SAME TIME';
-    const day = city.day - here.day;
-    return day ? `${gap} · ${day > 0 ? 'TOMORROW' : 'YESTERDAY'}` : gap;
-  }
-
-  let bands = [{ tz: HOME, name: cityName(HOME), home: true }, ...DEFAULTS.filter(tz => tz !== HOME).map(tz => ({ tz, name: cityName(tz) }))];
-  let shift = 0; // minutes
-  let stripKey = '';
-  const slider = $('shift'), nowButton = $('now'), list = $('bands'), message = $('add-msg');
-  const narrow = matchMedia('(max-width: 560px)');
-
-  function buildBands() {
-    list.replaceChildren(...bands.map(band => {
-      const item = el('li', 'band');
-      const top = el('div', 'band-top caps');
-      top.append(el('span', 'band-city', band.name), band.off = el('span', 'band-off'));
-      const time = el('p', 'band-time');
-      time.append(band.hh = el('b'), band.mm = el('span'), band.ss = el('i'), band.ap = el('small'));
-      const row = el('div', 'band-row');
-      row.append(time);
-      if (!band.home) {
-        const remove = el('button', 'band-x', '×');
-        remove.type = 'button';
-        remove.setAttribute('aria-label', `Remove ${band.name}`);
-        remove.addEventListener('click', () => {
-          bands = bands.filter(other => other !== band);
-          buildBands();
-          message.textContent = `${band.name} removed.`;
-          $('city').focus();
-        });
-        row.append(remove);
-      }
-      item.append(top, row, band.gossip = el('p', 'band-gossip'));
-      band.item = item;
-      return item;
-    }));
-    stripKey = '';
-    render();
-  }
-
-  function render() {
-    const at = Date.now() + shift * 6e4;
-    const here = wall(HOME, at);
-    for (const band of bands) {
-      const t = band.t = wall(band.tz, at);
-      band.item.classList.toggle('night', !isDay(t.h));
-      band.off.textContent = band.home ? 'YOU ARE HERE' : offsetLabel(t, here);
-      band.hh.textContent = shownHour(t.h);
-      band.mm.textContent = pad(t.m);
-      band.ss.textContent = shift ? '' : pad(t.s); // like the app, seconds only run in the present
-      band.ap.textContent = H12 ? (t.h < 12 ? 'AM' : 'PM') : '';
-      band.gossip.textContent = GOSSIP[t.h];
-    }
-    renderHeadline();
-    renderReport();
-    const key = `${Math.floor(at / 6e4)}|${narrow.matches}|${bands.map(band => band.tz)}`;
-    if (key !== stripKey) { stripKey = key; renderStrip(at); }
-  }
-
-  // "London is finishing lunch. Tokyo is turning in." for the first city and whichever is furthest from it.
-  function renderHeadline() {
-    const first = bands.find(band => !band.home) || bands[0];
-    const apart = band => { const d = Math.abs(band.t.h - first.t.h); return Math.min(d, 24 - d); };
-    const second = bands.filter(band => band !== first).sort((a, b) => apart(b) - apart(a))[0];
-    const line = band => `${band.name} is ${GOSSIP[band.t.h]}${GOSSIP[band.t.h].endsWith('.') ? '' : '.'}`;
-    const text = second ? `${line(first)} ${line(second)}` : `${line(first)} Everyone else is unaccounted for.`;
-    if ($('title').textContent !== text) $('title').textContent = text;
-  }
-
-  function renderReport() {
-    const asleep = bands.filter(band => !isAwake(band.t.h)).length;
-    const report = !asleep ? 'Everyone is awake. This will not last.'
-      : asleep === bands.length ? 'Everyone is asleep. Including, apparently, you.'
-      : `${asleep} of ${bands.length} asleep. Text, don’t call.`;
-    if ($('report').textContent !== report) $('report').textContent = report;
-    const ahead = Math.abs(shift);
-    $('shift-label').textContent = shift ? `${shift > 0 ? '+' : '−'}${duration(ahead, 'h', 'm')}` : 'Now';
-    slider.setAttribute('aria-valuetext', shift ? `${duration(ahead, ahead < 120 ? ' hour' : ' hours', ahead % 60 === 1 ? ' minute' : ' minutes')} ${shift > 0 ? 'ahead' : 'back'}` : 'Now');
-    nowButton.hidden = !shift;
-  }
-
-  // The Hours widget: one row of hours per city, and the next stretch when everyone is awake.
-  function renderStrip(at) {
-    const count = narrow.matches ? 16 : 24;
-    const hours = bands.map(band => Array.from({ length: 24 }, (_, i) => wall(band.tz, at + i * HOUR)));
-    const awake = i => hours.every(row => isAwake(row[i].h));
-    const start = Array.from({ length: 24 }, (_, i) => i).find(awake);
-    let length = 0;
-    if (start !== undefined) while (start + length < 24 && awake(start + length)) length++;
-
-    $('rows').replaceChildren(...bands.map((band, b) => {
-      const row = el('div', 'hrow');
-      const head = el('p', 'hrow-head');
-      head.append(el('b', '', shownHour(band.t.h)), el('span', '', pad(band.t.m)), el('em', 'caps', band.name), el('small', 'caps', band.off.textContent));
-      const cells = el('div', 'cells');
-      cells.setAttribute('aria-hidden', 'true');
-      cells.style.setProperty('--n', count);
-      hours[b].slice(0, count).forEach((t, i) => {
-        const h = t.h, state = isWork(t) ? 'work' : isAwake(h) ? 'awake' : 'asleep';
-        const hit = start !== undefined && i >= start && i < start + length;
-        cells.append(el('span', `c ${state}${hit ? ' hit' : ''}${h === 0 && i ? ' midnight' : ''}`, H12 ? h % 12 || 12 : pad(h)));
-      });
-      row.append(head, cells);
-      return row;
-    }));
-
-    const mark = i => hourMark(wall(HOME, at + i * HOUR).h);
-    if (start !== undefined) {
-      $('verdict').textContent = `All awake ${mark(start)}–${mark(start + length)} · ${length}H`;
-      $('aside').textContent = start ? `That’s in ${start} ${start === 1 ? 'hour' : 'hours'}, your time. Nobody has to set an alarm.` : 'That’s right now. Go on, call them.';
-    } else {
-      const asleepAt = i => bands.filter((_, b) => !isAwake(hours[b][i]));
-      let best = 0;
-      for (let i = 1; i < count; i++) if (asleepAt(i).length < asleepAt(best).length) best = i;
-      const victims = asleepAt(best).map(band => band.name);
-      const who = victims.length > 1 ? `${victims.slice(0, -1).join(', ')} and ${victims.at(-1)}` : victims[0];
-      $('verdict').textContent = 'No hour works';
-      $('aside').textContent = `Someone has to suffer. The least bad is ${mark(best)} your time. Sorry, ${who}.`;
-    }
-  }
-
-  function setShift(minutes) {
-    shift = minutes;
-    slider.value = minutes;
-    render();
-  }
-  slider.addEventListener('input', () => setShift(+slider.value));
-  nowButton.addEventListener('click', () => { setShift(0); slider.focus(); });
-  narrow.addEventListener('change', render);
-
-  $('add').addEventListener('submit', event => {
-    event.preventDefault();
-    const input = $('city'), typed = input.value.trim();
-    if (!typed) return;
-    const query = typed.toLowerCase().replace(/\s+/g, ' ');
-    const city = index.get(query) || index.get(query.replace(/ /g, '_')) || [...index.values()].filter(c => c.name.toLowerCase().startsWith(query)).sort((a, b) => a.name.length - b.name.length)[0];
-    if (!city) message.textContent = `No time zone answers to “${typed}”. Try the nearest big city.`;
-    else if (bands.some(band => band.tz === city.tz && band.name === city.name)) message.textContent = `${city.name} already has a band.`;
-    else if (bands.length >= MAX_BANDS) message.textContent = 'Six bands, like the Hours widget. Remove one first.';
-    else {
-      bands.push({ ...city });
-      input.value = '';
-      buildBands();
-      message.textContent = `${city.name} added.`;
-    }
+  const jokes = [
+    'Your “quick call” is now evidence.', 'Asleep. Your urgency is not contagious.',
+    'Even the group chat has a bedtime.', 'No. Whatever it is, no.',
+    'Only bakers have jurisdiction here.', 'The alarm is still the villain.',
+    'Conscious. Let’s not get ambitious.', 'Negotiating with a snooze button.',
+    'Commuting to a laptop they own.', 'Available, in the legal sense.',
+    'In a meeting about fewer meetings.', 'Lunch is now a strategic priority.',
+    'On mute. On sandwich.', 'The lunch break has entered overtime.',
+    'Moving a mouse to establish an alibi.', 'Coffee number three. Still no personality.',
+    'That deadline is becoming a tomorrow problem.', 'One foot out. The other on Slack.',
+    'The laptop is closed. Take the hint.', 'Dinner. Your deck is not a side dish.',
+    'Has plans. The plans are a sofa.', '“One episode” has become a season.',
+    'Text, don’t call.', 'Tomorrow’s problems have been muted.'
+  ];
+  cities.forEach(city => {
+    const li = document.createElement('li'); li.className = 'band';
+    li.innerHTML = `<div class="band-top caps"><span>${city.name}</span><span class="date"></span></div><div class="band-body"><p class="band-time"><b></b><i></i><small></small></p><p class="gossip"></p></div>`;
+    $('bands').append(li); city.el = li;
   });
-
-  buildBands();
-  (function tick() {
-    render();
-    setTimeout(tick, 1000 - Date.now() % 1000);
-  })();
+  document.querySelector('[data-year]').textContent = new Date().getFullYear();
+  let shift = 0, anchor = 0;
+  const canvas = $('planet'), ctx = canvas.getContext('2d');
+  const rad = Math.PI / 180;
+  // Coarse, hand-drawn geographic outlines; the globe is a diagram, not a solar ephemeris.
+  const lands = [
+    [[-168,70],[-140,70],[-125,58],[-123,40],[-110,30],[-98,18],[-88,16],[-81,8],[-78,22],[-66,45],[-54,52],[-80,65],[-110,72],[-168,70]],
+    [[-81,10],[-65,9],[-48,-1],[-35,-8],[-43,-23],[-54,-40],[-69,-55],[-76,-28],[-81,10]],
+    [[-52,60],[-43,60],[-20,77],[-40,84],[-60,76],[-52,60]],
+    [[-17,36],[10,37],[35,30],[50,12],[42,-12],[30,-34],[18,-35],[10,-16],[-2,4],[-16,14],[-17,36]],
+    [[-10,36],[-10,59],[5,58],[20,71],[45,68],[70,74],[110,72],[160,66],[179,52],[142,45],[130,30],[120,20],[108,3],[96,18],[78,7],[65,25],[42,30],[30,40],[10,45],[-10,36]],
+    [[112,-22],[116,-34],[135,-36],[153,-27],[145,-13],[130,-12],[112,-22]],
+    [[130,32],[141,46],[145,43],[140,35],[130,32]], [[-8,50],[-5,59],[1,53],[-8,50]]
+  ];
+  function draw(at) {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    const ink = dark ? '#f2efe8' : '#141412', signal = dark ? '#ff7a5c' : '#b8321c';
+    ctx.clearRect(0, 0, 800, 800);
+    const cx = 380, cy = 365, r = 265;
+    const utcHour = at.getUTCHours() + at.getUTCMinutes() / 60;
+    const center = 180 - utcHour * 15 - 65;
+    function project(lon, lat) {
+      const a = (lon - center) * rad, b = lat * rad;
+      return [cx + r * Math.cos(b) * Math.sin(a), cy - r * Math.sin(b), Math.cos(b) * Math.cos(a)];
+    }
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = dark ? '#30332c' : '#d2d2ba'; ctx.fill();
+    ctx.save(); ctx.clip();
+    function line(points, color, width) {
+      ctx.beginPath(); let pen = false;
+      for (const [lon, lat] of points) { const [x,y,z] = project(lon, lat); if (z < 0) { pen = false; continue; } if (pen) ctx.lineTo(x,y); else ctx.moveTo(x,y); pen = true; }
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke();
+    }
+    for (let lat = -60; lat <= 60; lat += 30) line(Array.from({length:361}, (_,i) => [i,lat]), dark ? '#55594c' : '#b0b29a', 1);
+    for (let lon = 0; lon < 360; lon += 30) line(Array.from({length:181}, (_,i) => [lon,i-90]), dark ? '#55594c' : '#b0b29a', 1);
+    lands.forEach(points => {
+      const dense = []; for (let i = 1; i < points.length; i++) { const a = points[i-1], b = points[i]; for (let j = 0; j <= 20; j++) dense.push([a[0]+(b[0]-a[0])*j/20, a[1]+(b[1]-a[1])*j/20]); }
+      line(dense, ink, 2.2);
+    });
+    // Equinox terminator at a fixed sun-facing angle; geography turns with UTC.
+    ctx.beginPath();
+    for (let y = -r; y <= r; y++) { const x = cx - Math.cos(65*rad) * Math.sqrt(r*r-y*y); if(y === -r) ctx.moveTo(x,cy+y); else ctx.lineTo(x,cy+y); }
+    ctx.lineTo(cx-r-1,cy+r); ctx.lineTo(cx-r-1,cy-r); ctx.closePath();ctx.fillStyle = '#070c18a8';ctx.fill();
+    ctx.restore(); ctx.strokeStyle = ink; ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+    cities.forEach(city => {const [x,y,z] = project(city.lon,city.lat); if(z < .05) return; ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=signal;ctx.fill();ctx.font='bold 17px monospace';ctx.lineWidth=4;ctx.strokeStyle=dark?'#141412':'#f2efe8';ctx.strokeText(city.code,x+10,y-8);ctx.fillStyle=ink;ctx.fillText(city.code,x+10,y-8);});
+    ctx.setLineDash([3,7]);ctx.beginPath();ctx.ellipse(cx,cy,r+40,80,-.25,0,Math.PI*2);ctx.strokeStyle=signal;ctx.stroke();ctx.setLineDash([]);
+  }
+  function render() {
+    const at = new Date((shift ? anchor : Date.now()) + shift * 6e4), here = wall(home, at);
+    cities.forEach(city => {
+      const t = city.time = wall(city.zone,at), day = t.day-here.day;
+      city.el.classList.toggle('night',t.h < 6 || t.h >= 18);
+      city.el.querySelector('b').textContent = String(t.h).padStart(2,'0');
+      city.el.querySelector('i').textContent = ':'+t.m;
+      city.el.querySelector('small').textContent = t.h >=6 && t.h<18 ? 'DAY' : 'NIGHT';
+      city.el.querySelector('.date').textContent = day > 0 ? 'Tomorrow, for you' : day < 0 ? 'Yesterday, for you' : 'Today, for you';
+      city.el.querySelector('.gossip').textContent = jokes[t.h];
+    });
+    const sleeping = cities.filter(c => c.time.h < 7 || c.time.h >= 23);
+    $('report').textContent = sleeping.length ? `Sorry, ${sleeping[0].name}.` : 'All awake. Nobody volunteered.';
+    $('damage').textContent = sleeping.length ? `${sleeping.map(c=>c.name).join(' and ')}: outside 07:00–23:00. Text, don't call.` : 'Within 07:00–23:00 in every city. Consent sold separately.';
+    const ny = cities[1], tokyo = cities[2];
+    $('headline').textContent = ny.time.h < 7 ? 'New York is asleep. “Just circling back” is now a threat.' : tokyo.time.h >= 22 || tokyo.time.h < 7 ? 'Tokyo has left the chat. Geographically.' : cities[0].time.h >= 17 ? 'London has logged off. The sun respects boundaries.' : 'Four time zones. The meeting could still be an email.';
+    const label = shift ? `${shift > 0 ? '+' : '−'}${Math.floor(Math.abs(shift)/60)}h ${String(Math.abs(shift)%60).padStart(2,'0')}m` : 'Now';
+    $('shift-label').textContent = label; $('mode').textContent = shift ? '○ Time travel' : '● Live';
+    $('shift').setAttribute('aria-valuetext',shift ? `${Math.abs(shift)} minutes ${shift>0?'ahead':'back'}` : 'Now');
+    draw(at);
+  }
+  function setShift(value) { if(!shift) anchor=Date.now(); shift=Math.max(-720,Math.min(720,Math.round(value/15)*15)); $('shift').value=shift; render(); }
+  $('shift').addEventListener('input',e=>setShift(+e.target.value));
+  $('now').addEventListener('click',()=>setShift(0));
+  let drag;
+  $('universe').addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={id:e.pointerId,x:e.clientX,shift};$('universe').setPointerCapture(e.pointerId);$('universe').classList.add('dragging');});
+  $('universe').addEventListener('pointermove',e=>{if(drag && e.pointerId===drag.id)setShift(drag.shift+(e.clientX-drag.x)/$('universe').clientWidth*1440);});
+  function endDrag(){drag=null;$('universe').classList.remove('dragging');}
+  $('universe').addEventListener('pointerup',endDrag);$('universe').addEventListener('pointercancel',endDrag);$('universe').addEventListener('lostpointercapture',endDrag);
+  new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  render();setInterval(()=>{if(!document.hidden && !shift)render();},1000);
 })();
