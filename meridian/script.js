@@ -17,24 +17,24 @@
   const jokes = [
     'Your “quick call” is now evidence.', 'Asleep. Your urgency is not contagious.',
     'Even the group chat has a bedtime.', 'No. Whatever it is, no.',
-    'Only bakers have jurisdiction here.', 'The alarm is still the villain.',
-    'Conscious. Let’s not get ambitious.', 'Negotiating with a snooze button.',
-    'Commuting to a laptop they own.', 'Available, in the legal sense.',
+    'Only bakers have jurisdiction here.', 'Up before the alarm. Suspicious.',
+    'Negotiating with a snooze button.', 'Conscious. Let’s not get ambitious.',
+    'Commuting to a video call.', 'Available, in the legal sense.',
     'In a meeting about fewer meetings.', 'Lunch is now a strategic priority.',
     'On mute. On sandwich.', 'The lunch break has entered overtime.',
     'Moving a mouse to establish an alibi.', 'Coffee number three. Still no personality.',
     'That deadline is becoming a tomorrow problem.', 'One foot out. The other on Slack.',
     'The laptop is closed. Take the hint.', 'Dinner. Your deck is not a side dish.',
     'Has plans. The plans are a sofa.', '“One episode” has become a season.',
-    'Text, don’t call.', 'Tomorrow’s problems have been muted.'
+    'Brushing teeth. Make it quick.', 'Tomorrow’s problems have been muted.'
   ];
   cities.forEach(city => {
     const li = document.createElement('li'); li.className = 'band';
-    li.innerHTML = `<div class="band-top caps"><span>${city.name}</span><span class="date"></span></div><div class="band-body"><p class="band-time"><b></b><i></i><small></small></p><p class="gossip"></p></div>`;
+    li.innerHTML = `<div class="band-top caps"><span>${city.name}</span><span class="date"></span></div><div class="band-body"><p class="band-time"><b></b><i></i></p><p class="gossip"></p></div>`;
     $('bands').append(li); city.el = li;
   });
   document.querySelector('[data-year]').textContent = new Date().getFullYear();
-  let shift = 0, anchor = 0;
+  let shift = 0;
   const canvas = $('planet'), ctx = canvas.getContext('2d');
   const rad = Math.PI / 180;
   // Coarse, hand-drawn geographic outlines; the globe is a diagram, not a solar ephemeris.
@@ -54,6 +54,9 @@
   function draw(at) {
     const dark = document.documentElement.dataset.theme === 'dark';
     const ink = dark ? '#f2efe8' : '#141412', signal = dark ? '#ff7a5c' : '#b8321c';
+    const css = Math.min(canvas.clientWidth, canvas.clientHeight) || 800, px = Math.round(css * devicePixelRatio);
+    if (canvas.width !== px) canvas.width = canvas.height = px;
+    ctx.setTransform(px / 800, 0, 0, px / 800, 0, 0);
     ctx.clearRect(0, 0, 800, 800);
     const cx = 380, cy = 365, r = 265;
     const utcHour = at.getUTCHours() + at.getUTCMinutes() / 60;
@@ -78,38 +81,37 @@
     for (let y = -r; y <= r; y++) { const x = cx - Math.cos(65*rad) * Math.sqrt(r*r-y*y); if(y === -r) ctx.moveTo(x,cy+y); else ctx.lineTo(x,cy+y); }
     ctx.lineTo(cx-r-1,cy+r); ctx.lineTo(cx-r-1,cy-r); ctx.closePath();ctx.fillStyle = '#070c18a8';ctx.fill();
     ctx.restore(); ctx.strokeStyle = ink; ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
-    cities.forEach(city => {const [x,y,z] = project(city.lon,city.lat); if(z < .05) return; ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=signal;ctx.fill();ctx.font='bold 17px monospace';ctx.lineWidth=4;ctx.strokeStyle=dark?'#141412':'#f2efe8';ctx.strokeText(city.code,x+10,y-8);ctx.fillStyle=ink;ctx.fillText(city.code,x+10,y-8);});
+    cities.forEach(city => {const [x,y,z] = project(city.lon,city.lat); if(z < .05) return; ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=signal;ctx.fill();ctx.font=`bold ${Math.max(17,11*800/css)}px monospace`;ctx.lineWidth=4;ctx.strokeStyle=dark?'#141412':'#f2efe8';ctx.strokeText(city.code,x+10,y-8);ctx.fillStyle=ink;ctx.fillText(city.code,x+10,y-8);});
     ctx.setLineDash([3,7]);ctx.beginPath();ctx.ellipse(cx,cy,r+40,80,-.25,0,Math.PI*2);ctx.strokeStyle=signal;ctx.stroke();ctx.setLineDash([]);
   }
   function render() {
-    const at = new Date((shift ? anchor : Date.now()) + shift * 6e4), here = wall(home, at);
+    const at = new Date(Date.now() + shift * 6e4), here = wall(home, at);
     cities.forEach(city => {
       const t = city.time = wall(city.zone,at), day = t.day-here.day;
       city.el.classList.toggle('night',t.h < 6 || t.h >= 18);
       city.el.querySelector('b').textContent = String(t.h).padStart(2,'0');
       city.el.querySelector('i').textContent = ':'+t.m;
-      city.el.querySelector('small').textContent = t.h >=6 && t.h<18 ? 'DAY' : 'NIGHT';
-      city.el.querySelector('.date').textContent = day > 0 ? 'Tomorrow, for you' : day < 0 ? 'Yesterday, for you' : 'Today, for you';
+      city.el.querySelector('.date').textContent = day > 0 ? 'Tomorrow' : day < 0 ? 'Yesterday' : 'Today';
       city.el.querySelector('.gossip').textContent = jokes[t.h];
     });
     const sleeping = cities.filter(c => c.time.h < 7 || c.time.h >= 23);
     $('report').textContent = sleeping.length ? `Sorry, ${sleeping[0].name}.` : 'All awake. Nobody volunteered.';
-    $('damage').textContent = sleeping.length ? `${sleeping.map(c=>c.name).join(' and ')}: outside 07:00–23:00. Text, don't call.` : 'Within 07:00–23:00 in every city. Consent sold separately.';
+    $('damage').textContent = sleeping.length ? `${new Intl.ListFormat('en').format(sleeping.map(c=>c.name))} ${sleeping.length > 1 ? 'are' : 'is'} asleep. Text, don’t call.` : 'Consent sold separately.';
     const ny = cities[1], tokyo = cities[2];
     $('headline').textContent = ny.time.h < 7 ? 'New York is asleep. “Just circling back” is now a threat.' : tokyo.time.h >= 22 || tokyo.time.h < 7 ? 'Tokyo has left the chat. Geographically.' : cities[0].time.h >= 17 ? 'London has logged off. The sun respects boundaries.' : 'Four time zones. The meeting could still be an email.';
     const label = shift ? `${shift > 0 ? '+' : '−'}${Math.floor(Math.abs(shift)/60)}h ${String(Math.abs(shift)%60).padStart(2,'0')}m` : 'Now';
-    $('shift-label').textContent = label; $('mode').textContent = shift ? '○ Time travel' : '● Live';
-    $('shift').setAttribute('aria-valuetext',shift ? `${Math.abs(shift)} minutes ${shift>0?'ahead':'back'}` : 'Now');
+    $('shift-label').textContent = label; $('mode').textContent = shift ? '○ Time travel' : '● Live'; $('now').hidden = !shift;
+    $('shift').setAttribute('aria-valuetext',shift ? `${label.slice(1).replace('h',' hours').replace('m',' minutes')} ${shift>0?'ahead':'back'}` : 'Now');
     draw(at);
   }
-  function setShift(value) { if(!shift) anchor=Date.now(); shift=Math.max(-720,Math.min(720,Math.round(value/15)*15)); $('shift').value=shift; render(); }
+  function setShift(value) { shift=Math.max(-720,Math.min(720,Math.round(value/15)*15)); $('shift').value=shift; render(); }
   $('shift').addEventListener('input',e=>setShift(+e.target.value));
   $('now').addEventListener('click',()=>setShift(0));
   let drag;
   $('universe').addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={id:e.pointerId,x:e.clientX,shift};$('universe').setPointerCapture(e.pointerId);$('universe').classList.add('dragging');});
-  $('universe').addEventListener('pointermove',e=>{if(drag && e.pointerId===drag.id)setShift(drag.shift+(e.clientX-drag.x)/$('universe').clientWidth*1440);});
+  $('universe').addEventListener('pointermove',e=>{if(drag && e.pointerId===drag.id){const want=drag.shift+(e.clientX-drag.x)/(2*Math.PI*Math.min($("planet").clientWidth,$("planet").clientHeight)*265/800)*1440;setShift(want);if(Math.abs(want)>720){drag.x=e.clientX;drag.shift=shift;}}});
   function endDrag(){drag=null;$('universe').classList.remove('dragging');}
   $('universe').addEventListener('pointerup',endDrag);$('universe').addEventListener('pointercancel',endDrag);$('universe').addEventListener('lostpointercapture',endDrag);
   new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
-  render();setInterval(()=>{if(!document.hidden && !shift)render();},1000);
+  addEventListener('resize',render);render();setInterval(()=>{if(!document.hidden)render();},1000);
 })();

@@ -9,28 +9,27 @@
 <link rel="icon" href="/meridian/assets/app-icon.png"><link rel="apple-touch-icon" href="/meridian/assets/app-icon.png">
 <script src="/assets/theme.js"></script>
 <link rel="stylesheet" href="style.css"><script src="script.js" defer></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meridian","url":"https://dullylabs.com/meridian/","operatingSystem":"iOS, iPadOS","applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meridian","url":"https://dullylabs.com/meridian/","operatingSystem":"iOS, iPadOS","applicationCategory":"UtilitiesApplication","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
 </head>
 <body>
 <a class="skip-link" href="#shift">Skip to time control</a>
 <header class="masthead"><a class="brand caps" href="/meridian/"><img src="/meridian/assets/app-icon.png" alt="" width="32" height="32"> Meridian</a><div class="masthead-right"><span class="caps">iPhone &amp; iPad</span><button class="theme-toggle" type="button" aria-label="Use dark appearance" hidden>◐</button></div></header>
 <main>
 <section class="hero" aria-labelledby="title">
-<div class="edition caps"><span>One planet. Terrible availability.</span><span>Dept. of inconvenient hours / 001</span></div>
+<div class="edition caps"><span>One planet. Terrible availability.</span></div>
 <h1 id="title">The Earth refuses<br>to join your <em>9am.</em></h1>
-<div class="intro"><p>Four cities. One sun. Somehow this is <em>your</em> scheduling problem.</p><p>Meridian puts your cities in time bands.<br>Spin the planet. Read the room.</p></div>
+<div class="intro"><p>Four cities. One sun. Somehow this is <em>your</em> scheduling problem.</p></div>
 <div class="mission" id="clock">
 <div class="planet-panel">
 <div class="instrument caps"><span>Planetary meeting scheduler</span><span id="mode">● Live</span></div>
-<div class="universe" id="universe"><canvas id="planet" width="800" height="800" aria-hidden="true"></canvas><span class="sun-disc" aria-hidden="true">✳</span><span class="sun-label caps">The sun<br>Declined your invite</span><span class="night-label caps">Do not<br>disturb</span><div class="drag-note" aria-hidden="true">↔ Grab Earth. Change the hour.</div></div>
-<div class="controls"><div class="control-top"><label for="shift">Rotate responsibly.</label><output id="shift-label" for="shift">Now</output></div><input type="range" id="shift" min="-720" max="720" step="15" value="0" aria-label="Shift all cities up to twelve hours back or ahead"><div class="control-bottom"><span>−12 hours</span><button type="button" id="now">Back to now ↗</button><span>+12 hours</span></div></div>
-<p class="schematic">Day/night globe is schematic. City bands are light from 06:00 to 18:00.</p>
+<div class="universe" id="universe"><canvas id="planet" width="800" height="800" aria-hidden="true"></canvas><span class="sun-disc" aria-hidden="true">✳</span><span class="sun-label caps" aria-hidden="true">The sun<br>declined<br>your invite</span><span class="night-label caps" aria-hidden="true">Do not<br>disturb</span><div class="drag-note" aria-hidden="true">↔ Grab Earth.</div></div>
+<div class="controls"><div class="control-top"><label for="shift">Rotate responsibly.</label><output id="shift-label" for="shift" aria-live="off">Now</output></div><input type="range" id="shift" min="-720" max="720" step="15" value="0" aria-label="Shift all cities up to twelve hours back or ahead"><div class="control-bottom"><span>−12 hours</span><button type="button" id="now">Back to now</button><span>+12 hours</span></div></div>
 </div>
-<div class="dispatch"><div class="instrument caps"><span>Reports from the ground</span><span>Local time</span></div><ol id="bands"></ol><div class="verdict"><span class="caps">Meeting damage report</span><h2 id="report">Text, don't call.</h2><p id="damage"></p></div></div>
+<div class="dispatch"><div class="instrument caps"><span>Reports from the ground</span></div><ol id="bands"></ol><div class="verdict"><span class="caps">Meeting damage report</span><h2 id="report"></h2><p id="damage"></p></div></div>
 </div>
 <div class="news"><span class="caps">Breaking /</span><p id="headline">It is already tomorrow somewhere.</p></div>
 </section>
-<section class="product" aria-labelledby="product-title"><div class="product-copy"><p class="caps">Same planet. Pocket edition.</p><h2 id="product-title">Keep your friends.<br>Know their hours.</h2><p>Meridian is a world clock for iPhone and iPad. One band per city, a slider to look ahead or back, and widgets for your Home and Lock Screens.</p><p class="product-joke">“Are you up?” is not a time zone converter.</p><p class="cta">Coming soon to the App Store</p><p class="caps facts">Free · No account · No ads · No data collected</p></div><figure><img src="/meridian/assets/screens/iphone-4.jpg" width="600" height="1304" loading="lazy" alt="Meridian's Hours widget shows London, New York, Tokyo and Sydney, with the hour everyone is awake highlighted in red."><figcaption>The Hours widget finds the next hour everyone is awake.<br>Willing is a separate problem.</figcaption></figure></section>
+<section class="product" aria-labelledby="product-title"><div class="product-copy"><h2 id="product-title">Keep your friends.<br>Know their hours.</h2><p>A world clock for iPhone and iPad, with Home and Lock Screen widgets.</p><p class="product-joke">“Are you up?” is not a time zone converter.</p><p class="cta">Coming soon to the App Store</p><p class="caps facts">No account · No ads · No data collected</p></div><figure><img src="/meridian/assets/screens/iphone-4.jpg" width="600" height="1304" loading="lazy" alt="Meridian's Hours widget shows London, New York, Tokyo and Sydney, with the hour everyone is awake highlighted in red."><figcaption>The Hours widget finds the next hour everyone is awake. Willing is a separate problem.</figcaption></figure></section>
 </main>
 <footer><span class="links"><a href="/">Dully Labs</a><a href="/meridian/privacy/">Privacy</a><a href="/meridian/support/">Support</a><a href="https://dulangaj.com">Developer</a></span><span class="links more"><span>More from Dully Labs:</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/neverpressstart/">Never Press Start</a><a href="/weeklypulse/">Weekly Pulse</a><a href="/pluckit/">PluckIt</a><a href="/notes/">Notes</a></span><span>©︎ <span data-year></span> Dulanga Jayawardena · IT IS ALREADY TOMORROW SOMEWHERE</span></footer>
 <noscript><p class="no-script">Enable JavaScript to spin the planet and see live city times.</p></noscript>
