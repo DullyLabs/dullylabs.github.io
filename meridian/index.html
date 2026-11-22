@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><link rel="canonical" href="https://dullylabs.com/meridian/" /><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f2efe8">
+<title>Meridian · World clock for iPhone and iPad</title>
+<meta name="description" content="Meridian is a world clock for iPhone and iPad. Each city gets its own band, light by day and dark by night, and a slider shows everyone's time up to 12 hours ahead or back.">
+<meta property="og:type" content="website"><meta property="og:url" content="https://dullylabs.com/meridian/"><meta property="og:site_name" content="Dully Labs"><meta property="og:title" content="Meridian · World clock for iPhone and iPad"><meta property="og:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta property="og:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="1024"><meta property="og:image:alt" content="The Meridian app icon."><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Meridian · World clock for iPhone and iPad"><meta name="twitter:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta name="twitter:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta name="twitter:image:alt" content="The Meridian app icon.">
+<link rel="icon" href="/meridian/assets/app-icon.png"><link rel="apple-touch-icon" href="/meridian/assets/app-icon.png">
+<script src="/assets/theme.js"></script>
+<link rel="stylesheet" href="style.css"><script src="script.js" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meridian","url":"https://dullylabs.com/meridian/","operatingSystem":"iOS, iPadOS","applicationCategory":"UtilitiesApplication","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
+</head>
+<body>
+<a class="skip-link" href="#clock">Skip to the clock</a>
+<header class="masthead">
+  <a class="brand caps" href="/meridian/"><img src="/meridian/assets/app-icon.png" alt="" width="32" height="32"> Meridian</a>
+  <div class="masthead-right">
+    <span class="caps soon">Coming soon</span>
+    <button class="theme-toggle" type="button" aria-label="Use dark appearance" hidden>
+      <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14A8.6 8.6 0 0 1 10 3.5 8.6 8.6 0 1 0 20.5 14Z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+    </button>
+  </div>
+</header>
+<main>
+<section class="hero" aria-labelledby="title">
+  <div class="hero-copy">
+    <p class="caps eyebrow"><i class="live-dot" aria-hidden="true"></i> Elsewhere, live</p>
+    <h1 id="title">London is finishing lunch. Tokyo is turning in.</h1>
+    <p class="lead">Meridian is a world clock for iPhone and iPad. Each of your cities gets its own band: light while it’s day there, dark while it’s night.</p>
+    <p class="dare">That headline runs on the real time in both cities. Drag the slider and it changes its story.</p>
+    <p class="cta">Coming soon to the App Store</p>
+    <p class="caps facts">Free · No account · No ads · No data collected</p>
+  </div>
+
+  <div class="clock" id="clock" role="group" aria-label="Live world clock">
+    <p class="caps clock-title">Meridian</p>
+    <ol class="bands" id="bands"></ol>
+    <form class="add" id="add" autocomplete="off">
+      <label class="caps" for="city">Add a city</label>
+      <div class="add-row">
+        <input id="city" name="city" list="zones" placeholder="Lisbon, or Asia/Seoul" autocapitalize="words" spellcheck="false">
+        <button type="submit">Add</button>
+      </div>
+      <datalist id="zones"></datalist>
+      <p class="add-msg" id="add-msg" role="status"></p>
+    </form>
+    <div class="shift">
+      <div class="shift-top">
+        <output class="shift-label" id="shift-label" for="shift">Now</output>
+        <button class="now" id="now" type="button" hidden>Now</button>
+      </div>
+      <div class="shift-row">
+        <span aria-hidden="true">−12h</span>
+        <input type="range" id="shift" min="-720" max="720" step="15" value="0" aria-label="Shift every city’s time, up to 12 hours back or ahead">
+        <span aria-hidden="true">+12h</span>
+      </div>
+      <p class="report" id="report"></p>
+    </div>
+  </div>
+</section>
+
+<section class="hours" aria-labelledby="hours-title">
+  <div class="hours-copy">
+    <h2 id="hours-title">Find an hour that works.</h2>
+    <p>The Hours widget shows when each city is asleep, awake or at work, and the next hour everyone is up. This one uses the cities on your clock above.</p>
+    <ul class="key caps" aria-label="Key">
+      <li><i class="k-asleep"></i> Asleep</li><li><i class="k-awake"></i> Awake</li><li><i class="k-work"></i> At work</li><li><i class="k-hit"></i> All awake</li>
+    </ul>
+  </div>
+  <div class="wallpaper">
+    <div class="widget">
+      <p class="caps verdict" id="verdict">All awake</p>
+      <div id="rows"></div>
+    </div>
+    <p class="aside" id="aside"></p>
+  </div>
+</section>
+
+<section class="shots" aria-labelledby="shots-title">
+  <h2 id="shots-title">The real thing.</h2>
+  <p>Add cities by name or time zone, give each widget its own set, and keep one on the Lock Screen. It follows your 12 or 24-hour setting.</p>
+  <div class="reel" role="region" aria-label="App screenshots" tabindex="0">
+    <img src="/meridian/assets/screens/iphone-1.jpg" width="600" height="1304" loading="lazy" alt="Meridian with London and New York in light bands, Tokyo and Sydney in dark bands marked Tomorrow.">
+    <img src="/meridian/assets/screens/iphone-3.jpg" width="600" height="1304" loading="lazy" alt="The slider dragged three hours ahead: London has gone dark and Sydney has turned light.">
+    <img src="/meridian/assets/screens/iphone-4.jpg" width="600" height="1304" loading="lazy" alt="The Hours widget: a row of hours per city, with the one hour all four are awake marked in red.">
+    <img src="/meridian/assets/screens/iphone-5.jpg" width="600" height="1304" loading="lazy" alt="A Lock Screen widget showing London, New York and Tokyo times under the date.">
+  </div>
+</section>
+
+<section class="closing">
+  <h2>Stop doing the maths<br>on your fingers.</h2>
+  <p class="cta">Coming soon to the App Store</p>
+  <p class="caps facts">For iPhone and iPad · Free · No account · No ads · No data collected</p>
+</section>
+</main>
+<footer><span class="links"><a href="/">Dully Labs</a><a href="/meridian/privacy/">Privacy</a><a href="/meridian/support/">Support</a><a href="https://dulangaj.com">Developer</a></span><span class="links more"><span>More from Dully Labs:</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/neverpressstart/">Never Press Start</a><a href="/weeklypulse/">Weekly Pulse</a><a href="/pluckit/">PluckIt</a><a href="/notes/">Notes</a></span><span>©︎ <span data-year></span> Dulanga Jayawardena · IT IS ALREADY TOMORROW SOMEWHERE</span></footer>
+<noscript><div class="no-script">The live clock needs JavaScript. Meridian itself shows each of your cities as a band, light by day and dark by night.</div></noscript>
+</body></html>
