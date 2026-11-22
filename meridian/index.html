@@ -8,29 +8,472 @@
 <meta property="og:type" content="website"><meta property="og:url" content="https://dullylabs.com/meridian/"><meta property="og:site_name" content="Dully Labs"><meta property="og:title" content="Meridian · World clock for iPhone and iPad"><meta property="og:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta property="og:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="1024"><meta property="og:image:alt" content="The Meridian app icon."><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Meridian · World clock for iPhone and iPad"><meta name="twitter:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta name="twitter:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta name="twitter:image:alt" content="The Meridian app icon.">
 <link rel="icon" href="/meridian/assets/app-icon.png"><link rel="apple-touch-icon" href="/meridian/assets/app-icon.png">
 <script src="/assets/theme.js"></script>
-<link rel="stylesheet" href="style.css"><script type="module" src="script.js"></script>
+<script>document.documentElement.classList.add("js")</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meridian","url":"https://dullylabs.com/meridian/","operatingSystem":"iOS, iPadOS","applicationCategory":"UtilitiesApplication","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
+<style>
+/* Meridian: the app's paper, ink and one signal red. The globe is three.js, lit by today's sun, and dragging it moves time. */
+:root{color-scheme:light;--bg:#f2efe8;--ink:#141412;--muted:#6d6c68;--rule:#14141226;--signal:#e8452c;--signal-text:#c8341d;--outline:#14141238;--glass:#f2efe8b8;--glass-edge:#ffffff99;
+  --day:#f2efe8;--day-ink:#141412;--night:#1b1c1b;--night-ink:#f2efe8;
+  --cond:"Avenir Next Condensed","Arial Narrow","Helvetica Neue",sans-serif;--mono:ui-monospace,monospace;--sans:system-ui,-apple-system,sans-serif;--gutter:40px}
+:root[data-theme=dark]{color-scheme:dark;--bg:#141412;--ink:#f2efe8;--muted:#999792;--rule:#f2efe826;--signal:#ff7a5c;--signal-text:#ff7a5c;--outline:#f2efe855;--glass:#1e1e1cb8;--glass-edge:#ffffff1f;--day:#2e2e2a;--day-ink:#f2efe8;--night:#050505}
+@media(max-width:760px){:root{--gutter:16px}}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+p,h1,h2,figure,ol{margin:0}
+p,figcaption{text-wrap:pretty}
+h1,h2,.gossip,#headline{text-wrap:balance}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:is(a,button,input):focus-visible{outline:3px solid var(--signal);outline-offset:4px}
+[hidden]{display:none!important}
+.caps{font:600 11px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+.skip-link{position:absolute;left:-9999px;padding:12px;background:var(--ink);color:var(--bg);z-index:5}
+.skip-link:focus{left:16px;top:16px}
+.no-script{padding:24px;text-align:center}
+.wrap{max-width:1600px;margin:auto;padding-inline:var(--gutter)}
+.glass{background:var(--glass);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--rule);box-shadow:inset 0 1px 0 var(--glass-edge),0 18px 40px -24px #0006;border-radius:18px}
+
+.masthead{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--rule)}
+.brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none}
+.brand img{border-radius:8px}
+.theme-toggle{width:44px;height:44px;background:none;border:1px solid var(--muted);border-radius:50%;font-size:22px}
+
+.hero{display:grid;grid-template-columns:1fr auto;align-items:end;gap:8px 24px;padding:32px 0 8px}
+.hero>div{grid-column:1/-1}
+.edition{color:var(--signal-text);margin-bottom:12px}
+h1{font:850 clamp(54px,8.6vw,124px)/.9 var(--cond);letter-spacing:-.03em}
+h1 em{color:var(--signal);font-style:normal}
+/* One line from tablet up: CSS guesses the size for the condensed face, then the script measures and fits whatever font loaded. */
+@media(min-width:761px){h1{font-size:min(170px,(min(100vw,1600px) - 2 * var(--gutter) - 20px) / 11.6);white-space:nowrap}h1 br{display:none}.intro{grid-column:2}}
+.intro{font:400 20px/1.4 var(--sans);max-width:24ch;text-align:right}
+
+/* The stage: globe in the middle, glass instruments floating over it. */
+.stage{position:relative;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:24px;align-items:start;padding:16px 0 40px}
+.universe{position:relative;width:min(100%,calc(100svh - 190px),860px);justify-self:center;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;isolation:isolate}
+.universe.dragging{cursor:grabbing}
+.universe.flat{aspect-ratio:auto;cursor:auto;width:100%}
+.flat .sky,.flat .grab,.flat::before{display:none}
+.flat .instrument{position:static;display:inline-flex;margin-bottom:12px}
+.flat .dock{position:relative;left:auto;right:auto}
+.universe::before{content:"";position:absolute;inset:4% -6% 4% 30%;z-index:-1;background:radial-gradient(closest-side at 70% 45%,color-mix(in srgb,var(--signal) 26%,transparent),transparent);filter:blur(10px)}
+.sky{position:relative;aspect-ratio:1}
+#planet{display:block;width:100%;height:100%}
+.pin{position:absolute;left:0;top:0;font:700 11px/1 var(--mono);letter-spacing:.08em;padding:4px 6px;border-radius:6px;background:var(--glass);border:1px solid var(--rule);pointer-events:none;white-space:nowrap;transition:opacity .2s}
+.instrument{position:absolute;left:0;top:0;display:flex;gap:12px;padding:8px 12px;z-index:2}
+#mode{color:var(--signal-text)}
+.sun-label{position:absolute;right:0;top:6%;text-align:right;color:var(--signal-text)}
+.night-label{position:absolute;left:0;top:13%;color:var(--muted)}
+.dock{position:absolute;left:6%;right:6%;bottom:0;padding:14px 18px 10px;z-index:2}
+.control-top,.control-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.control-top label{font:600 15px/1.3 var(--sans)}
+.control-top output{color:var(--signal-text);font:700 15px/1 var(--mono);white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;margin:0;background:none;cursor:ew-resize}
+input[type=range]::-webkit-slider-runnable-track{height:14px;background:linear-gradient(var(--muted),var(--muted)) center/2px 14px no-repeat,linear-gradient(var(--rule),var(--rule)) center/100% 2px no-repeat}
+input[type=range]::-moz-range-track{height:14px;background:linear-gradient(var(--muted),var(--muted)) center/2px 14px no-repeat,linear-gradient(var(--rule),var(--rule)) center/100% 2px no-repeat}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-4px;border:0;border-radius:50%;background:var(--signal);box-shadow:0 0 0 6px color-mix(in srgb,var(--signal) 22%,transparent)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:50%;background:var(--signal)}
+.control-bottom{color:var(--muted);min-height:44px;flex-wrap:wrap}
+#now{background:var(--ink);color:var(--bg);border:0;border-radius:30px;min-height:36px;padding:0 16px;font:600 13px/1 var(--sans)}
+
+.dispatch{display:grid;gap:12px}
+.dispatch>.caps{color:var(--muted);padding:4px 4px 0}
+#bands{list-style:none;padding:0;display:grid;gap:10px}
+.band{padding:12px 16px;border-radius:16px;background:var(--day);color:var(--day-ink);border:1px solid var(--rule);transition:background .6s,color .6s}
+.band.night{background:var(--night);color:var(--night-ink);border-color:#0000}
+.band-top{display:flex;justify-content:space-between;gap:8px}
+.band-body{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:16px}
+.band-time{white-space:nowrap;font:850 50px/1.1 var(--cond);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.band-time i{font-style:normal;font-weight:400}
+.gossip{line-height:1.35;font-size:15px}
+.verdict{padding:16px 18px}
+.verdict .caps{display:block;color:var(--signal-text)}
+.verdict h2{font:800 30px/1.15 var(--cond);letter-spacing:-.02em;margin:4px 0}
+.verdict p{font-size:14px;color:var(--muted)}
+.news{display:flex;align-items:baseline;gap:24px;padding:20px 0;border-block:1px solid var(--rule)}
+.news .caps{color:var(--signal-text);flex-shrink:0}
+#headline{font:400 20px/1.4 var(--sans)}
+
+/* Product: a giant clipped word behind a widget that tilts toward the pointer. */
+.product{padding:96px 0 0}
+.product-grid{display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:40px}
+/* The meridian word runs the full width under the product, never behind it. */
+/* SVG text with textLength, so any fallback font is squeezed to the same width. */
+.giant{display:block;width:100%;height:auto;margin-top:72px;overflow:visible;pointer-events:none;user-select:none}
+.giant text{font:900 230px var(--cond);letter-spacing:.03em;fill:none;stroke:var(--outline);stroke-width:1.5px;vector-effect:non-scaling-stroke}
+.product-copy{position:relative}
+.product h2{font:800 clamp(40px,5vw,64px)/1 var(--cond);letter-spacing:-.02em;margin-bottom:24px}
+.product-copy>p{max-width:52ch;color:var(--muted)}
+.product-joke{margin-top:16px;font-style:italic}
+.cta{display:inline-block;margin-top:24px;padding:8px 16px;border:1px solid var(--signal-text);border-radius:30px;color:var(--signal-text)}
+.facts{margin-top:16px}
+.facts span{white-space:nowrap}
+.tilt{position:relative;justify-self:center;width:min(340px,100%);perspective:900px}
+.tilt-card{position:relative;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(3deg);transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1);border-radius:24px;overflow:hidden;box-shadow:0 40px 60px -30px #0007}
+.tilt-card img{display:block;width:100%;height:auto}
+.tilt-card::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--gx,50%) var(--gy,0%),#ffffff59,transparent 55%);mix-blend-mode:soft-light;pointer-events:none}
+figcaption{margin-top:20px;font-size:13px;text-align:center;color:var(--muted)}
+
+footer{border-top:1px solid var(--rule);padding-block:24px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;color:var(--muted);font-size:13px}
+.links{display:flex;flex-wrap:wrap;gap:0 24px}
+.links a{display:inline-flex;align-items:center;min-height:44px}
+.more{order:3;flex-basis:100%;align-items:center}
+.credit{order:4;display:flex;flex-wrap:wrap;gap:0 12px;padding:12px 0}
+
+.js .rise{opacity:0;transform:translateY(24px)}
+.js .rise.in{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+
+@media(max-width:980px){
+  .stage{grid-template-columns:1fr}
+  .universe{width:min(100%,640px)}
+}
+@media(max-width:760px){
+  .masthead{height:64px}
+  .hero{grid-template-columns:1fr;padding-top:24px}
+  .intro{text-align:left;font-size:18px}
+  .universe{width:100%}
+  .sun-label{top:auto;bottom:2%}.night-label{top:4%}
+  .instrument{display:none}
+  .dock{position:relative;left:auto;right:auto;margin-top:12px}
+  #you{flex-basis:100%;order:-1}
+  .band-time{font-size:44px}
+  .news{flex-direction:column;gap:4px}
+  .product{padding-top:64px}
+  .product-grid{grid-template-columns:1fr}
+  .giant{margin-top:48px}
+  .tilt{max-width:260px}
+  .more>span{flex-basis:100%}
+  footer{flex-direction:column;align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.js .rise{opacity:1;transform:none}.tilt-card{transform:rotate(3deg)}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#shift">Skip to time control</a>
-<header class="masthead"><a class="brand caps" href="/meridian/"><img src="/meridian/assets/app-icon.png" alt="" width="32" height="32"> Meridian</a><div class="masthead-right"><button class="theme-toggle" type="button" aria-label="Use dark appearance" hidden>◐</button></div></header>
+<div class="wrap">
+<header class="masthead"><a class="brand caps" href="/meridian/"><img src="/meridian/assets/app-icon.png" alt="" width="32" height="32"> Meridian</a><button class="theme-toggle" type="button" aria-label="Use dark appearance" hidden>◐</button></header>
 <main>
-<section class="hero" aria-labelledby="title">
-<div class="edition caps"><span>One planet. Terrible availability.</span></div>
-<h1 id="title">It’s always 3am <br><em>somewhere.</em></h1>
-<div class="intro"><p>Spin the Earth.<br>See who you’re about to wake.</p></div>
-<div class="mission" id="clock">
-<div class="planet-panel">
-<div class="instrument caps"><span>Planetary meeting scheduler</span><span id="mode">● Live</span></div>
-<div class="universe" id="universe"><canvas id="planet" width="800" height="800" aria-hidden="true"></canvas><span class="sun-label caps" aria-hidden="true">The sun<br>declined<br>your invite</span><span class="night-label caps" aria-hidden="true">Do not<br>disturb</span><div class="drag-note" aria-hidden="true">↔ Grab Earth.</div></div>
-<div class="controls"><div class="control-top"><label for="shift">Rotate responsibly.</label><output id="shift-label" for="shift" aria-live="off">Now</output></div><input type="range" id="shift" min="-720" max="720" step="15" value="0" aria-label="Shift every city’s time"><p class="you caps" id="you"></p><div class="control-bottom"><span>−12 hours</span><button type="button" id="now">Back to now</button><span>+12 hours</span></div></div>
+<section aria-labelledby="title">
+<div class="hero">
+<div><p class="edition caps">One planet. Terrible availability.</p><h1 id="title">It’s always 3am <br><em>somewhere.</em></h1></div>
+<p class="intro">Spin the Earth.<br>See who you’re about to wake.</p>
 </div>
-<div class="dispatch"><div class="instrument caps"><span>Reports from the ground</span></div><ol id="bands"></ol><div class="verdict"><span class="caps">Meeting damage report</span><h2 id="report"></h2><p id="damage"></p></div></div>
+<div class="stage" id="clock">
+<div class="universe" id="universe">
+<div class="sky">
+<canvas id="planet" aria-hidden="true"></canvas>
+<div id="pins" aria-hidden="true"></div>
+<span class="sun-label caps" aria-hidden="true">The sun<br>declined<br>your invite</span><span class="night-label caps" aria-hidden="true">Do not<br>disturb</span>
+</div>
+<div class="instrument glass caps"><span>Planetary meeting scheduler</span><span id="mode">● Live</span></div>
+<div class="dock glass">
+<div class="control-top"><label for="shift"><span class="grab">↔ Grab Earth. </span>Rotate responsibly.</label><output id="shift-label" for="shift" aria-live="off">Now</output></div>
+<input type="range" id="shift" min="-720" max="720" step="15" value="0" aria-describedby="you">
+<div class="control-bottom"><span class="caps">−12h</span><span class="caps" id="you"></span><button type="button" id="now">Back to now</button><span class="caps">+12h</span></div>
+</div>
+</div>
+<div class="dispatch">
+<span class="caps">Reports from the ground</span>
+<ol id="bands"></ol>
+<div class="verdict glass"><span class="caps">Meeting damage report</span><h2 id="report"></h2><p id="damage"></p></div>
+</div>
 </div>
 <div class="news"><span class="caps">Breaking /</span><p id="headline">It is already tomorrow somewhere.</p></div>
 </section>
-<section class="product" aria-labelledby="product-title"><div class="product-copy"><h2 id="product-title">Keep your friends.<br>Know their hours.</h2><p>A world clock for iPhone and iPad, with Home and Lock&nbsp;Screen widgets.</p><p class="product-joke">“Are you up?” is not a time zone converter.</p><p><span class="cta caps">Coming soon to the App Store</span></p><p class="caps facts"><span>No account</span> · <span>No ads</span> · <span>No data collected</span></p></div><figure><img src="/meridian/assets/screens/hours-widget.webp" width="964" height="1346" loading="lazy" alt="Meridian's Hours widget shows London, New York, Tokyo and Sydney, with the hour everyone is awake highlighted in red."><figcaption>Finds when everyone’s awake.<br>Willing is a separate problem.</figcaption></figure></section>
+<section class="product" aria-labelledby="product-title">
+<div class="product-grid">
+<div class="product-copy rise"><h2 id="product-title">Keep your friends.<br>Know their hours.</h2><p>A world clock for iPhone and iPad, with Home and Lock&nbsp;Screen widgets.</p><p class="product-joke">“Are you up?” is not a time zone converter.</p><p><span class="cta caps">Coming soon to the App Store</span></p><p class="caps facts"><span>No account</span> · <span>No ads</span> · <span>No data collected</span></p></div>
+<figure class="tilt rise"><div class="tilt-card"><img src="/meridian/assets/screens/hours-widget.webp" width="964" height="1346" loading="lazy" alt="Meridian's Hours widget shows London, New York, Tokyo and Sydney, with the hour everyone is awake highlighted in red."></div><figcaption>Finds when everyone’s awake.<br>Willing is a separate problem.</figcaption></figure>
+</div>
+<svg class="giant" viewBox="0 0 1000 190" aria-hidden="true"><text x="500" y="178" text-anchor="middle" textLength="980" lengthAdjust="spacingAndGlyphs">MERIDIAN</text></svg>
+</section>
 </main>
 <footer><span class="links"><a href="/">Dully Labs</a><a href="/meridian/privacy/">Privacy</a><a href="/meridian/support/">Support</a><a href="https://dulangaj.com">Developer</a></span><span class="links more"><span>More from Dully Labs:</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/neverpressstart/">Never Press Start</a><a href="/weeklypulse/">Weekly Pulse</a><a href="/pluckit/">PluckIt</a><a href="/notes/">Notes</a></span><span class="credit"><span>©︎ <span data-year></span> Dulanga Jayawardena</span><span>It’s already tomorrow somewhere.</span></span></footer>
+</div>
 <noscript><p class="no-script">Enable JavaScript to spin the planet and see live city times.</p></noscript>
+
+<script type="module">
+import { CITIES, COPY } from './cities.js';
+
+const $ = id => document.getElementById(id);
+const DAY = 1440, STEP = 15, RAD = Math.PI / 180;
+const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HOME = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const HOME_NAME = HOME.split('/').pop().replace(/_/g, ' ');
+const bands = CITIES.filter(city => city.band);
+const pad = n => String(n).padStart(2, '0');
+// The slider's view of any shift, in (−12h, +12h]: past +12h the clock comes round to −12h, as on a dial.
+const wrap = minutes => { const r = ((minutes + DAY / 2) % DAY + DAY) % DAY - DAY / 2; return r === -DAY / 2 ? DAY / 2 : r; };
+const snap = minutes => Math.round(minutes / STEP) * STEP;
+
+const formats = new Map();
+function wall(zone, at) {
+  if (!formats.has(zone)) formats.set(zone, new Intl.DateTimeFormat('en-GB', { timeZone: zone, hourCycle: 'h23', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }));
+  const p = Object.fromEntries(formats.get(zone).formatToParts(at).map(part => [part.type, +part.value]));
+  return { h: p.hour % 24, m: p.minute, day: Date.UTC(p.year, p.month - 1, p.day) / 864e5 };
+}
+const asleep = ({ sleep: [from, to] }, h) => from < to ? h >= from && h < to : h >= from || h < to;
+const dayWord = diff => ({ '-1': 'Yesterday', 0: 'Today', 1: 'Tomorrow' })[diff] ?? (diff > 0 ? `In ${diff} days` : `${-diff} days ago`);
+function offsetLabel(shift, long) {
+  if (!shift) return 'Now';
+  const total = Math.abs(shift), h = Math.floor(total / 60), m = total % 60;
+  if (long) return `${[h && `${h} hour${h > 1 ? 's' : ''}`, m && `${m} minutes`].filter(Boolean).join(' ')} ${shift > 0 ? 'ahead' : 'back'}`;
+  return `${shift > 0 ? '+' : '−'}${h}h ${pad(m)}m`;
+}
+const list = new Intl.ListFormat('en');
+
+for (const city of bands) {
+  city.el = document.createElement('li');
+  city.el.className = 'band';
+  city.el.innerHTML = '<div class="band-top caps"><span></span><span class="date"></span></div><div class="band-body"><p class="band-time"><b></b><i></i></p><p class="gossip"></p></div>';
+  city.el.querySelector('span').textContent = city.name;
+  $('bands').append(city.el);
+}
+document.querySelector('[data-year]').textContent = new Date().getFullYear();
+
+// shift is fractional while the globe spins; the words, label and slider all show the same wrapped, 15-minute value.
+let shift = 0, fromSlider = false, renderedMinute = NaN;
+const globe = { draw() {} };
+function render() {
+  const shown = wrap(snap(shift)), at = new Date(Date.now() + shown * 6e4), you = wall(HOME, at);
+  for (const city of bands) {
+    const t = city.time = wall(city.zone, at), el = city.el;
+    el.classList.toggle('night', t.h < 6 || t.h >= 18);
+    el.querySelector('b').textContent = pad(t.h);
+    el.querySelector('i').textContent = ':' + pad(t.m);
+    el.querySelector('.date').textContent = t.day === you.day ? '' : dayWord(t.day - you.day);
+    el.querySelector('.gossip').textContent = city.jokes[t.h];
+  }
+  const sleeping = bands.filter(city => asleep(city, city.time.h));
+  $('report').textContent = sleeping.length ? COPY.sorry(sleeping[0].name) : COPY.allAwake;
+  $('damage').textContent = sleeping.length ? COPY.asleepNote(list.format(sleeping.slice(1).map(c => c.name))) : COPY.allAwakeNote;
+  $('headline').textContent = sleeping.length ? sleeping[0].asleep : COPY.headline;
+  $('you').textContent = `You, ${HOME_NAME}: ${pad(you.h)}:${pad(you.m)} ${shown ? dayWord(you.day - wall(HOME, new Date()).day) : ''}`.trim();
+  $('shift-label').textContent = offsetLabel(shown);
+  if (!fromSlider) $('shift').value = shown;
+  $('shift').setAttribute('aria-valuetext', offsetLabel(shown, true));
+  $('mode').textContent = shown ? '○ Time travel' : '● Live';
+  $('now').hidden = !shown;
+  renderedMinute = Math.floor(at / 6e4);
+  globe.draw();
+}
+const setShift = minutes => { shift = minutes; render(); };
+$('shift').addEventListener('input', e => { stopSpin(); fromSlider = true; setShift(+e.target.value); fromSlider = false; });
+$('now').addEventListener('click', () => { stopSpin(); setShift(0); });
+// The words only change on the minute, so the idle tick does nothing in between.
+setInterval(() => {
+  if (!document.hidden && Math.floor((Date.now() + wrap(snap(shift)) * 6e4) / 6e4) !== renderedMinute) render();
+}, 1000);
+
+// Inertial drag: the globe follows the finger, keeps spinning after release and settles on a 15-minute step.
+const universe = $('universe');
+let drag = null, velocity = 0, spinning = 0, tiltTarget = 0, tilt = 0, last = 0, intro = 0;
+const MAX_SPEED = 40; // minutes per 60 Hz frame
+const pxPerMinute = () => 2 * Math.PI * universe.clientWidth * 0.3 / DAY;
+function stopSpin() { cancelAnimationFrame(spinning); spinning = 0; velocity = 0; globe.stopIntro?.(); }
+// Frame-rate independent: velocity is minutes per 60 Hz frame, scaled by the real frame time.
+function coast(now = performance.now()) {
+  const k = Math.min(4, (now - (last || now - 16.7)) / 16.7); last = now;
+  velocity *= 0.93 ** k; tilt += (tiltTarget - tilt) * Math.min(1, 0.12 * k);
+  shift += velocity * k;
+  if (Math.abs(velocity) < 0.4 && Math.abs(tilt - tiltTarget) < 0.002) { spinning = 0; tilt = tiltTarget; setShift(wrap(snap(shift))); return; }
+  render(); spinning = requestAnimationFrame(coast);
+}
+const startCoast = () => { last = 0; spinning = requestAnimationFrame(coast); };
+universe.addEventListener('pointerdown', e => {
+  if (e.button || e.target.closest('.dock') || universe.classList.contains('flat')) return;
+  stopSpin();
+  drag = { id: e.pointerId, x: e.clientX, y: e.clientY, shift, t: performance.now() };
+  universe.setPointerCapture(e.pointerId);
+  universe.classList.add('dragging');
+});
+universe.addEventListener('pointermove', e => {
+  if (drag?.id !== e.pointerId) return;
+  const next = drag.shift + (e.clientX - drag.x) / pxPerMinute(), now = performance.now();
+  velocity = Math.max(-MAX_SPEED, Math.min(MAX_SPEED, (next - shift) / Math.max(1, now - drag.t) * 16)); drag.t = now;
+  tiltTarget = Math.max(-0.35, Math.min(0.35, (e.clientY - drag.y) / 600));
+  tilt = tiltTarget;
+  setShift(next);
+});
+const endDrag = () => {
+  if (!drag) return;
+  if (performance.now() - drag.t > 80) velocity = 0; // the finger paused before lifting: no fling
+  drag = null; universe.classList.remove('dragging'); tiltTarget = 0;
+  if (calm) { tilt = 0; velocity = 0; setShift(wrap(snap(shift))); } else startCoast();
+};
+for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) universe.addEventListener(type, endDrag);
+
+// Product widget tilts toward a fine pointer, with a moving glare.
+const card = document.querySelector('.tilt-card');
+if (!calm && matchMedia('(hover: hover)').matches) {
+  card.addEventListener('pointermove', e => {
+    const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    card.style.cssText = `--ry:${(x - .5) * 16}deg;--rx:${(.5 - y) * 12}deg;--gx:${x * 100}%;--gy:${y * 100}%`;
+  });
+  card.addEventListener('pointerleave', () => card.style.cssText = '');
+}
+const reveal = new IntersectionObserver(entries => entries.forEach(({ target, isIntersecting }) => {
+  if (isIntersecting) { target.classList.add('in'); reveal.unobserve(target); }
+}), { threshold: .15 });
+document.querySelectorAll('.rise').forEach((el, i) => { el.style.transitionDelay = `${i * .12}s`; reveal.observe(el); });
+
+render();
+
+// One-line title from tablet up: if the condensed face is missing, shrink the fallback until it fits.
+const title = $('title'), wide = matchMedia('(min-width: 761px)');
+function fitTitle() {
+  title.style.fontSize = '';
+  if (!wide.matches) return;
+  const range = document.createRange(); range.selectNodeContents(title);
+  const width = range.getBoundingClientRect().width, room = title.clientWidth;
+  if (width > room) title.style.fontSize = `${parseFloat(getComputedStyle(title).fontSize) * room / width * .98}px`;
+}
+document.fonts.ready.then(fitTitle);
+new ResizeObserver(fitTitle).observe(title.parentElement);
+
+// The globe, loaded after the words so the page works if WebGL or the CDN doesn't.
+try {
+  const canvas = $('planet');
+  if (!document.createElement('canvas').getContext('webgl2')) throw new Error('WebGL 2 is off');
+  const THREE = await import('three');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(30, 1, 0.1, 20);
+  const CAM_DIST = 6.21, CAM_PITCH = 0.064;
+  const earth = new THREE.Group(); scene.add(earth);
+  const sun = new THREE.Vector3();
+  const colors = { day: new THREE.Color(), night: new THREE.Color(), ink: new THREE.Color(), signal: new THREE.Color() };
+  const toVec = (lon, lat, r = 1) => new THREE.Vector3(r * Math.cos(lat * RAD) * Math.sin(lon * RAD), r * Math.sin(lat * RAD), r * Math.cos(lat * RAD) * Math.cos(lon * RAD));
+
+  const lit = `vec3 n = normalize(vNormal); float l = dot(n, sun); float t = smoothstep(-.06, .1, l);`;
+  const ocean = new THREE.ShaderMaterial({
+    uniforms: { sun: { value: sun }, day: { value: colors.day }, night: { value: colors.night }, rim: { value: colors.signal } },
+    vertexShader: `varying vec3 vNormal; varying vec3 vView; void main(){ vec4 w = modelMatrix * vec4(position,1.); vNormal = normalize(mat3(modelMatrix) * normal); vView = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `uniform vec3 sun, day, night, rim; varying vec3 vNormal; varying vec3 vView; void main(){ ${lit} vec3 c = mix(night, day, t); float f = pow(1. - max(dot(n, vView), 0.), 3.); c += rim * f * .55 * t + day * f * .12; gl_FragColor = vec4(c, 1.); }`
+  });
+  earth.add(new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), ocean));
+
+  // Land: one instanced dot every 2.6 degrees inside rough continent outlines, lit by the same sun.
+  const LANDS = [
+    [[-168,70],[-140,70],[-125,58],[-123,40],[-110,30],[-98,18],[-88,16],[-81,8],[-78,22],[-66,45],[-54,52],[-80,65],[-110,72],[-168,70]],
+    [[-81,10],[-65,9],[-48,-1],[-35,-8],[-43,-23],[-54,-40],[-69,-55],[-76,-28],[-81,10]],
+    [[-52,60],[-43,60],[-20,77],[-40,84],[-60,76],[-52,60]],
+    [[-17,36],[10,37],[35,30],[50,12],[42,-12],[30,-34],[18,-35],[10,-16],[-2,4],[-16,14],[-17,36]],
+    [[-10,36],[-10,59],[5,58],[20,71],[45,68],[70,74],[110,72],[160,66],[179,52],[142,45],[130,30],[120,20],[108,3],[96,18],[78,7],[65,25],[42,30],[30,40],[10,45],[-10,36]],
+    [[112,-22],[116,-34],[135,-36],[153,-27],[145,-13],[130,-12],[112,-22]],
+    [[130,32],[141,46],[145,43],[140,35],[130,32]], [[-8,50],[-5,59],[1,53],[-8,50]]
+  ];
+  const inside = ([x, y], poly) => poly.reduce((hit, [x1, y1], i) => {
+    const [x2, y2] = poly[(i + 1) % poly.length];
+    return (y1 > y) !== (y2 > y) && x < x1 + (y - y1) * (x2 - x1) / (y2 - y1) ? !hit : hit;
+  }, false);
+  const dots = [];
+  for (let lat = -58; lat <= 82; lat += 2.6)
+    for (let lon = -180; lon < 180; lon += 2.6 / Math.max(Math.cos(lat * RAD), 0.3))
+      if (LANDS.some(poly => inside([lon, lat], poly))) dots.push(toVec(lon, lat, 1.004));
+  const land = new THREE.InstancedMesh(new THREE.CircleGeometry(0.011, 8), new THREE.ShaderMaterial({
+    uniforms: { sun: { value: sun }, ink: { value: colors.ink }, night: { value: colors.day } },
+    vertexShader: `varying vec3 vNormal; void main(){ vec4 w = modelMatrix * instanceMatrix * vec4(position,1.); vNormal = normalize((modelMatrix * instanceMatrix * vec4(0.,0.,0.,1.)).xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: `uniform vec3 sun, ink, night; varying vec3 vNormal; void main(){ ${lit} gl_FragColor = vec4(mix(night * .55, ink, t), mix(.45, 1., t)); }`,
+    transparent: true
+  }), dots.length);
+  const m = new THREE.Object3D();
+  dots.forEach((p, i) => { m.position.copy(p); m.lookAt(p.clone().multiplyScalar(2)); m.updateMatrix(); land.setMatrixAt(i, m.matrix); });
+  earth.add(land);
+
+  // Graticule every 30 degrees.
+  const grid = [];
+  for (let lat = -60; lat <= 60; lat += 30) for (let lon = 0; lon < 360; lon += 3) grid.push(toVec(lon, lat, 1.002), toVec(lon + 3, lat, 1.002));
+  for (let lon = 0; lon < 360; lon += 30) for (let lat = -90; lat < 90; lat += 3) grid.push(toVec(lon, lat, 1.002), toVec(lon, lat + 3, 1.002));
+  const gridMat = new THREE.LineBasicMaterial({ transparent: true, opacity: .14 });
+  earth.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(grid), gridMat));
+
+  // City pins with HTML labels that hide on the far side.
+  const pinMat = new THREE.MeshBasicMaterial();
+  const pins = CITIES.map(city => {
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.022, 16, 12), pinMat);
+    mesh.position.copy(toVec(city.lon, city.lat, 1.01)); earth.add(mesh);
+    const label = document.createElement('span'); label.className = 'pin'; label.textContent = city.code; $('pins').append(label);
+    return { mesh, label };
+  });
+
+  // A dashed orbit with the sun riding on it. One segment per dash; the half behind the Earth is depth-tested
+  // so it passes behind it, the near half always draws on top.
+  const ORBIT_R = 1.45, ORBIT_TILT = new THREE.Euler(0.22, 0, -0.2), SEGMENTS = 76, DASH = 0.42;
+  const near = [], far = [];
+  for (let i = 0; i < SEGMENTS; i++) {
+    const a = i / SEGMENTS * Math.PI * 2, b = a + DASH / SEGMENTS * Math.PI * 2;
+    const p = new THREE.Vector3(Math.cos(a) * ORBIT_R, 0, Math.sin(a) * ORBIT_R).applyEuler(ORBIT_TILT);
+    const q = new THREE.Vector3(Math.cos(b) * ORBIT_R, 0, Math.sin(b) * ORBIT_R).applyEuler(ORBIT_TILT);
+    (p.z + q.z > 0 ? near : far).push(p, q);
+  }
+  const nearMat = new THREE.LineBasicMaterial({ depthTest: false }), farMat = new THREE.LineBasicMaterial();
+  const nearLine = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(near), nearMat); nearLine.renderOrder = 2;
+  scene.add(nearLine, new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(far), farMat));
+  const sunDot = new THREE.Mesh(new THREE.SphereGeometry(0.06, 24, 16), pinMat); scene.add(sunDot);
+
+  const SUN_AZ = 62 * RAD; // where the sun sits in the picture: right of the viewer, slightly in front
+  sunDot.position.set(Math.sin(SUN_AZ) * ORBIT_R, 0, Math.cos(SUN_AZ) * ORBIT_R).applyEuler(ORBIT_TILT);
+  function theme() {
+    const css = getComputedStyle(document.documentElement), dark = document.documentElement.dataset.theme === 'dark';
+    colors.day.set(dark ? '#6a6960' : '#f7f5ef'); colors.night.set(dark ? '#050505' : '#141412');
+    colors.ink.set(dark ? '#f2efe8' : '#141412'); colors.signal.set(css.getPropertyValue('--signal').trim());
+    pinMat.color.copy(colors.signal); nearMat.color.copy(colors.signal); farMat.color.copy(colors.signal); gridMat.color.copy(colors.ink);
+  }
+  const docked = matchMedia('(min-width: 761px)'); // the dock floats over the globe from here up
+  let visible = true, sized = false, introOffset = 0;
+  const box = new THREE.Vector3(), toCamera = new THREE.Vector3();
+  globe.draw = () => {
+    if (!visible) return;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!sized || canvas.width !== Math.floor(w * renderer.getPixelRatio())) {
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix(); sized = true;
+    }
+    // Earth turns under a fixed sun: the subsolar longitude follows UTC, its latitude follows the season.
+    const at = new Date(Date.now() + (shift + introOffset) * 6e4);
+    const utcHours = at.getUTCHours() + at.getUTCMinutes() / 60 + at.getUTCSeconds() / 3600;
+    const dayOfYear = (at - Date.UTC(at.getUTCFullYear(), 0, 0)) / 864e5;
+    const decl = -23.44 * Math.cos((dayOfYear + 10) / 365.25 * Math.PI * 2) * RAD;
+    const subsolar = (12 - utcHours) * 15 * RAD;
+    earth.rotation.y = SUN_AZ - subsolar;
+    sun.set(Math.sin(SUN_AZ) * Math.cos(decl), Math.sin(decl), Math.cos(SUN_AZ) * Math.cos(decl));
+    // Vertical drag tilts the camera, not the Earth, so the sunlight stays put.
+    const pitch = CAM_PITCH + tilt;
+    camera.position.set(0, Math.sin(pitch) * CAM_DIST, Math.cos(pitch) * CAM_DIST); camera.lookAt(0, 0, 0);
+    // Frame the globe a little high so the floating dock never covers the middle of it.
+    camera.setViewOffset(w, h, 0, docked.matches ? h * 0.08 : 0, w, h);
+    renderer.render(scene, camera);
+    for (const { mesh, label } of pins) {
+      mesh.getWorldPosition(box);
+      const facing = toCamera.copy(camera.position).sub(box).normalize().dot(box.clone().normalize());
+      box.project(camera);
+      label.style.opacity = facing > 0.25 ? 1 : 0;
+      label.style.transform = `translate(${(box.x + 1) / 2 * w + 8}px, ${(1 - box.y) / 2 * h - 22}px)`;
+    }
+  };
+  theme();
+  new MutationObserver(() => { theme(); globe.draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { theme(); globe.draw(); });
+  new ResizeObserver(() => { sized = false; globe.draw(); }).observe(canvas);
+  // The globe only renders while on screen; the words beside it still tick once a minute.
+  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; globe.draw(); }).observe(canvas);
+  // A short spin-in on first load: only the globe turns from 14 hours back, the words and slider stay on now.
+  // Skipped if the visitor already moved time while three.js was loading.
+  if (!calm && shift === 0 && !drag) {
+    const t0 = performance.now(), from = -DAY * 0.6;
+    const step = now => {
+      const p = Math.min(1, (now - t0) / 1600);
+      introOffset = from * (1 - p) ** 3; globe.draw();
+      intro = p < 1 ? requestAnimationFrame(step) : 0;
+    };
+    globe.stopIntro = () => { cancelAnimationFrame(intro); intro = 0; introOffset = 0; };
+    intro = requestAnimationFrame(step);
+  } else globe.draw();
+} catch (error) {
+  console.warn('Globe unavailable:', error);
+  universe.classList.add('flat');
+}
+</script>
 </body></html>
