@@ -7,7 +7,7 @@
     { key: 'hongKong', sleep: [1, 6], name: 'Hong Kong', zone: 'Asia/Hong_Kong', lat: 22.3, lon: 114.2, code: 'HKG' },
     { key: 'sydney', sleep: [23, 5], name: 'Sydney', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, code: 'SYD' }
   ];
-  const pins = [...cities, { lat: 1.35, lon: 103.8, code: 'SIN' }, { lat: 6.9, lon: 79.9, code: 'CMB' }, { lat: -33.4, lon: -70.7, code: 'SCL' }, { lat: -26.2, lon: 28, code: 'JNB' }];
+  const pins = [...cities, { lat: 6.9, lon: 79.9, code: 'CMB' }, { lat: -33.4, lon: -70.7, code: 'SCL' }, { lat: -26.2, lon: 28, code: 'JNB' }];
   const home = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const formats = new Map();
   function wall(zone, at) {
