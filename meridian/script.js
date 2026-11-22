@@ -7,6 +7,7 @@
     { name: 'Tokyo', zone: 'Asia/Tokyo', lat: 35.7, lon: 139.7, code: 'TYO' },
     { name: 'Sydney', zone: 'Australia/Sydney', lat: -33.9, lon: 151.2, code: 'SYD' }
   ];
+  const pins = [...cities, { lat: 1.35, lon: 103.8, code: 'SIN' }, { lat: 6.9, lon: 79.9, code: 'CMB' }, { lat: -33.4, lon: -70.7, code: 'SCL' }, { lat: -26.2, lon: 28, code: 'JNB' }];
   const home = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const formats = new Map();
   function wall(zone, at) {
@@ -74,14 +75,13 @@
     }
     for (let lat = -60; lat <= 60; lat += 30) line(Array.from({length:361}, (_,i) => [i,lat]), dark ? '#55594c' : '#b0b29a', 1);
     for (let lon = 0; lon < 360; lon += 30) line(Array.from({length:181}, (_,i) => [lon,i-90]), dark ? '#55594c' : '#b0b29a', 1);
-    ctx.fillStyle = ink;
-    for (const [lon, lat] of landDots) { const [x, y, z] = project(lon, lat); if (z > 0) { ctx.beginPath(); ctx.arc(x, y, 1.2 + 2.3 * z, 0, Math.PI * 2); ctx.fill(); } }
     // Equinox terminator at a fixed sun-facing angle; geography turns with UTC.
     ctx.beginPath();
     for (let y = -r; y <= r; y++) { const x = cx - Math.cos(65*rad) * Math.sqrt(r*r-y*y); if(y === -r) ctx.moveTo(x,cy+y); else ctx.lineTo(x,cy+y); }
     ctx.lineTo(cx-r-1,cy+r); ctx.lineTo(cx-r-1,cy-r); ctx.closePath();ctx.fillStyle = '#070c18a8';ctx.fill();
+    for (const [lon, lat] of landDots) { const [x, y, z] = project(lon, lat); if (z <= 0) continue; const night = x < cx - Math.cos(65 * rad) * Math.sqrt(Math.max(r * r - (y - cy) ** 2, 0)); ctx.fillStyle = night ? (dark ? '#8d917f' : '#c9c7b0') : ink; ctx.beginPath(); ctx.arc(x, y, 1.2 + 2.3 * z, 0, Math.PI * 2); ctx.fill(); }
     ctx.restore(); ctx.strokeStyle = ink; ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
-    cities.forEach(city => {const [x,y,z] = project(city.lon,city.lat); if(z < .05) return; ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=signal;ctx.fill();ctx.font=`bold ${Math.max(17,11*800/css)}px monospace`;ctx.lineWidth=4;ctx.strokeStyle=dark?'#141412':'#f2efe8';ctx.strokeText(city.code,x+10,y-8);ctx.fillStyle=ink;ctx.fillText(city.code,x+10,y-8);});
+    pins.forEach(city => {const [x,y,z] = project(city.lon,city.lat); if(z < .05) return; ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=signal;ctx.fill();ctx.font=`bold ${Math.max(17,11*800/css)}px monospace`;ctx.lineWidth=4;ctx.strokeStyle=dark?'#141412':'#f2efe8';ctx.strokeText(city.code,x+10,y-8);ctx.fillStyle=ink;ctx.fillText(city.code,x+10,y-8);});
     ctx.setLineDash([3,7]);ctx.beginPath();ctx.ellipse(cx,cy,r+40,80,-.25,0,Math.PI*2);ctx.strokeStyle=signal;ctx.stroke();ctx.setLineDash([]);
   }
   function render() {
