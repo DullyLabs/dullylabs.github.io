@@ -47,6 +47,10 @@
     [[112,-22],[116,-34],[135,-36],[153,-27],[145,-13],[130,-12],[112,-22]],
     [[130,32],[141,46],[145,43],[140,35],[130,32]], [[-8,50],[-5,59],[1,53],[-8,50]]
   ];
+  // Land as a dot matrix: a 4° grid kept where it falls inside the outlines above.
+  const inside = ([x, y], poly) => poly.reduce((hit, [x1, y1], i) => { const [x2, y2] = poly[(i + 1) % poly.length]; return (y1 > y) !== (y2 > y) && x < x1 + (y - y1) * (x2 - x1) / (y2 - y1) ? !hit : hit; }, false);
+  const landDots = [];
+  for (let lat = -58; lat <= 82; lat += 4) for (let lon = -180; lon < 180; lon += 4 / Math.max(Math.cos(lat * rad), .3)) if (lands.some(poly => inside([lon, lat], poly))) landDots.push([lon, lat]);
   function draw(at) {
     const dark = document.documentElement.dataset.theme === 'dark';
     const ink = dark ? '#f2efe8' : '#141412', signal = dark ? '#ff7a5c' : '#b8321c';
@@ -67,10 +71,8 @@
     }
     for (let lat = -60; lat <= 60; lat += 30) line(Array.from({length:361}, (_,i) => [i,lat]), dark ? '#55594c' : '#b0b29a', 1);
     for (let lon = 0; lon < 360; lon += 30) line(Array.from({length:181}, (_,i) => [lon,i-90]), dark ? '#55594c' : '#b0b29a', 1);
-    lands.forEach(points => {
-      const dense = []; for (let i = 1; i < points.length; i++) { const a = points[i-1], b = points[i]; for (let j = 0; j <= 20; j++) dense.push([a[0]+(b[0]-a[0])*j/20, a[1]+(b[1]-a[1])*j/20]); }
-      line(dense, ink, 2.2);
-    });
+    ctx.fillStyle = ink;
+    for (const [lon, lat] of landDots) { const [x, y, z] = project(lon, lat); if (z > 0) { ctx.beginPath(); ctx.arc(x, y, 1.2 + 2.3 * z, 0, Math.PI * 2); ctx.fill(); } }
     // Equinox terminator at a fixed sun-facing angle; geography turns with UTC.
     ctx.beginPath();
     for (let y = -r; y <= r; y++) { const x = cx - Math.cos(65*rad) * Math.sqrt(r*r-y*y); if(y === -r) ctx.moveTo(x,cy+y); else ctx.lineTo(x,cy+y); }
