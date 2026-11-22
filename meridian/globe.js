@@ -27,7 +27,7 @@ export const pxPerMinute = canvas => 2 * Math.PI * Math.min(canvas.clientWidth, 
 
 export function drawGlobe(canvas, at, pins, dark) {
   const ctx = canvas.getContext('2d');
-  const ink = dark ? '#f2efe8' : '#141412', signal = dark ? '#ff7a5c' : '#b8321c';
+  const ink = dark ? '#f2efe8' : '#141412', signal = dark ? '#ff5b3d' : '#e8452c'; // the app's Palette
   const css = Math.min(canvas.clientWidth, canvas.clientHeight) || SIZE, px = Math.round(css * devicePixelRatio);
   if (canvas.width !== px) canvas.width = canvas.height = px;
   ctx.setTransform(px / SIZE, 0, 0, px / SIZE, 0, 0);
@@ -48,19 +48,19 @@ export function drawGlobe(canvas, at, pins, dark) {
     ctx.stroke();
   };
 
-  ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.fillStyle = dark ? '#30332c' : '#d2d2ba'; ctx.fill();
+  ctx.beginPath(); ctx.arc(CX, CY, R, 0, Math.PI * 2); ctx.fillStyle = dark ? '#2e2e2a' : '#f2efe8'; ctx.fill();
   ctx.save(); ctx.clip();
-  ctx.strokeStyle = dark ? '#55594c' : '#b0b29a'; ctx.lineWidth = 1;
+  ctx.strokeStyle = dark ? '#f2efe81f' : '#1414121f'; ctx.lineWidth = 1;
   for (let lat = -60; lat <= 60; lat += 30) line(Array.from({ length: 361 }, (_, i) => [i, lat]));
   for (let lon = 0; lon < 360; lon += 30) line(Array.from({ length: 181 }, (_, i) => [lon, i - 90]));
   ctx.beginPath();
   for (let y = CY - R; y <= CY + R; y++) y === CY - R ? ctx.moveTo(terminatorX(y), y) : ctx.lineTo(terminatorX(y), y);
   ctx.lineTo(CX - R - 1, CY + R); ctx.lineTo(CX - R - 1, CY - R); ctx.closePath();
-  ctx.fillStyle = '#070c18a8'; ctx.fill();
+  ctx.fillStyle = dark ? '#050505' : '#141412'; ctx.fill();
   for (const [lon, lat] of LAND_DOTS) {
     const [x, y, z] = project(lon, lat);
     if (z <= 0) continue;
-    ctx.fillStyle = x < terminatorX(y) ? (dark ? '#8d917f' : '#c9c7b0') : ink;
+    ctx.fillStyle = x < terminatorX(y) ? '#f2efe873' : ink;
     ctx.beginPath(); ctx.arc(x, y, 1.2 + 2.3 * z, 0, Math.PI * 2); ctx.fill();
   }
   ctx.restore();
