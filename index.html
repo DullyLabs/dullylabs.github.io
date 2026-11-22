@@ -128,7 +128,44 @@
             <a class="project-link" href="/meridian/" aria-labelledby="meridian-name meridian-hook" aria-describedby="meridian-description">
               <div class="exhibit meridian-exhibit" aria-hidden="true">
                 <div class="exhibit-topline"><span>03 / A questionable time to call</span><span class="exhibit-corner">↗</span></div>
-                <div class="meridian-art"><div class="meridian-slip"><span class="meridian-form">DEPARTMENT OF BAD TIMING</span><div class="meridian-day"><span>LONDON</span><b>17<span>41</span></b><i>“Quick call?”</i></div><div class="meridian-night"><span>TOKYO · TOMORROW</span><b>02<span>41</span></b><i>Absolutely not.</i></div><span class="meridian-form">PLEASE CONSULT THE PLANET FIRST.</span></div><div class="meridian-stamp">CALL<br>LATER</div></div>
+                <div class="meridian-art"><svg class="meridian-globe" viewBox="0 0 360 230" role="presentation">
+                  <defs>
+                    <clipPath id="mg-earth"><circle cx="180" cy="115" r="84"/></clipPath>
+                    <clipPath id="mg-front"><rect x="0" y="122" width="360" height="120"/></clipPath>
+                    <pattern id="mg-dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.45"/></pattern>
+                    <pattern id="mg-dots-night" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.45" fill="#77736a"/></pattern>
+                    <radialGradient id="mg-glow"><stop offset="0" stop-color="#e8452c" stop-opacity=".42"/><stop offset="1" stop-color="#e8452c" stop-opacity="0"/></radialGradient>
+                    <radialGradient id="mg-shade" cx=".7" cy=".38" r=".8"><stop offset="0" stop-color="#fffaf0"/><stop offset=".75" stop-color="#f2efe8"/><stop offset="1" stop-color="#ddd7c9"/></radialGradient>
+                    <filter id="mg-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+                    <mask id="mg-dark"><ellipse class="mg-night" cx="106" cy="115" rx="70" ry="120" fill="#fff" filter="url(#mg-soft)"/></mask>
+                  </defs>
+                  <g transform="rotate(-9 180 122)">
+                    <circle class="mg-sunglow" cx="299.5" cy="139" r="64" fill="url(#mg-glow)"/>
+                    <ellipse class="mg-orbit mg-orbit-back" cx="180" cy="122" rx="138" ry="34"/>
+                  </g>
+                  <circle class="mg-sphere" cx="180" cy="115" r="84" fill="url(#mg-shade)"/>
+                  <g clip-path="url(#mg-earth)">
+                    <g class="mg-lines"><ellipse cx="180" cy="115" rx="30" ry="84"/><ellipse cx="180" cy="115" rx="62" ry="84"/><path d="M96 115h168M104 78h152M104 152h152"/></g>
+                    <g class="mg-land"><path d="M110 58 130 44 156 36 182 34 200 40 206 52 196 60 190 72 184 80 176 86 170 96 176 106 168 108 158 100 148 92 138 82 126 74 116 68Z"/>
+                        <path d="M203 27 216 25 220 36 209 41Z"/>
+                        <path d="M168 105 177 112 185 117 199 115 214 125 224 139 218 156 206 170 198 184 192 197 186 185 184 167 180 150 176 133 172 118Z"/>
+                        <path d="M224 58 238 50 254 52 256 64 246 70 232 70Z"/>
+                        <path d="M228 80 246 76 258 92 254 116 244 134 236 116 228 98Z"/></g>
+                    <ellipse class="mg-night mg-night-fill" cx="106" cy="115" rx="70" ry="120" filter="url(#mg-soft)"/>
+                    <g mask="url(#mg-dark)"><g class="mg-land mg-land-night"><path d="M110 58 130 44 156 36 182 34 200 40 206 52 196 60 190 72 184 80 176 86 170 96 176 106 168 108 158 100 148 92 138 82 126 74 116 68Z"/>
+                        <path d="M203 27 216 25 220 36 209 41Z"/>
+                        <path d="M168 105 177 112 185 117 199 115 214 125 224 139 218 156 206 170 198 184 192 197 186 185 184 167 180 150 176 133 172 118Z"/>
+                        <path d="M224 58 238 50 254 52 256 64 246 70 232 70Z"/>
+                        <path d="M228 80 246 76 258 92 254 116 244 134 236 116 228 98Z"/></g></g>
+                  </g>
+                  <circle class="mg-rim" cx="180" cy="115" r="84"/>
+                  <g transform="rotate(-9 180 122)">
+                    <ellipse class="mg-orbit" cx="180" cy="122" rx="138" ry="34" clip-path="url(#mg-front)"/>
+                    <circle class="mg-sun" cx="299.5" cy="139" r="9"/>
+                  </g>
+                  <g class="mg-tag" transform="translate(188 72)"><circle r="3.5"/><rect x="7" y="-9" width="34" height="16" rx="4"/><text x="24" y="2.5">NYC</text></g>
+                  <g class="mg-tag" transform="translate(236 60)"><circle r="3.5"/><rect x="7" y="-9" width="34" height="16" rx="4"/><text x="24" y="2.5">LDN</text></g>
+                </svg></div>
                 <div class="exhibit-bottomline"><span>Same planet. Different plans.</span><img class="tiny-spark" src="/favicon.svg" alt="" width="18" height="18"></div>
               </div>
               <div class="project-body">
