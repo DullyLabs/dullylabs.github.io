@@ -10,7 +10,7 @@
   };
   document.querySelectorAll('[data-year]').forEach(node => { node.textContent = new Date().getFullYear(); });
 
-  const HOUR = 36e5, MAX_BANDS = 8;
+  const HOUR = 36e5, MAX_BANDS = 6;
   const HOME = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
   const hourOptions = new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).resolvedOptions();
   const H12 = hourOptions.hourCycle ? /h1[12]/.test(hourOptions.hourCycle) : !!hourOptions.hour12;
@@ -67,7 +67,7 @@
   const hourMark = h => H12 ? `${h % 12 || 12}${h < 12 ? 'AM' : 'PM'}` : `${pad(h)}:00`;
   const isDay = h => h >= 6 && h < 18;
   const isAwake = h => h >= 7 && h < 23;
-  const isWork = h => h >= 9 && h < 18;
+  const isWork = t => t.h >= 9 && t.h < 18 && (t.day + 4) % 7 % 6 !== 0; // weekdays only, like the app
   const duration = (minutes, h, m) => [Math.floor(minutes / 60) && `${Math.floor(minutes / 60)}${h}`, minutes % 60 && `${minutes % 60}${m}`].filter(Boolean).join(' ');
 
   function offsetLabel(city, here) {
@@ -127,7 +127,7 @@
     }
     renderHeadline();
     renderReport();
-    const key = `${Math.floor(at / 9e5)}|${narrow.matches}|${bands.map(band => band.tz)}`;
+    const key = `${Math.floor(at / 6e4)}|${narrow.matches}|${bands.map(band => band.tz)}`;
     if (key !== stripKey) { stripKey = key; renderStrip(at); }
   }
 
@@ -143,23 +143,24 @@
 
   function renderReport() {
     const asleep = bands.filter(band => !isAwake(band.t.h)).length;
-    $('report').textContent = !asleep ? 'Everyone is awake. This will not last.'
+    const report = !asleep ? 'Everyone is awake. This will not last.'
       : asleep === bands.length ? 'Everyone is asleep. Including, apparently, you.'
       : `${asleep} of ${bands.length} asleep. Text, don’t call.`;
+    if ($('report').textContent !== report) $('report').textContent = report;
     const ahead = Math.abs(shift);
     $('shift-label').textContent = shift ? `${shift > 0 ? '+' : '−'}${duration(ahead, 'h', 'm')}` : 'Now';
-    slider.setAttribute('aria-valuetext', shift ? `${duration(ahead, ' hours', ' minutes')} ${shift > 0 ? 'ahead' : 'back'}` : 'Now');
+    slider.setAttribute('aria-valuetext', shift ? `${duration(ahead, ahead < 120 ? ' hour' : ' hours', ahead % 60 === 1 ? ' minute' : ' minutes')} ${shift > 0 ? 'ahead' : 'back'}` : 'Now');
     nowButton.hidden = !shift;
   }
 
   // The Hours widget: one row of hours per city, and the next stretch when everyone is awake.
   function renderStrip(at) {
     const count = narrow.matches ? 16 : 24;
-    const hours = bands.map(band => Array.from({ length: count }, (_, i) => wall(band.tz, at + i * HOUR).h));
-    const awake = i => hours.every(row => isAwake(row[i]));
-    const start = Array.from({ length: count }, (_, i) => i).find(awake);
+    const hours = bands.map(band => Array.from({ length: 24 }, (_, i) => wall(band.tz, at + i * HOUR)));
+    const awake = i => hours.every(row => isAwake(row[i].h));
+    const start = Array.from({ length: 24 }, (_, i) => i).find(awake);
     let length = 0;
-    if (start !== undefined) while (start + length < count && awake(start + length)) length++;
+    if (start !== undefined) while (start + length < 24 && awake(start + length)) length++;
 
     $('rows').replaceChildren(...bands.map((band, b) => {
       const row = el('div', 'hrow');
@@ -168,8 +169,8 @@
       const cells = el('div', 'cells');
       cells.setAttribute('aria-hidden', 'true');
       cells.style.setProperty('--n', count);
-      hours[b].forEach((h, i) => {
-        const state = isWork(h) ? 'work' : isAwake(h) ? 'awake' : 'asleep';
+      hours[b].slice(0, count).forEach((t, i) => {
+        const h = t.h, state = isWork(t) ? 'work' : isAwake(h) ? 'awake' : 'asleep';
         const hit = start !== undefined && i >= start && i < start + length;
         cells.append(el('span', `c ${state}${hit ? ' hit' : ''}${h === 0 && i ? ' midnight' : ''}`, H12 ? h % 12 || 12 : pad(h)));
       });
@@ -206,10 +207,10 @@
     const input = $('city'), typed = input.value.trim();
     if (!typed) return;
     const query = typed.toLowerCase().replace(/\s+/g, ' ');
-    const city = index.get(query) || index.get(query.replace(/ /g, '_')) || [...index.values()].find(c => c.name.toLowerCase().startsWith(query));
+    const city = index.get(query) || index.get(query.replace(/ /g, '_')) || [...index.values()].filter(c => c.name.toLowerCase().startsWith(query)).sort((a, b) => a.name.length - b.name.length)[0];
     if (!city) message.textContent = `No time zone answers to “${typed}”. Try the nearest big city.`;
     else if (bands.some(band => band.tz === city.tz && band.name === city.name)) message.textContent = `${city.name} already has a band.`;
-    else if (bands.length >= MAX_BANDS) message.textContent = 'Eight bands is plenty for a web page. Remove one first.';
+    else if (bands.length >= MAX_BANDS) message.textContent = 'Six bands, like the Hours widget. Remove one first.';
     else {
       bands.push({ ...city });
       input.value = '';

@@ -51,10 +51,10 @@ h2{font-size:clamp(36px,5vw,60px);line-height:1;font-weight:800;text-wrap:balanc
 .band-time span{font-weight:400;margin-left:.04em;letter-spacing:-.01em}
 .band-time i{margin-left:.35em;font-size:.26em;font-style:normal;font-weight:500;color:var(--sec)}
 .band-time small{margin-left:.5em;font-size:.2em;font-weight:600;letter-spacing:.1em;opacity:.7}
-.band-x{flex:none;width:44px;height:44px;margin-right:-12px;border:0;background:none;font-size:24px;line-height:1;opacity:.45}
+.band-x{flex:none;width:44px;height:44px;margin-right:-12px;border:0;background:none;font-size:24px;line-height:1;opacity:.7}
 .band-x:hover,.band-x:focus-visible{opacity:1}
 .band-gossip{font-size:15px;opacity:.8}
-.band-gossip::before{content:"is ";opacity:.6}
+.band-gossip::before{content:"is "}
 
 .add{padding:16px 20px;border-top:1px solid var(--rule)}
 .add-row{display:flex;gap:8px;margin-top:8px}
@@ -85,6 +85,7 @@ h2{font-size:clamp(36px,5vw,60px);line-height:1;font-weight:800;text-wrap:balanc
 .k-awake,.c.awake{background:color-mix(in srgb,var(--ink) 20%,transparent)}
 .k-work,.c.work{background:var(--ink);color:var(--bg)}
 .k-hit,.c.work.hit{background:var(--signal);color:var(--bg)}
+.k-hit{background:linear-gradient(90deg,var(--signal) 50%,color-mix(in srgb,var(--signal) 45%,var(--bg)) 50%)}
 .c.hit{background:color-mix(in srgb,var(--signal) 45%,var(--bg))}
 .wallpaper{padding:clamp(16px,4vw,40px);border-radius:28px;background:linear-gradient(#f3a06e,#b8787f 48%,#5b428a)}
 .widget{padding:14px;border-radius:22px;background:var(--bg)}
