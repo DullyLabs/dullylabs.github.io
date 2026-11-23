@@ -121,8 +121,7 @@ footer .note{font-size:13px;opacity:.72;text-align:center} /* 6:1+ in both theme
 footer .links{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:center;width:min(560px,100%);padding-top:20px;border-top:1px solid color-mix(in srgb,currentColor 20%,transparent)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 footer .note{max-width:560px}
-footer .more{border:0;padding:0;font-size:13px}
-footer .more span{flex-basis:100%;text-align:center;opacity:.72}
+
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"MobileApplication","name":"Weekly Pulse","url":"https://dullylabs.com/weeklypulse/","operatingSystem":"iOS 27.0 or later","applicationCategory":"HealthApplication","offers":{"@type":"Offer","price":0,"priceCurrency":"USD"},"installUrl":"https://apps.apple.com/app/id6761065411","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
 </head>
@@ -158,7 +157,7 @@ footer .more span{flex-basis:100%;text-align:center;opacity:.72}
     <div id="dot"></div>
   </div>
 </main>
-<footer><p class="note">Weekly Pulse is a free iPhone and iPad app for rating four parts of your life each week and spotting what's slipping. Not a medical app. Export anytime.</p><div class="links"><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div><div class="links more"><span>More from Dully Labs</span><a href="/minibus-commuter/">Minibus Commuter</a><a href="/pluckit/">PluckIt</a><a href="/neverpressstart/">Never Press Start</a><a href="/notes/">Notes</a></div></footer>
+<footer><p class="note">Weekly Pulse is a free iPhone and iPad app for rating four parts of your life each week and spotting what's slipping. Not a medical app. Export anytime.</p><div class="links"><a href="/">Dully Labs</a><a href="/weeklypulse/privacy/">Privacy</a><a href="/weeklypulse/support/">Support</a><a href="https://dulangaj.com">Developer</a></div></footer>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 $$('.split').forEach(el=>{const t=el.textContent;el.innerHTML=[...t].map(c=>`<span aria-hidden="true">${c}</span>`).join('')+(el.closest('[aria-hidden]')?'':`<span class="sr">${t}</span>`)});
