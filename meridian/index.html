@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><link rel="canonical" href="https://dullylabs.com/meridian/" /><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f2efe8">
+<meta name="theme-color" content="#d5dbde">
 <title>Meridian · World clock for iPhone and iPad</title>
 <meta name="description" content="Meridian is a world clock for iPhone and iPad. Each city gets its own band, light by day and dark by night, and a slider shows everyone's time up to 12 hours ahead or back.">
 <meta property="og:type" content="website"><meta property="og:url" content="https://dullylabs.com/meridian/"><meta property="og:site_name" content="Dully Labs"><meta property="og:title" content="Meridian · World clock for iPhone and iPad"><meta property="og:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta property="og:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1024"><meta property="og:image:height" content="1024"><meta property="og:image:alt" content="The Meridian app icon."><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Meridian · World clock for iPhone and iPad"><meta name="twitter:description" content="London is finishing lunch. Tokyo is turning in. A world clock that gives each of your cities its own band."><meta name="twitter:image" content="https://dullylabs.com/meridian/assets/app-icon.png"><meta name="twitter:image:alt" content="The Meridian app icon.">
@@ -11,12 +11,18 @@
 <script>document.documentElement.classList.add("js")</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Meridian","url":"https://dullylabs.com/meridian/","operatingSystem":"iOS, iPadOS","applicationCategory":"UtilitiesApplication","publisher":{"@type":"Organization","@id":"https://dullylabs.com/#organization","name":"Dully Labs","url":"https://dullylabs.com/"}}</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js"}}</script>
+<link rel="stylesheet" href="/meridian/palette.css">
 <style>
-/* Meridian: the app's paper, ink and one signal red. The globe is three.js, lit by today's sun, and dragging it moves time. */
-:root{color-scheme:light;--bg:#f2efe8;--ink:#141412;--muted:#6d6c68;--rule:#14141226;--signal:#e8452c;--signal-text:#c8341d;--outline:#14141238;--glass:#f2efe8b8;--glass-edge:#ffffff99;
-  --day:#f2efe8;--day-ink:#141412;--night:#1b1c1b;--night-ink:#f2efe8;
+/* Meridian: the app's ink and sky colours on a pale tint of its cyan. The globe is three.js, lit by today's sun, and dragging it moves time. */
+:root{color-scheme:light;--bg:var(--m-mist);--ink:var(--m-ink);--muted:var(--m-slate);--signal:var(--m-dusk);--signal-text:var(--m-dusk);--pin:var(--m-now);--thumb:var(--m-now);--sun:var(--m-sunset);
+  --rule:color-mix(in srgb,var(--ink) 15%,transparent);--outline:color-mix(in srgb,var(--ink) 22%,transparent);--glass:color-mix(in srgb,var(--m-frost) 72%,transparent);--glass-edge:#fff9;--glow:color-mix(in srgb,var(--m-noon) 25%,transparent);--sat:1.1;
+  --day:var(--m-noon);--mid:var(--m-amber);--low:var(--m-sunset);--day-ink:var(--m-ink);--night:var(--m-ink);--night-ink:var(--m-paper);
+  --globe-day:var(--m-paper);--globe-night:var(--m-ink);--globe-dusk:var(--m-sunset);--globe-rim:var(--m-sun);
   --cond:"Avenir Next Condensed","Arial Narrow","Helvetica Neue",sans-serif;--mono:ui-monospace,monospace;--sans:system-ui,-apple-system,sans-serif;--gutter:40px}
-:root[data-theme=dark]{color-scheme:dark;--bg:#141412;--ink:#f2efe8;--muted:#999792;--rule:#f2efe826;--signal:#ff7a5c;--signal-text:#ff7a5c;--outline:#f2efe855;--glass:#1e1e1cb8;--glass-edge:#ffffff1f;--day:#2e2e2a;--day-ink:#f2efe8;--night:#050505}
+:root[data-theme=dark]{color-scheme:dark;--bg:var(--m-ink);--ink:var(--m-paper);--muted:var(--m-ash);--signal:var(--m-sunset);--signal-text:var(--m-sunset);--pin:var(--m-sun);--sun:var(--m-sun);
+  --outline:color-mix(in srgb,var(--ink) 33%,transparent);--glass:color-mix(in srgb,var(--m-coal) 72%,transparent);--glass-edge:#ffffff1f;--glow:color-mix(in srgb,var(--m-sunset) 26%,transparent);--sat:1.4;
+  --day:var(--m-coal);--mid:var(--m-coal);--low:var(--m-coal);--day-ink:var(--m-paper);--night:var(--m-night);
+  --globe-day:var(--m-stone);--globe-night:var(--m-night);--globe-rim:var(--m-sunset)}
 @media(max-width:760px){:root{--gutter:16px}}
 *{box-sizing:border-box}
 html{overflow-x:clip}
@@ -34,7 +40,7 @@ button{cursor:pointer}
 .skip-link:focus{left:16px;top:16px}
 .no-script{padding:24px;text-align:center}
 .wrap{max-width:1600px;margin:auto;padding-inline:var(--gutter)}
-.glass{background:var(--glass);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--rule);box-shadow:inset 0 1px 0 var(--glass-edge),0 18px 40px -24px #0006;border-radius:18px}
+.glass{background:var(--glass);backdrop-filter:blur(16px) saturate(var(--sat));-webkit-backdrop-filter:blur(16px) saturate(var(--sat));border:1px solid var(--rule);box-shadow:inset 0 1px 0 var(--glass-edge),0 18px 40px -24px #0006;border-radius:18px}
 
 .masthead{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--rule)}
 .brand{display:flex;align-items:center;gap:12px;min-height:44px;text-decoration:none}
@@ -58,7 +64,7 @@ h1 em{color:var(--signal);font-style:normal}
 .flat .sky,.flat .grab,.flat::before{display:none}
 .flat .instrument{position:static;display:inline-flex;margin-bottom:12px}
 .flat .dock{position:relative;left:auto;right:auto}
-.universe::before{content:"";position:absolute;inset:4% -6% 4% 30%;z-index:-1;background:radial-gradient(closest-side at 70% 45%,color-mix(in srgb,var(--signal) 26%,transparent),transparent);filter:blur(10px)}
+.universe::before{content:"";position:absolute;inset:4% -6% 4% 30%;z-index:-1;background:radial-gradient(closest-side at 70% 45%,var(--glow),transparent);filter:blur(10px)}
 .sky{position:relative;aspect-ratio:1}
 #planet{display:block;width:100%;height:100%}
 .pin{position:absolute;left:0;top:0;font:700 11px/1 var(--mono);letter-spacing:.08em;padding:4px 6px;border-radius:6px;background:var(--glass);border:1px solid var(--rule);pointer-events:none;white-space:nowrap;transition:opacity .2s}
@@ -73,8 +79,8 @@ h1 em{color:var(--signal);font-style:normal}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:40px;margin:0;background:none;cursor:ew-resize}
 input[type=range]::-webkit-slider-runnable-track{height:14px;background:linear-gradient(var(--muted),var(--muted)) center/2px 14px no-repeat,linear-gradient(var(--rule),var(--rule)) center/100% 2px no-repeat}
 input[type=range]::-moz-range-track{height:14px;background:linear-gradient(var(--muted),var(--muted)) center/2px 14px no-repeat,linear-gradient(var(--rule),var(--rule)) center/100% 2px no-repeat}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-4px;border:0;border-radius:50%;background:var(--signal);box-shadow:0 0 0 6px color-mix(in srgb,var(--signal) 22%,transparent)}
-input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:50%;background:var(--signal)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-4px;border:0;border-radius:50%;background:var(--thumb);box-shadow:0 0 0 6px color-mix(in srgb,var(--thumb) 22%,transparent)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:50%;background:var(--thumb)}
 .control-bottom{color:var(--muted);min-height:44px;flex-wrap:wrap}
 #now{background:var(--ink);color:var(--bg);border:0;border-radius:30px;min-height:36px;padding:0 16px;font:600 13px/1 var(--sans)}
 
@@ -82,6 +88,9 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radiu
 .dispatch>.caps{color:var(--muted);padding:4px 4px 0}
 #bands{list-style:none;padding:0;display:grid;gap:10px}
 .band{padding:12px 16px;border-radius:16px;background:var(--day);color:var(--day-ink);border:1px solid var(--rule);transition:background .6s,color .6s}
+/* The app's sky ramp: high sun, then the two steps either side of sunrise and sunset. */
+.band.mid{background:var(--mid)}
+.band.low{background:var(--low)}
 .band.night{background:var(--night);color:var(--night-ink);border-color:#0000}
 .band-top{display:flex;justify-content:space-between;gap:8px}
 .band-body{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:16px}
@@ -113,7 +122,6 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radiu
 .tilt{position:relative;justify-self:center;width:min(480px,100%);perspective:900px}
 .tilt-card{position:relative;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1);border-radius:10%/21.1%;overflow:hidden;box-shadow:0 40px 60px -30px #0007}
 .tilt-card img{display:block;width:100%;height:auto}
-.tilt-card::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at var(--gx,50%) var(--gy,0%),#ffffff59,transparent 55%);mix-blend-mode:soft-light;pointer-events:none}
 figcaption{margin-top:20px;font-size:13px;text-align:center;color:var(--muted)}
 
 footer{border-top:1px solid var(--rule);padding-block:24px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;color:var(--muted);font-size:13px}
@@ -240,6 +248,7 @@ function render() {
   for (const city of bands) {
     const t = city.time = wall(city.zone, at), el = city.el;
     el.classList.toggle('night', t.h < 6 || t.h >= 18);
+    el.classList.toggle('low', [6, 7, 17].includes(t.h)); el.classList.toggle('mid', t.h === 8 || t.h === 16);
     el.querySelector('b').textContent = pad(t.h);
     el.querySelector('i').textContent = ':' + pad(t.m);
     el.querySelector('.date').textContent = t.day === you.day ? '' : dayWord(t.day - you.day);
@@ -304,12 +313,12 @@ const endDrag = () => {
 };
 for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) universe.addEventListener(type, endDrag);
 
-// Product widget tilts toward a fine pointer, with a moving glare.
+// Product widget tilts toward a fine pointer.
 const card = document.querySelector('.tilt-card');
 if (!calm && matchMedia('(hover: hover)').matches) {
   card.addEventListener('pointermove', e => {
     const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-    card.style.cssText = `--ry:${(x - .5) * 16}deg;--rx:${(.5 - y) * 12}deg;--gx:${x * 100}%;--gy:${y * 100}%`;
+    card.style.cssText = `--ry:${(x - .5) * 16}deg;--rx:${(.5 - y) * 12}deg`;
   });
   card.addEventListener('pointerleave', () => card.style.cssText = '');
 }
@@ -342,14 +351,14 @@ try {
   const CAM_DIST = 6.21, CAM_PITCH = 0.064;
   const earth = new THREE.Group(); scene.add(earth);
   const sun = new THREE.Vector3();
-  const colors = { day: new THREE.Color(), night: new THREE.Color(), ink: new THREE.Color(), signal: new THREE.Color() };
+  const colors = { day: new THREE.Color(), night: new THREE.Color(), ink: new THREE.Color(), signal: new THREE.Color(), rim: new THREE.Color(), dusk: new THREE.Color() }, paper = { value: 0 };
   const toVec = (lon, lat, r = 1) => new THREE.Vector3(r * Math.cos(lat * RAD) * Math.sin(lon * RAD), r * Math.sin(lat * RAD), r * Math.cos(lat * RAD) * Math.cos(lon * RAD));
 
   const lit = `vec3 n = normalize(vNormal); float l = dot(n, sun); float t = smoothstep(-.06, .1, l);`;
   const ocean = new THREE.ShaderMaterial({
-    uniforms: { sun: { value: sun }, day: { value: colors.day }, night: { value: colors.night }, rim: { value: colors.signal } },
+    uniforms: { sun: { value: sun }, day: { value: colors.day }, night: { value: colors.night }, rim: { value: colors.rim }, dusk: { value: colors.dusk }, paper },
     vertexShader: `varying vec3 vNormal; varying vec3 vView; void main(){ vec4 w = modelMatrix * vec4(position,1.); vNormal = normalize(mat3(modelMatrix) * normal); vView = normalize(cameraPosition - w.xyz); gl_Position = projectionMatrix * viewMatrix * w; }`,
-    fragmentShader: `uniform vec3 sun, day, night, rim; varying vec3 vNormal; varying vec3 vView; void main(){ ${lit} vec3 c = mix(night, day, t); float f = pow(1. - max(dot(n, vView), 0.), 3.); c += rim * f * .55 * t + day * f * .12; gl_FragColor = vec4(c, 1.); }`
+    fragmentShader: `uniform vec3 sun, day, night, rim, dusk; uniform float paper; varying vec3 vNormal; varying vec3 vView; void main(){ ${lit} vec3 c = mix(night, day, t); float f = pow(1. - max(dot(n, vView), 0.), 3.); c = paper > 0. ? mix(mix(c, dusk, 4. * t * (1. - t)), rim, f * .5 * t) : c + rim * f * .55 * t + day * f * .12; gl_FragColor = vec4(c, 1.); }`
   });
   earth.add(new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), ocean));
 
@@ -389,7 +398,7 @@ try {
   earth.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(grid), gridMat));
 
   // City pins with HTML labels that hide on the far side.
-  const pinMat = new THREE.MeshBasicMaterial();
+  const pinMat = new THREE.MeshBasicMaterial(), sunMat = new THREE.MeshBasicMaterial();
   const pins = CITIES.map(city => {
     const mesh = new THREE.Mesh(new THREE.SphereGeometry(0.022, 16, 12), pinMat);
     mesh.position.copy(toVec(city.lon, city.lat, 1.01)); earth.add(mesh);
@@ -410,15 +419,19 @@ try {
   const nearMat = new THREE.LineBasicMaterial({ depthTest: false }), farMat = new THREE.LineBasicMaterial();
   const nearLine = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(near), nearMat); nearLine.renderOrder = 2;
   scene.add(nearLine, new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(far), farMat));
-  const sunDot = new THREE.Mesh(new THREE.SphereGeometry(0.06, 24, 16), pinMat); scene.add(sunDot);
+  const sunDot = new THREE.Mesh(new THREE.SphereGeometry(0.06, 24, 16), sunMat); scene.add(sunDot);
 
   const SUN_AZ = 62 * RAD; // where the sun sits in the picture: right of the viewer, slightly in front
   sunDot.position.set(Math.sin(SUN_AZ) * ORBIT_R, 0, Math.cos(SUN_AZ) * ORBIT_R).applyEuler(ORBIT_TILT);
   function theme() {
     const css = getComputedStyle(document.documentElement), dark = document.documentElement.dataset.theme === 'dark';
-    colors.day.set(dark ? '#6a6960' : '#f7f5ef'); colors.night.set(dark ? '#050505' : '#141412');
-    colors.ink.set(dark ? '#f2efe8' : '#141412'); colors.signal.set(css.getPropertyValue('--signal').trim());
-    pinMat.color.copy(colors.signal); nearMat.color.copy(colors.signal); farMat.color.copy(colors.signal); gridMat.color.copy(colors.ink);
+    const set = (color, name) => color.set(css.getPropertyValue(name).trim());
+    paper.value = dark ? 0 : 1; // on a light page twilight shows and the sunlit limb is tinted; adding light would wash it out
+    // The shaders write colours straight out, so on the light page the palette's hex must reach them unconverted.
+    set(colors.day, '--globe-day'); set(colors.night, '--globe-night'); set(colors.dusk, '--globe-dusk').convertLinearToSRGB(); set(colors.rim, '--globe-rim').convertLinearToSRGB();
+    if (!dark) colors.day.convertLinearToSRGB();
+    set(colors.ink, '--ink'); set(colors.signal, '--signal'); set(pinMat.color, '--pin'); set(sunMat.color, '--sun');
+    nearMat.color.copy(colors.signal); farMat.color.copy(colors.signal); gridMat.color.copy(colors.ink);
   }
   const docked = matchMedia('(min-width: 761px)'); // the dock floats over the globe from here up
   let visible = true, sized = false, introOffset = 0;

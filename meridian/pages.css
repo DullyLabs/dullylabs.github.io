@@ -1,7 +1,8 @@
-/* Meridian privacy and support pages: the app's paper, ink and signal red, set in Swiss caps. */
-:root{color-scheme:light;--bg:#f2efe8;--ink:#141412;--muted:#6d6c68;--rule:color-mix(in srgb,var(--ink) 15%,transparent);--signal:#e8452c;--focus:#2f5d8a}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#141412;--ink:#f2efe8;--muted:#999792;--signal:#ff5b3d;--focus:#9cc3ea}
-@media (prefers-color-scheme:dark){:root:not([data-theme]){color-scheme:dark;--bg:#141412;--ink:#f2efe8;--muted:#999792;--signal:#ff5b3d;--focus:#9cc3ea}}
+/* Meridian privacy and support pages: the landing page's colours, set in Swiss caps. */
+@import url("palette.css");
+:root{color-scheme:light;--bg:var(--m-mist);--ink:var(--m-ink);--muted:var(--m-slate);--rule:color-mix(in srgb,var(--ink) 15%,transparent);--signal:var(--m-dusk);--focus:var(--m-now)}
+:root[data-theme="dark"]{color-scheme:dark;--bg:var(--m-ink);--ink:var(--m-paper);--muted:var(--m-ash);--signal:var(--m-sunset)}
+@media (prefers-color-scheme:dark){:root:not([data-theme]){color-scheme:dark;--bg:var(--m-ink);--ink:var(--m-paper);--muted:var(--m-ash);--signal:var(--m-sunset)}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 system-ui,-apple-system,"Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
