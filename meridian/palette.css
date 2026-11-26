@@ -1,0 +1,9 @@
+/* Meridian's colours, defined once. Every Meridian page takes its colours from these names and nowhere else. */
+:root{
+  /* The app's own (Palette.swift, Sky.swift): paper, ink, the sky from night to high sun, and the current hour. */
+  --m-paper:#f2efe8;--m-ink:#141412;
+  --m-night:#0d0d0f;--m-dark:#1a1412;--m-ember:#422412;--m-dusk:#8c4517;--m-sunset:#d97321;--m-amber:#f7a138;--m-sun:#ffc25c;--m-noon:#ffd680;
+  --m-now:#0080b3;
+  /* The site's neutrals: a pale tint of the app's cyan for the light page, and greys between ink and paper. */
+  --m-mist:#d5dbde;--m-frost:#e8ecee;--m-slate:#55565a;--m-ash:#999792;--m-stone:#6a6960;--m-coal:#2e2e2a;
+}
